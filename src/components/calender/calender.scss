@@ -1,0 +1,9 @@
+.monthView{
+    display: grid;
+    grid-template-columns: repeat(7,1fr);
+}
+
+.date{
+    border: 1px black solid;
+    height: 70px;
+}
