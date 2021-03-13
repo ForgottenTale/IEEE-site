@@ -1,14 +1,13 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './calender.scss'
 
-const data  = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
-;
+
 function DateBody(props) {
 
     return (
         <div className="date">
-         {props.day}
+           <div className="date_day">{props.day}</div> 
         </div>
     );
 
@@ -16,9 +15,35 @@ function DateBody(props) {
 
 
 function Calender() {
+
+    const [date, setDate] = useState({
+        day: "0",
+        month: "0",
+        year: "0"
+    })
+
+    const [days,setDays] = useState([]);
+
+
+
+    useEffect(() => {
+        var d = new Date();
+        setDate((prevState) => { return { ...prevState, day: d.getDate(), month: d.getMonth(), year: d.getFullYear() } });
+        var temp =[]
+        for(let i =1;i<=31;i++) {
+            temp.push(i);
+            
+          }
+        setDays(temp)
+        // console.log(days)
+        // console.log(date)
+    }, []);
+
+  
+
     return (
         <div className="monthView">
-             {data.map((date)=><DateBody day={date}/>)}
+            {days.map((date) => <DateBody day={date} key={date}/>)}
         </div>
     );
 

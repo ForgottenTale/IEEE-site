@@ -1,9 +1,31 @@
 .monthView{
+   
+    margin: 0 auto;
+    margin-top: 100px;
+    width: 1200px;
     display: grid;
     grid-template-columns: repeat(7,1fr);
 }
 
 .date{
-    border: 1px black solid;
+    width: 99%;
     height: 70px;
+    background-color: #1E2123;
+    margin: 1px;
+    transition: background-color .08s ease-in-out;
+    &:hover{
+        background-color: #00ffb3;
+    }
+
+    &_day{
+        background-color: #1E2123;
+        width:20px;
+        height: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 10px;
+        color: grey;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.3);;
+    }
 }
