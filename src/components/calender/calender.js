@@ -5,44 +5,53 @@ import './calender.scss'
 
 function Calender() {
 
-    const [date, setDate] = useState({
-        day: "0",
-        month: "0",
-        year: "0"
-    })
 
     const [days, setDays] = useState([]);
 
-    let prevMonthDays = []
 
-    let nextMonthDays = []
+    var dayName = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    
+    useEffect(()=>{
+        let d = new Date();
+        let month = d.getMonth();
+        let year = d.getFullYear();
+        var daysInMonth = new Date(year,month+1,0).getDate();
+        d.setDate(1);
+        let firstDayIndex = d.getDay();
+        let lastDayIndex = new Date(d.getFullYear(),d.getMonth() + 1,0).getDay();
+        var prevMonthLastDay = new Date(d.getFullYear(),d.getMonth(),0).getDate();
+        
+        var temp = [];
+        for(let i=firstDayIndex; i>0;i--){
+            temp.push({"day": prevMonthLastDay,"key":i+100 })
+            prevMonthLastDay =  prevMonthLastDay - 1;
+        }
+        for(let i = 1; i<=daysInMonth;i++){
+            temp.push({"day": i ,"key":i+600 })
+        }
+        
+        for(let i=lastDayIndex; i<7;i++){
+            temp.push({"day": i- lastDayIndex +1,"key":i+200 })
+            
+        }
+        setDays(temp)
+    },[])
 
-    let temp = new Date();
 
+    const nextMonth =(props)=>{
+        console.log(props.day)
 
-    temp.setDate(1);
-
-    var firstDayIndex = temp.getDay(); // to know whether its monday, tuesday .......
-    var lastDay = new Date(
-        temp.getFullYear(),
-        temp.getMonth() + 1,
-        0
-    ).getDate(); // previous month last day
-
-    const lastDayIndex = new Date(
-        temp.getFullYear(),
-        temp.getMonth() + 1,
-        0
-      ).getDay();
-
-    console.log(firstDayIndex);
-    console.log(lastDay);
+    }
+    const prevMonth =()=>{
+        console.log("Hi")
+    }
 
     function DateBody(props) {
-        if (props.day === date.day) {
+    
+        if (props.day.day === new Date().getDate()) {
             return (
                 <div className="date">
-                    <div className="date_day active">{props.day}</div>
+                    <div className="date_day active" >{props.day.day}</div>
                 </div>
             );
         }
@@ -50,56 +59,34 @@ function Calender() {
         else {
             return (
                 <div className="date">
-                    <div className="date_day">{props.day}</div>
+                    <div className="date_day">{props.day.day}</div>
                 </div>
             );
         }
 
     }
-    
+
     function DayNameBody(props) {
-      
-            return (
-                <div className="dayNameBody">
-                    <div className="dayNameBody_name">{props.day}</div>
-                </div>
-            );
-        
+
+        return (
+            <div className="dayNameBody">
+                <div className="dayNameBody_name">{props.day}</div>
+            </div>
+        );
+
 
     }
-
-
-    for(let i = firstDayIndex;i>0;i--){
-        prevMonthDays.push(<DateBody day={lastDay} key={i+1} />)
-        lastDay = lastDay-1;
-    }
-
-    for(let i = lastDayIndex+1;i<7;i++){
-        nextMonthDays.push(<DateBody day={i-lastDayIndex} key={i+100} />)
-    }
-
-
-
-    useEffect(() => {
-        var d = new Date();
-        setDate((prevState) => { return { ...prevState, day: d.getDate(), month: d.getMonth(), year: d.getFullYear() } });
-        var temp = []
-        for (let i = 1; i <= 31; i++) {
-            temp.push(i);
-
-        }
-        setDays(temp)
-
-    
-    }, []);
- 
-    var dayName = ["Sun","Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     return (
-        <div className="monthView">
-            {dayName.map((name)=><DayNameBody day={name} key={name}/>)}
-            {prevMonthDays}
-            {days.map((date) => <DateBody day={date} key={date} />)}
-            {nextMonthDays}
+        <div>
+            <div className="monthView">
+                {dayName.map((name) => <DayNameBody day={name} key={name} />)}
+               
+                {(days===[])?{}:days.map((date) => <DateBody day={date} key={date.key}/>)}
+             
+            </div>
+            <button onClick={prevMonth}>Prevous</button>
+            <button onClick={nextMonth}>Next</button>
+            
         </div>
     );
 
