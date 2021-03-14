@@ -17,6 +17,8 @@ function Calender() {
         var monthNames = ["Januvary","February","March","April","May","June","July","August","September","October","Novemeber","December"];
         let d = new Date();
         let day = d.getDate();
+        d.setMonth(3)
+        d.setFullYear(2020)
         let month = d.getMonth();
         let year = d.getFullYear();
         setToday({"day":day,"month":monthNames[month],"year":year});
@@ -28,11 +30,15 @@ function Calender() {
         
         var temp = [];
         var a = new Date();
+        var p = [];
         for(let i=firstDayIndex; i>0;i--){
             a.setDate(prevMonthLastDay);
             a.setMonth(month-1);
-            temp.push({"day": prevMonthLastDay,"key":a.toLocaleDateString() })
+            p.push({"day": prevMonthLastDay,"key":a.toLocaleDateString() })
             prevMonthLastDay =  prevMonthLastDay - 1;
+        }
+        for(let i=firstDayIndex-1; i>=0;i--){
+            temp.push(p[i]);
         }
         console.log(daysInMonth)
         for(let i = 1; i<=daysInMonth;i++){
@@ -41,7 +47,7 @@ function Calender() {
             temp.push({"day": i ,"key":a.toLocaleDateString() })
         }
         
-        for(let i=lastDayIndex; i<7;i++){
+        for(let i=lastDayIndex; i<6;i++){
             a.setDate(i- lastDayIndex +1);
             a.setMonth(month+1);
             temp.push({"day": i- lastDayIndex +1,"key":a.toLocaleDateString() })
