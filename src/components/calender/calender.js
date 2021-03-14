@@ -17,8 +17,8 @@ function Calender() {
         var monthNames = ["Januvary","February","March","April","May","June","July","August","September","October","Novemeber","December"];
         let d = new Date();
         let day = d.getDate();
-        d.setMonth(3)
-        d.setFullYear(2020)
+        // d.setMonth(3)
+        // d.setFullYear(2020)
         let month = d.getMonth();
         let year = d.getFullYear();
         setToday({"day":day,"month":monthNames[month],"year":year});
