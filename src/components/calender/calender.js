@@ -9,7 +9,7 @@ function Calender() {
     const [days, setDays] = useState([]);
 
 
-    var dayName = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    var dayName = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri",];
     
     useEffect(()=>{
         let d = new Date();
