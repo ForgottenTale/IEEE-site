@@ -66,14 +66,11 @@ function Calender() {
 
 
     const nextMonth = () => {
-       
-        setDays([]);
+
         setNext(next + 1);
 
     }
     const prevMonth = () => {
-    
-        setDays([]);
         setNext(next - 1);
     }
 
