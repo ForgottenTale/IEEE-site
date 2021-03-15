@@ -9,6 +9,7 @@ function Calender() {
     const [days, setDays] = useState([]);
     const [today, setToday] = useState([]);
     const [next, setNext] = useState(0);
+
     var dayName = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 
@@ -17,17 +18,17 @@ function Calender() {
         var monthNames = ["Januvary", "February", "March", "April", "May", "June", "July", "August", "September", "October", "Novemeber", "December"];
         let d = new Date();
         let day = d.getDate();
-        // d.setMonth(3)
-        // d.setFullYear(2020)
+
         if (next > 0) {
-            d.setMonth(d.getMonth()+1);
+            
+            d.setMonth(d.getMonth()+next);
         }
         else if (next < 0) {
-            d.setMonth(d.getMonth()-1);
+            d.setMonth(d.getMonth()-next);
         }
         let month = d.getMonth();
         let year = d.getFullYear();
-        console.log(month);
+
        
         setToday({ "day": day, "month": monthNames[month], "year": year });
         var daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -37,12 +38,11 @@ function Calender() {
         var prevMonthLastDay = new Date(d.getFullYear(), d.getMonth(), 0).getDate();
 
         var temp = [];
-        var a = new Date();
         var p = [];
         for (let i = firstDayIndex; i > 0; i--) {
-            a.setDate(prevMonthLastDay);
-            a.setMonth(month - 1);
-            p.push({ "day": prevMonthLastDay, "key": a.toLocaleDateString() })
+            d.setDate(prevMonthLastDay);
+            d.setMonth(month - 1);
+            p.push({ "day": prevMonthLastDay, "key": d.toLocaleDateString() })
             prevMonthLastDay = prevMonthLastDay - 1;
         }
         for (let i = firstDayIndex - 1; i >= 0; i--) {
@@ -50,15 +50,15 @@ function Calender() {
         }
    
         for (let i = 1; i <= daysInMonth; i++) {
-            a.setDate(i);
-            a.setMonth(month);
-            temp.push({ "day": i, "key": a.toLocaleDateString() })
+            d.setDate(i);
+            d.setMonth(month);
+            temp.push({ "day": i, "key": d.toLocaleDateString() })
         }
 
         for (let i = lastDayIndex; i < 6; i++) {
-            a.setDate(i - lastDayIndex + 1);
-            a.setMonth(month + 1);
-            temp.push({ "day": i - lastDayIndex + 1, "key": a.toLocaleDateString() })
+            d.setDate(i - lastDayIndex + 1);
+            d.setMonth(month + 1);
+            temp.push({ "day": i - lastDayIndex + 1, "key": d.toLocaleDateString() })
 
         }
         setDays(temp)
@@ -79,7 +79,7 @@ function Calender() {
 
     function DateBody(props) {
 
-        if (props.day.day === new Date().getDate()) {
+        if (props.day.key === new Date().toLocaleDateString()) {
             return (
                 <div className="date" onClick={() => console.log(props.day.key)}>
                     <div className="date_day active" >{props.day.day}</div>
