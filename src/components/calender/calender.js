@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import './calender.scss'
-
+import DateBody from './components/dateBody'
 
 function Calender() {
 
@@ -9,6 +9,7 @@ function Calender() {
     const [days, setDays] = useState([]);
     const [today, setToday] = useState([]);
     const [next, setNext] = useState(0);
+   
 
     var dayName = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -20,16 +21,16 @@ function Calender() {
         let day = d.getDate();
 
         if (next > 0) {
-            
-            d.setMonth(d.getMonth()+next);
+
+            d.setMonth(d.getMonth() + next);
         }
         else if (next < 0) {
-            d.setMonth(d.getMonth()-next);
+            d.setMonth(d.getMonth() - next);
         }
         let month = d.getMonth();
         let year = d.getFullYear();
 
-       
+
         setToday({ "day": day, "month": monthNames[month], "year": year });
         var daysInMonth = new Date(year, month + 1, 0).getDate();
         d.setDate(1);
@@ -48,7 +49,7 @@ function Calender() {
         for (let i = firstDayIndex - 1; i >= 0; i--) {
             temp.push(p[i]);
         }
-   
+
         for (let i = 1; i <= daysInMonth; i++) {
             d.setDate(i);
             d.setMonth(month);
@@ -74,27 +75,7 @@ function Calender() {
         setNext(next - 1);
     }
 
-    function DateBody(props) {
-
-        if (props.day.key === new Date().toLocaleDateString()) {
-            return (
-                <div className="date" onClick={() => console.log(props.day.key)}>
-                    <div className="date_day active" >{props.day.day}</div>
-                    <p style={{color:"white"}}>{props.day.key}</p>
-                </div>
-            );
-        }
-
-        else {
-            return (
-                <div className="date" onClick={() => console.log(props.day.key)} >
-                    <div className="date_day">{props.day.day}</div>
-                    <p style={{color:"white"}}>{props.day.key}</p>
-                </div>
-            );
-        }
-
-    }
+    
 
     function DayNameBody(props) {
 
@@ -108,6 +89,7 @@ function Calender() {
     }
     return (
         <div>
+   
             <h2 className="today">{today.day} {today.month} {today.year}</h2>
             <div className="monthView">
 
