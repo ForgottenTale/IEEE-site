@@ -1,83 +1,84 @@
-.monthView{
-   
+.calender {
     margin: 0 auto;
-    margin-top: 100px;
-    width: 1200px;
-    display: grid;
-    grid-template-columns: repeat(7,1fr);
+    max-width: 1200px;
 
-    .dayNameBody{
-        color: grey;
-        height: 30px;
-        justify-content: center;
-        display: flex;
-        border-right: 1px rgb(66, 66, 66) solid;
-        width: 99%;
-        &_name{
-            margin-left: auto;
-            margin-right: auto;
-            display: inline-block;
-            border: none;
-            
-        }
-        
-    }
-    .date{
-        width: 99%;
-        height: 70px;
-        background-color: #1E2123;
-        margin: 1px;
-        transition: background-color .08s ease-in-out;
-        &:hover{
-            background-color: #00ffb3;
-        }
-    
-        .active{
-            background-color: #eed600;
-            color: black;
-        }
-      
-        &_day{
-            background-color: #1E2123;
-            width:20px;
-            height: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 10px;
+    &_monthView {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+
+        .dayNameBody {
             color: grey;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
-    
-           
-        }
-        &_events{
-            
-            &_event{
-                margin-left: 3px;
-                margin-top: 6px;
+            height: 30px;
+            justify-content: center;
+            display: flex;
+            border-right: 1px rgb(66, 66, 66) solid;
+            width: 99%;
+            &_name {
+                margin-left: auto;
+                margin-right: auto;
+                display: inline-block;
                 border: none;
-                border-left: 2px #00ffb3 solid;
-                color: white;
-                font-family: "Inter";
+            }
+        }
+        .date {
+            width: 99%;
+            height: 70px;
+            background-color: #1e2123;
+            margin: 1px;
+            transition: background-color 0.08s ease-in-out;
+            &:hover {
+                background-color: #00ffb3;
+            }
 
-                &_title{
-                    margin-left: 3px;
-                    font-weight: 600;
-                    font-size: 12px;
-                }
-                &_time{
-                    margin-left: 3px;
-                    color: grey;
-                    font-size: 8px;
+            .active {
+                background-color: #eed600;
+                color: black;
+            }
+
+            &_day {
+                background-color: #1e2123;
+                width: 20px;
+                height: 20px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 10px;
+                color: grey;
+                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
+            }
+        }
+    }
+
+    &_today {
+        color: white;
+        font-family: "Inter";
+        color: grey;
+    }
+
+    &_menu {
+        &_today {
+            color: white;
+            font-family: "Inter";
+            color: grey;
+        }
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        &_buttons {
+            &_button {
+                background-color: #131517;
+                border: none;
+                border-radius: 10%;
+                color: grey;
+                padding: 10px;
+                font-family: "Inter";
+                font-weight: 600;
+                &:hover {
+                    background-image: linear-gradient(#00ffb3, #48ffc8);
+
+                    color: black;
                 }
             }
         }
     }
-    
-}
-
-.today{
-    color: white;
-    font-family: 'Inter';
-    color: grey;
 }

@@ -9,7 +9,7 @@ function Calender() {
     const [days, setDays] = useState([]);
     const [today, setToday] = useState([]);
     const [next, setNext] = useState(0);
-   
+
 
     var dayName = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -75,7 +75,7 @@ function Calender() {
         setNext(next - 1);
     }
 
-    
+
 
     function DayNameBody(props) {
 
@@ -88,18 +88,27 @@ function Calender() {
 
     }
     return (
-        <div>
-   
-            <h2 className="today">{today.day} {today.month} {today.year}</h2>
-            <div className="monthView">
+        <div className="calender">
+
+
+            <div className="calender_menu">
+                <h2 className="calender_menu_today">{today.day} {today.month} {today.year}</h2>
+                <div className="calender_menu_buttons">
+                    <button className="calender_menu_buttons_button" onClick={prevMonth}>&#60;</button>
+                    <button className="calender_menu_buttons_button" onClick={nextMonth}>&#62;</button>
+                    <button className="calender_menu_buttons_button" onClick={nextMonth}>Day</button>
+                    <button className="calender_menu_buttons_button" onClick={nextMonth}>Month</button>
+                </div>
+            </div>
+
+            <div className="calender_monthView">
 
                 {dayName.map((name) => <DayNameBody day={name} key={name} />)}
 
                 {(days === []) ? {} : days.map((date) => <DateBody day={date} key={date.key} />)}
 
             </div>
-            <button onClick={prevMonth}>Prevous</button>
-            <button onClick={nextMonth}>Next</button>
+
 
         </div>
     );
