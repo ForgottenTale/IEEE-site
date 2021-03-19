@@ -10,6 +10,22 @@ function Calender() {
     const [today, setToday] = useState([]);
     const [next, setNext] = useState(0);
 
+    const data = [
+        {
+            "date": "19/03/2020",
+            "events": [
+                { "Title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
+                { "Title": "Webinar on NFT", "time": "6 pm - 8 pm IST" }
+            ]
+        },
+        {
+            "date": "20/03/2020",
+            "events": [
+                { "Title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
+                { "Title": "Webinar on NFT", "time": "6 pm - 8 pm IST" }
+            ]
+        },
+    ]
 
     var dayName = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
