@@ -10,22 +10,7 @@ function Calender() {
     const [today, setToday] = useState([]);
     const [next, setNext] = useState(0);
 
-    const data = [
-        {
-            "date": "19/03/2020",
-            "events": [
-                { "Title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
-                { "Title": "Webinar on NFT", "time": "6 pm - 8 pm IST" }
-            ]
-        },
-        {
-            "date": "20/03/2020",
-            "events": [
-                { "Title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
-                { "Title": "Webinar on NFT", "time": "6 pm - 8 pm IST" }
-            ]
-        },
-    ]
+
 
     var dayName = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -35,6 +20,22 @@ function Calender() {
         var monthNames = ["Januvary", "February", "March", "April", "May", "June", "July", "August", "September", "October", "Novemeber", "December"];
         let d = new Date();
         let day = d.getDate();
+        const data = [
+            {
+                "date": "19/3/2021",
+                "events": [
+                    { "Title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
+                    { "Title": "Webinar on NFT", "time": "6 pm - 8 pm IST" }
+                ]
+            },
+            {
+                "date": "20/3/2021",
+                "events": [
+                    { "Title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
+                    { "Title": "Webinar on NFT", "time": "6 pm - 8 pm IST" }
+                ]
+            },
+        ]
 
         if (next > 0) {
 
@@ -53,13 +54,21 @@ function Calender() {
         let firstDayIndex = d.getDay();
         let lastDayIndex = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDay();
         var prevMonthLastDay = new Date(d.getFullYear(), d.getMonth(), 0).getDate();
-
+        var events = [];
         var temp = [];
         var p = [];
         for (let i = firstDayIndex; i > 0; i--) {
             d.setDate(prevMonthLastDay);
             d.setMonth(month - 1);
-            p.push({ "day": prevMonthLastDay, "key": d.toLocaleDateString() })
+            events = data.filter((Obj) => {
+                if (Obj.date.toString() === d.toLocaleDateString()) {
+                    return Obj.events
+                }
+                else {
+                    return null
+                }
+            })
+            p.push({ "day": prevMonthLastDay, "key": d.toLocaleDateString(), "events": events[0] })
             prevMonthLastDay = prevMonthLastDay - 1;
         }
         for (let i = firstDayIndex - 1; i >= 0; i--) {
@@ -69,16 +78,37 @@ function Calender() {
         for (let i = 1; i <= daysInMonth; i++) {
             d.setDate(i);
             d.setMonth(month);
-            temp.push({ "day": i, "key": d.toLocaleDateString() })
+
+            events = data.filter((Obj) => {
+                if (Obj.date.toString() === d.toLocaleDateString()) {
+                    return Obj.events
+                }
+                else {
+                    return null
+                }
+            })
+
+            temp.push({ "day": i, "key": d.toLocaleDateString(), "events": events[0] })
+
         }
 
         for (let i = lastDayIndex; i < 6; i++) {
             d.setDate(i - lastDayIndex + 1);
             d.setMonth(month + 1);
-            temp.push({ "day": i - lastDayIndex + 1, "key": d.toLocaleDateString() })
-
+            events = data.filter((Obj) => {
+                if (Obj.date.toString() === d.toLocaleDateString()) {
+                    return Obj.events
+                }
+                else {
+                    return null
+                }
+            })
+            temp.push({ "day": i - lastDayIndex + 1, "key": d.toLocaleDateString(), "events": events[0] })
         }
         setDays(temp)
+
+        console.log(temp)
+
     }, [next])
 
 
