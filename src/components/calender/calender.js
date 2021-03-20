@@ -24,26 +24,24 @@ function Calender() {
             {
                 "date": "19/3/2021",
                 "events": [
-                    { "Title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
-                    { "Title": "Webinar on NFT", "time": "6 pm - 8 pm IST" }
+                    { "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
                 ]
             },
             {
                 "date": "20/3/2021",
                 "events": [
-                    { "Title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
-                    { "Title": "Webinar on NFT", "time": "6 pm - 8 pm IST" }
+                    { "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
+                    { "title": "Webinar on NFT", "time": "6 pm - 8 pm IST" }
                 ]
             },
+            
         ]
 
-        if (next > 0) {
+        if (next !== 0) {
 
             d.setMonth(d.getMonth() + next);
         }
-        else if (next < 0) {
-            d.setMonth(d.getMonth() - next);
-        }
+
         let month = d.getMonth();
         let year = d.getFullYear();
 
@@ -107,7 +105,6 @@ function Calender() {
         }
         setDays(temp)
 
-        console.log(temp)
 
     }, [next])
 
@@ -119,6 +116,7 @@ function Calender() {
     }
     const prevMonth = () => {
         setNext(next - 1);
+        console.log(next)
     }
 
 
@@ -151,7 +149,7 @@ function Calender() {
 
                 {dayName.map((name) => <DayNameBody day={name} key={name} />)}
 
-                {(days === []) ? {} : days.map((date) => <DateBody day={date} key={date.key} />)}
+                {(days === []) ? {} : days.map((date) => <DateBody day={date} key={date.key} events = {date.events} />)}
 
             </div>
 
