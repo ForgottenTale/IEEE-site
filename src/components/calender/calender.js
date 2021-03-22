@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import './calender.scss'
-import DateBody from './components/dateBody'
-
+import './calender.scss';
+import DateBody from './components/dateBody';
+import TimeGrid from './components/timeGrid';
 function Calender() {
 
 
@@ -34,7 +34,7 @@ function Calender() {
                     { "title": "Webinar on NFT", "time": "6 pm - 8 pm IST" }
                 ]
             },
-            
+
         ]
 
         if (next !== 0) {
@@ -110,13 +110,11 @@ function Calender() {
 
 
     const nextMonth = () => {
-
         setNext(next + 1);
 
     }
     const prevMonth = () => {
         setNext(next - 1);
-        console.log(next)
     }
 
 
@@ -149,10 +147,10 @@ function Calender() {
 
                 {dayName.map((name) => <DayNameBody day={name} key={name} />)}
 
-                {(days === []) ? {} : days.map((date) => <DateBody day={date} key={date.key} events = {date.events} />)}
+                {(days === []) ? {} : days.map((date) => <DateBody day={date} key={date.key} events={date.events} />)}
 
             </div>
-
+            <TimeGrid />
 
         </div>
     );
