@@ -1,9 +1,9 @@
-import Calender from './components/calender/calender';
+import Register from './components/register/register';
 
 function App() {
   return (
     <div className="App">
-      <Calender/>
+      <Register/>
 
     
     </div>
