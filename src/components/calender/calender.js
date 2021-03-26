@@ -28,6 +28,13 @@ function Calender() {
                 ]
             },
             {
+                "date": "22/3/2021",
+                "events": [
+                    { "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
+                    { "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
+                ]
+            },
+            {
                 "date": "20/3/2021",
                 "events": [
                     { "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },

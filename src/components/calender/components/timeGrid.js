@@ -7,35 +7,35 @@ export default function TimeGrid() {
     const ref = useRef();
 
     useEffect(() => {
-
         const calendarEvents = [
             {
-                timeFrom: '2020-11-11T05:00:00.000Z',
-                timeTo: '2020-11-11T12:00:00.000Z',
-                title: 'Sleep',
-                background: '#616161'
+              timeFrom: 1616700600000,
+              timeTo: 1616715000000,
+              title: 'Sleep',
+              background: '#616161'
             },
             {
-                timeFrom: '2020-11-11T16:00:00.000Z',
-                timeTo: '2020-11-11T17:30:00.000Z',
-                title: 'Business meeting',
-                background: '#33B779'
+              timeFrom: 1616725800000,
+              timeTo: 1616736600000,
+              title: 'Business meeting',
+              background: '#33B779'
             },
             {
-                timeFrom: '2020-11-12T00:00:00.000Z',
-                timeTo: '2020-11-12T05:00:00.000Z',
-                title: 'Wind down time',
-                background: '#616161'
+              timeFrom: 1616738400000,
+              timeTo: 1616760000000,
+              title: 'Wind down time',
+              background: '#616161'
             }
-        ];
+          ];
         // Make an array of dates to use for our yScale later on
         const dates = [
             ...calendarEvents.map(d => new Date(d.timeFrom)),
             ...calendarEvents.map(d => new Date(d.timeTo))
         ];
 
+
         const margin = { top: 30, right: 30, bottom: 30, left: 50 }; // Gives space for axes and other margins
-        const height = 1500;
+        const height = 600;
         const width = 900;
         const barWidth = 600;
         const nowColor = '#EA4335';
@@ -47,15 +47,26 @@ export default function TimeGrid() {
             endPadding: 3,
             radius: 3
         };
+
         const svg = d3
             .create('svg')
             .attr('width', width)
             .attr('height', height);
 
+
+        ref.current.append(svg.node());
+
+        var minTime = new Date(dates[0]);
+        minTime.setHours(0);
+        
+        var maxTime = new Date(dates[0]);
+        maxTime.setHours(24)
+
         const yScale = d3
             .scaleTime()
-            .domain([d3.min(dates), d3.max(dates)])
+            .domain([minTime, maxTime])
             .range([margin.top, height - margin.bottom]);
+
         const yAxis = d3
             .axisLeft()
             .ticks(24)
@@ -66,7 +77,6 @@ export default function TimeGrid() {
             .attr('transform', `translate(${margin.left},0)`)
             .attr('opacity', 0.5)
             .call(yAxis);
-
         svg
             .selectAll('g.tick')
             .filter((d, i, ticks) => i === 0 || i === ticks.length - 1)
@@ -85,6 +95,7 @@ export default function TimeGrid() {
             .attr('transform', `translate(${margin.left},0)`)
             .attr('opacity', 0.3)
             .call(gridLines);
+
         const barGroups = svg
             .selectAll('g.barGroup')
             .data(calendarEvents)
@@ -105,8 +116,7 @@ export default function TimeGrid() {
             })
             .attr('width', barStyle.width)
             .attr('rx', barStyle.radius);
-
-        const currentTimeDate = new Date(new Date(new Date().setDate(11)).setMonth(10)).setFullYear(2020);
+        const currentTimeDate = new Date();
 
         barGroups
             .append('rect')
@@ -127,9 +137,6 @@ export default function TimeGrid() {
             .attr('y', d => yScale(new Date(d.timeFrom)) + 20)
             .text(d => d.title);
 
-
-
-        ref.current.append(svg.node());
     }, [])
 
     return (
