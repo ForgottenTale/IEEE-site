@@ -1,5 +1,5 @@
 const mysql = require('mysql');
-const {schema} = require('..templates/ddl.js').schema; 
+const {schema} = require('./ddl.js'); 
 var connection = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,

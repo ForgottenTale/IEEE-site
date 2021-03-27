@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const session = require('express-session');
 require('dotenv').config();
-const database = require('./services/database.js');
+const database = require('./services/database/database.js');
 const routes = require('./services/routes/index.js');
 const auth = require('./services/auth.js');
 

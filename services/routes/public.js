@@ -1,7 +1,6 @@
-const database = require('../database.js');
-const bcrypt = require('bcrypt');
+const database = require('../database/database.js');
 const passport = require('passport');
-const auth = require('../auth.js');
+const NewUser = require('../controllers.js').NewUser;
 
 module.exports = function(app){
     app.route('/register')
@@ -9,14 +8,16 @@ module.exports = function(app){
         res.sendFile(process.cwd() + '/coverage/register.html')
     })
     .post((req, res)=>{
-        req.body.password = bcrypt.hashSync(req.body.password, 12);
-        database.insertUser(req.body, (err, doc)=>{
-            if(err){
-                console.error(err);
-                res.sendStatus(500);
-            }
-            res.sendStatus(200);
-        })
+        try{
+            let newUser = new NewUser(req.body);
+            database.insertUser(newUser, (err, doc)=>{
+                if(err) throw err;
+                res.sendStatus(200);
+            })
+        }catch(err){
+            console.error(err);
+            res.status(400).json({error: err})
+        }
     })
     
     app.route('/login')
@@ -30,11 +31,6 @@ module.exports = function(app){
     app.route('/failure')
     .get((req, res)=>{
         res.sendFile(process.cwd() + '/coverage/failure.html');
-    })
-
-    app.route('/protected')
-    .get(auth.ensureAuthenticated, (req, res)=>{
-        res.sendFile(process.cwd() + '/coverage/protected.html');
     })
 
     app.route('/logout')
