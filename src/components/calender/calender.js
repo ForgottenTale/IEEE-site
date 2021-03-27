@@ -10,6 +10,9 @@ function Calender() {
 
     const [days, setDays] = useState([]);
     const [today, setToday] = useState([]);
+    const [monthView, setMonthView] = useState(true);
+    const [weekView, setWeekView] = useState(false);
+    const [dayView, setDayView] = useState(false);
     const [next, setNext] = useState(0);
 
     useEffect(() => {
@@ -136,6 +139,25 @@ function Calender() {
         setNext(next - 1);
     }
 
+    const toggleDayView = () => {
+        setDayView(true);
+        setMonthView(false);
+        setWeekView(false);
+    }
+    const toggleMonthView = () => {
+        setDayView(false);
+        setMonthView(true);
+        setWeekView(false);
+    }
+
+    const toggleWeekView = () => {
+        setDayView(false);
+        setMonthView(false);
+        setWeekView(true);
+    }
+
+
+
     const calendarEvents = [
         {
             timeFrom: 1616700600000,
@@ -164,17 +186,19 @@ function Calender() {
                 <div className="calender_menu_buttons">
                     <button className="calender_menu_buttons_button" onClick={prevMonth}>&#60;</button>
                     <button className="calender_menu_buttons_button" onClick={nextMonth}>&#62;</button>
-                    <button className="calender_menu_buttons_button" onClick={nextMonth}>Day</button>
-                    <button className="calender_menu_buttons_button" onClick={nextMonth}>Month</button>
+                    <button className="calender_menu_buttons_button" onClick={toggleDayView}>Day</button>
+                    <button className="calender_menu_buttons_button" onClick={toggleWeekView}>Week</button>
+                    <button className="calender_menu_buttons_button" onClick={toggleMonthView}>Month</button>
                 </div>
             </div>
 
 
 
 
-            <MonthView days={days} />
-            <DayView calendarEvents={calendarEvents} />
-            <WeekView calendarEvents={calendarEvents}/>
+
+            {dayView ? <DayView calendarEvents={calendarEvents} /> : null}
+            {weekView ? <WeekView calendarEvents={calendarEvents} /> : null}
+            {monthView ? <MonthView days={days} /> : null}
 
         </div>
     );
