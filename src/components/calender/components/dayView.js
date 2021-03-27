@@ -1,33 +1,14 @@
-import './timeGrid.scss';
+import './dayView.scss';
 import * as d3 from 'd3';
 import { useEffect, useRef } from 'react';
 
-export default function TimeGrid() {
+export default function TimeGrid({calendarEvents}) {
 
     const ref = useRef();
 
     useEffect(() => {
-        const calendarEvents = [
-            {
-              timeFrom: 1616700600000,
-              timeTo: 1616715000000,
-              title: 'Sleep',
-              background: '#616161'
-            },
-            {
-              timeFrom: 1616725800000,
-              timeTo: 1616736600000,
-              title: 'Business meeting',
-              background: '#33B779'
-            },
-            {
-              timeFrom: 1616738400000,
-              timeTo: 1616760000000,
-              title: 'Wind down time',
-              background: '#616161'
-            }
-          ];
-        // Make an array of dates to use for our yScale later on
+       
+  
         const dates = [
             ...calendarEvents.map(d => new Date(d.timeFrom)),
             ...calendarEvents.map(d => new Date(d.timeTo))
@@ -36,8 +17,8 @@ export default function TimeGrid() {
 
         const margin = { top: 30, right: 30, bottom: 30, left: 50 }; // Gives space for axes and other margins
         const height = 600;
-        const width = 900;
-        const barWidth = 600;
+        const width = "100%";
+        const barWidth = 900;
         const nowColor = '#EA4335';
         const barStyle = {
             background: '#616161',
@@ -71,7 +52,7 @@ export default function TimeGrid() {
             .axisLeft()
             .ticks(24)
             .scale(yScale);
-        // We'll be using this svg variable throughout to append other elements to it
+       
         svg
             .append('g')
             .attr('transform', `translate(${margin.left},0)`)
@@ -86,7 +67,7 @@ export default function TimeGrid() {
         const gridLines = d3
             .axisRight()
             .ticks(24)
-            .tickSize(barStyle.width) // even though they're "ticks" we've set them to be full-width
+            .tickSize(barStyle.width) 
             .tickFormat('')
             .scale(yScale);
 

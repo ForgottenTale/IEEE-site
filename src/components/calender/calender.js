@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import './calender.scss';
 import DateBody from './components/dateBody';
-import TimeGrid from './components/timeGrid';
+import DayView from './components/dayView';
+
 function Calender() {
 
 
@@ -24,14 +25,30 @@ function Calender() {
             {
                 "date": "19/3/2021",
                 "events": [
-                    { "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
+                    {
+                        "title": "Webinar on CyptoCurrency",
+                        "time": "9 pm - 10 pm IST",
+                        "timeFrom": 1616700600000,
+                        "timeTo": 1616715000000,
+                        "background": '#616161'
+                    },
                 ]
             },
             {
                 "date": "22/3/2021",
                 "events": [
-                    { "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
-                    { "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
+                    {
+                        "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST",
+                        "timeFrom": 1616700600000,
+                        "timeTo": 1616715000000,
+                        "background": '#616161'
+                    },
+                    {
+                        "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST", 
+                        "timeFrom": 1616725800000,
+                        "timeTo": 1616736600000,
+                        "background": '#33B779'
+                    },
                 ]
             },
             {
@@ -124,7 +141,26 @@ function Calender() {
         setNext(next - 1);
     }
 
-
+    const calendarEvents = [
+        {
+          timeFrom: 1616700600000,
+          timeTo: 1616715000000,
+          title: 'Sleep',
+          background: '#616161'
+        },
+        {
+          timeFrom: 1616725800000,
+          timeTo: 1616736600000,
+          title: 'Business meeting',
+          background: '#33B779'
+        },
+        {
+          timeFrom: 1616738400000,
+          timeTo: 1616760000000,
+          title: 'Wind down time',
+          background: '#616161'
+        }
+      ];
 
     function DayNameBody(props) {
 
@@ -134,7 +170,7 @@ function Calender() {
             </div>
         );
 
-
+        
     }
     return (
         <div className="calender">
@@ -157,7 +193,7 @@ function Calender() {
                 {(days === []) ? {} : days.map((date) => <DateBody day={date} key={date.key} events={date.events} />)}
 
             </div>
-            <TimeGrid />
+            <DayView calendarEvents={calendarEvents} />
 
         </div>
     );

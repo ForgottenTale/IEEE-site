@@ -20,7 +20,11 @@ function DateBody(props) {
 
     else {
         return (
-            <div className="date" onClick={() => console.log(props.day.key)} onMouseEnter={() => { setEventList(!showEventList) }} onMouseLeave={() => { setEventList(!showEventList) }}>
+            <div className="date" 
+            onClick={() => console.log(props.day.key)} 
+            onMouseEnter={() => { setEventList(!showEventList) }} 
+            onMouseLeave={() => { setEventList(!showEventList) }}
+            >
                 <div className="date_day">{props.day.day}</div>
                 <div className="date_events">
                     {showEventList ? <EventsList  events={props.events}/> : null}
