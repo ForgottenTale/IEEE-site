@@ -2,45 +2,5 @@
     display: grid;
     grid-template-columns: repeat(7, 1fr);
 
-    .dayNameBody {
-        color: grey;
-        height: 30px;
-        justify-content: center;
-        display: flex;
-        border-right: 1px rgb(66, 66, 66) solid;
-        width: 99%;
-        &_name {
-            margin-left: auto;
-            margin-right: auto;
-            display: inline-block;
-            border: none;
-        }
-    }
-    .date {
-        width: 99%;
-        height: 70px;
-        background-color: #1e2123;
-        margin: 1px;
-        transition: background-color 0.08s ease-in-out;
-        &:hover {
-            background-color: #00ffb3;
-        }
-
-        .active {
-            background-color: #eed600;
-            color: black;
-        }
-
-        &_day {
-            background-color: #1e2123;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 10px;
-            color: grey;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
-        }
-    }
+   
 }

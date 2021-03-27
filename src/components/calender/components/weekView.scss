@@ -1,7 +1,9 @@
 .weekView {
-    display: flex;
-
-    &_events {
+    &_container {
         display: flex;
+
+        &_events {
+            display: flex;
+        }
     }
 }

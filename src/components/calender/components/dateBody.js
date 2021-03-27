@@ -1,6 +1,7 @@
 
 import EventsList from './eventList';
 import { useState } from 'react'
+import './dateBody.scss'
 
 function DateBody(props) {
 
