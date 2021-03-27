@@ -1,8 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
 import './calender.scss';
-import DateBody from './components/dateBody';
 import DayView from './components/dayView';
+import WeekView from './components/weekView';
+import MonthView from './components/monthView';
 
 function Calender() {
 
@@ -10,12 +11,6 @@ function Calender() {
     const [days, setDays] = useState([]);
     const [today, setToday] = useState([]);
     const [next, setNext] = useState(0);
-
-
-
-    var dayName = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-
 
     useEffect(() => {
         var monthNames = ["Januvary", "February", "March", "April", "May", "June", "July", "August", "September", "October", "Novemeber", "December"];
@@ -44,7 +39,7 @@ function Calender() {
                         "background": '#616161'
                     },
                     {
-                        "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST", 
+                        "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST",
                         "timeFrom": 1616725800000,
                         "timeTo": 1616736600000,
                         "background": '#33B779'
@@ -143,35 +138,23 @@ function Calender() {
 
     const calendarEvents = [
         {
-          timeFrom: 1616700600000,
-          timeTo: 1616715000000,
-          title: 'Sleep',
-          background: '#616161'
+            timeFrom: 1616700600000,
+            timeTo: 1616715000000,
+            title: 'Sleep'
         },
         {
-          timeFrom: 1616725800000,
-          timeTo: 1616736600000,
-          title: 'Business meeting',
-          background: '#33B779'
+            timeFrom: 1616725800000,
+            timeTo: 1616736600000,
+            title: 'Business meeting'
         },
         {
-          timeFrom: 1616738400000,
-          timeTo: 1616760000000,
-          title: 'Wind down time',
-          background: '#616161'
+            timeFrom: 1616738400000,
+            timeTo: 1616760000000,
+            title: 'Wind down time'
         }
-      ];
+    ];
 
-    function DayNameBody(props) {
 
-        return (
-            <div className="dayNameBody">
-                <div className="dayNameBody_name">{props.day}</div>
-            </div>
-        );
-
-        
-    }
     return (
         <div className="calender">
 
@@ -186,14 +169,12 @@ function Calender() {
                 </div>
             </div>
 
-            <div className="calender_monthView">
 
-                {dayName.map((name) => <DayNameBody day={name} key={name} />)}
 
-                {(days === []) ? {} : days.map((date) => <DateBody day={date} key={date.key} events={date.events} />)}
 
-            </div>
+            <MonthView days={days} />
             <DayView calendarEvents={calendarEvents} />
+            <WeekView calendarEvents={calendarEvents}/>
 
         </div>
     );

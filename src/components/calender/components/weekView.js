@@ -1,10 +1,23 @@
 import './weekView.scss';
+import Events from './events';
+import TimeSeries from './timeSeries';
 
-function WeekView(){
-
-    return(
+function WeekView({calendarEvents}) {
+    return (
         <div className="weekView">
-            Week View
+            <TimeSeries/>
+            <div className="weekView_events">
+            <Events calendarEvents={calendarEvents} />
+             <Events calendarEvents={calendarEvents} />
+             <Events calendarEvents={calendarEvents} />
+             <Events calendarEvents={calendarEvents} />
+             <Events calendarEvents={calendarEvents} />
+             <Events calendarEvents={calendarEvents} />
+             <Events calendarEvents={calendarEvents} />
+            </div>
+             
         </div>
     );
 }
+
+export default WeekView;
