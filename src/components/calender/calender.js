@@ -197,7 +197,7 @@ function Calender() {
 
 
             {dayView ? <DayView calendarEvents={calendarEvents} /> : null}
-            {weekView ? <WeekView calendarEvents={calendarEvents} /> : null}
+            {weekView ? <WeekView calendarEvents={calendarEvents} days={days}/> : null}
             {monthView ? <MonthView days={days} /> : null}
 
         </div>

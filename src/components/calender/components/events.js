@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { useEffect, useRef } from 'react';
 
-export default function Events({ calendarEvents }) {
+export default function Events({ calendarEvents,day }) {
 
     const ref = useRef();
 
@@ -106,7 +106,9 @@ export default function Events({ calendarEvents }) {
     }, [])
 
     return (
+        <div>
+            <div>{day.key}</div>
             <div ref={ref}></div>
-     
-    );
+        </div>
+        );
 }
