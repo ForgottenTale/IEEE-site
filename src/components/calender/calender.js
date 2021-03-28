@@ -14,14 +14,26 @@ function Calender() {
     const [weekView, setWeekView] = useState(false);
     const [dayView, setDayView] = useState(false);
     const [next, setNext] = useState(0);
+    const [numberOfWeeks,setNumberOfWeeks] = useState(0);
+    const [currentWeek,setCurrentWeek] = useState(0);
+    const [date,setDate] = useState({});
+
+    useEffect(()=>{
+         setDate({
+             day : new Date().getDate(),
+             month : new Date().getMonth(),
+             year : new Date().getFullYear()
+         })
+    },[])
 
     useEffect(() => {
+
         var monthNames = ["Januvary", "February", "March", "April", "May", "June", "July", "August", "September", "October", "Novemeber", "December"];
         let d = new Date();
         let day = d.getDate();
         const data = [
             {
-                "date": "19/3/2021",
+                "date": "2021-03-19",
                 "events": [
                     {
                         "title": "Webinar on CyptoCurrency",
@@ -33,7 +45,7 @@ function Calender() {
                 ]
             },
             {
-                "date": "22/3/2021",
+                "date": "2021-03-22",
                 "events": [
                     {
                         "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST",
@@ -50,21 +62,44 @@ function Calender() {
                 ]
             },
             {
-                "date": "20/3/2021",
+                "date": "2021-03-20",
                 "events": [
                     { "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
                     { "title": "Webinar on NFT", "time": "6 pm - 8 pm IST" }
+                ]
+            },
+            {
+                "date": "2021-03-28",
+                "events": [
+                    {
+                        "title": "Webinar on CyptoCurrency",
+                        "time": "9 pm - 10 pm IST",
+                        "timeFrom": 1616700600000,
+                        "timeTo": 1616715000000,
+                        "background": '#616161'
+                    },
                 ]
             },
 
         ]
 
         if (next !== 0) {
-
-            d.setMonth(d.getMonth() + next);
+           
+            // if(d.getMonth() + next){
+            //     d.setFullYear(d.setFullYear()+1);
+            //     setNext(0);
+            // }
+            // if(d.getMonth() + next<0){
+            //     d.setFullYear(d.setFullYear()-1);
+            //     setNext(0);
+            // }
+            d.setFullYear(date.year)
+            d.setMonth(date.month);
+          
         }
-
+        
         let month = d.getMonth();
+        
         let year = d.getFullYear();
 
 
@@ -81,14 +116,14 @@ function Calender() {
             d.setDate(prevMonthLastDay);
             d.setMonth(month - 1);
             events = data.filter((Obj) => {
-                if (Obj.date.toString() === d.toLocaleDateString()) {
+                if (Obj.date.toString() === d.toISOString().slice(0,10).replace('/','-')) {
                     return Obj.events
                 }
                 else {
                     return null
                 }
             })
-            p.push({ "day": prevMonthLastDay, "key": d.toLocaleDateString(), "events": events[0] })
+            p.push({ "day": prevMonthLastDay, "key": d.toISOString().slice(0,10).replace('/','-'), "events": events[0] })
             prevMonthLastDay = prevMonthLastDay - 1;
         }
         for (let i = firstDayIndex - 1; i >= 0; i--) {
@@ -100,7 +135,7 @@ function Calender() {
             d.setMonth(month);
 
             events = data.filter((Obj) => {
-                if (Obj.date.toString() === d.toLocaleDateString()) {
+                if (Obj.date.toString() === d.toISOString().slice(0,10).replace('/','-')) {
                     return Obj.events
                 }
                 else {
@@ -108,7 +143,7 @@ function Calender() {
                 }
             })
 
-            temp.push({ "day": i, "key": d.toLocaleDateString(), "events": events[0] })
+            temp.push({ "day": i, "key": d.toISOString().slice(0,10).replace('/','-'), "events": events[0] })
 
         }
 
@@ -116,27 +151,81 @@ function Calender() {
             d.setDate(i - lastDayIndex + 1);
             d.setMonth(month + 1);
             events = data.filter((Obj) => {
-                if (Obj.date.toString() === d.toLocaleDateString()) {
+                if (Obj.date.toString() === d.toISOString().slice(0,10).replace('/','-')) {
                     return Obj.events
                 }
                 else {
                     return null
                 }
             })
-            temp.push({ "day": i - lastDayIndex + 1, "key": d.toLocaleDateString(), "events": events[0] })
+            temp.push({ "day": i - lastDayIndex + 1, "key": d.toISOString().slice(0,10).replace('/','-'), "events": events[0] })
         }
         setDays(temp)
 
+        setNumberOfWeeks(temp.length/7);
+        var nWeek=0;
+   
+        var temp3=[];
+        for(let i=0;i<temp.length;i++){
+            temp3.push(temp[i]);
+            if (temp3.length % 7 === 0) {
+                temp3=[];
+                nWeek=nWeek+1;  
+            }
+            if(temp[i].key===new Date().toISOString()){
+                setCurrentWeek(nWeek);
+                break;
+            }
+        }
+
+        if(month===0){
+            setNext(0);
+            d.setFullYear(d.setFullYear-1);
+        }
+
 
     }, [next])
-
+    console.log(days);
 
     const nextMonth = () => {
-        setNext(next + 1);
+
+
+        if(monthView){
+            setNext(next + 1);
+            setDate((prevState)=>{return{...prevState,month : date.month+1}})
+            if(date.month>12){
+                setDate((prevState)=>{return{...prevState,month : 0}})
+                setDate((prevState)=>{return{...prevState,year : date.year+1}})
+            }
+        }
+        if(weekView){
+            if(currentWeek<numberOfWeeks-1&&currentWeek>=0){
+               setCurrentWeek(currentWeek+1);
+            }
+
+            if(currentWeek===numberOfWeeks-1){
+                setNext(next + 1);
+                setCurrentWeek(0);
+            }
+        }
+  
 
     }
     const prevMonth = () => {
-        setNext(next - 1);
+        if(monthView){
+            setNext(next - 1);
+        }
+        if(weekView){
+            if(currentWeek<numberOfWeeks&&currentWeek!==0){
+               setCurrentWeek(currentWeek-1);
+            }
+            if(currentWeek===0){
+                setNext(next - 1);
+                setCurrentWeek(numberOfWeeks-1);
+            }
+        }
+  
+        
     }
 
     const toggleDayView = () => {
@@ -197,7 +286,7 @@ function Calender() {
 
 
             {dayView ? <DayView calendarEvents={calendarEvents} /> : null}
-            {weekView ? <WeekView calendarEvents={calendarEvents} days={days}/> : null}
+            {weekView ? <WeekView calendarEvents={calendarEvents} days={days} currentWeek={currentWeek} numberOfWeeks={numberOfWeeks}/> : null}
             {monthView ? <MonthView days={days} /> : null}
 
         </div>
