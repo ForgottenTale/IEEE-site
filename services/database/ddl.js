@@ -1,10 +1,11 @@
 module.exports = {
     schema: [
-        `create table if not exists users(
-            _id int primary key auto_increment,
-            name varchar(30),
-            email varchar(30),
-            password varchar(80)
+        `CREATE TABLE IF NOT EXISTS users(
+            _id INT PRIMARY KEY AUTO_INCREMENT,
+            name VARCHAR(30),
+            email VARCHAR(30) UNIQUE,
+            phone VARCHAR(15),
+            password VARCHAR(80)
             );`
     ]
 }
