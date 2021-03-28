@@ -17,10 +17,10 @@ module.exports = function(app){
                     if(err) {
                         let message = "Unknown error";
                         if(err.code=="ER_DUP_ENTRY")
-                            message = "User already exists"
+                            message = "User already exists";
                         return res.status(400).json({error: message})
                     };
-                    return res.sendStatus(200);
+                    return res.status(200).send(newUser.getPublicInfo());
                 })
             })
         }catch(err){
@@ -32,13 +32,13 @@ module.exports = function(app){
     .get((req, res)=>{
         res.sendFile(process.cwd() + '/coverage/login.html');
     })
-    .post(passport.authenticate('local', {failureMessage: true}), (req, res)=>{
-        res.sendFile(process.cwd() + '/coverage/logged_in.html')
+    .post(passport.authenticate('local', {failureRedirect: '/failure', failureFlash: true}), (req, res)=>{
+        res.status(400).send(req.user.getPublicInfo());
     })
 
     app.route('/failure')
     .get((req, res)=>{
-        res.sendFile(process.cwd() + '/coverage/failure.html');
+        res.status(401).json({error: req.flash('error')[0]});
     })
 
     app.route('/logout')

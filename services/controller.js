@@ -10,6 +10,14 @@ class User {
         }
     }
 
+    getPublicInfo(){
+        return{
+            name: this.name,
+            email: this.email,
+            phone: this.phone
+        }
+    }
+
     getAllNamesAndValues(){
         return({
             names: ['name', 'email', 'password', 'phone'],
@@ -44,7 +52,7 @@ class NewUser extends User{
     constructor(input){
         try{
             super(input);
-            this.checkFields(input);
+            this.check(input);
             this.validate();
             this.confirmPassword = input.confirmPassword;
             if(this.confirmPassword != this.password)
@@ -59,9 +67,14 @@ class NewUser extends User{
         if(!(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(this.email))){
             throw "Invalid email";
         }
+        //validate phone
+        if(!this.phone.match(/\d/g).length == 10)
+            throw "Invalid phone number";
     }
 
-    checkFields(input){
+    check(input){
+        if(!input.name || !input.email || !input.phone || !input.password || !input.confirmPassword)
+            throw "Required field(s) missing";
         for(let param in input){
             if(!input[param]){
                 throw (param + " field missing");

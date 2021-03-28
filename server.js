@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const session = require('express-session');
+const flash = require('connect-flash');
 require('dotenv').config();
 const database = require('./services/database/database.js');
 const routes = require('./services/routes/index.js');
@@ -19,6 +20,7 @@ app.use(session({
         secure: false
     }
 }));
+app.use(flash());
 app.use(passport.initialize())
 app.use(passport.session());
 
