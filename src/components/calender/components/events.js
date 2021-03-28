@@ -1,9 +1,10 @@
 import * as d3 from 'd3';
 import { useEffect, useRef } from 'react';
 
-export default function Events({ calendarEvents,day }) {
+export default function Events({ calendarEvents, day }) {
 
     const ref = useRef();
+
 
     useEffect(() => {
 
@@ -103,12 +104,13 @@ export default function Events({ calendarEvents,day }) {
             .attr('y', d => yScale(new Date(d.timeFrom)) + 20)
             .text(d => d.title);
 
-    }, [])
+
+    }, [calendarEvents])
 
     return (
-        <div>
-            <div>{day.key}</div>
+        <div style={{ width: "100%" }}>
+            <div style={{ width: "100%" }}>{day.key}</div>
             <div ref={ref}></div>
         </div>
-        );
+    );
 }
