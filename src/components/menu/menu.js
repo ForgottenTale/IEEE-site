@@ -8,7 +8,7 @@ export default function Menu() {
             <div className="menu_item">
                 <img src={logo} alt="logo" />
             </div>
-            <div className="menu_item">
+            <div className="menu_item active">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
@@ -26,7 +26,7 @@ export default function Menu() {
                 <p className="menu_item_name">Dashboard</p>
             </div>
 
-            <div className="menu_item active">
+            <div className="menu_item ">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
