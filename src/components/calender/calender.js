@@ -14,23 +14,22 @@ function Calender() {
     const [weekView, setWeekView] = useState(false);
     const [dayView, setDayView] = useState(false);
     const [next, setNext] = useState(0);
-    const [numberOfWeeks,setNumberOfWeeks] = useState(0);
-    const [currentWeek,setCurrentWeek] = useState(0);
-    const [date,setDate] = useState({});
+    const [numberOfWeeks, setNumberOfWeeks] = useState(0);
+    const [currentWeek, setCurrentWeek] = useState(0);
+    const [date, setDate] = useState({});
 
-    useEffect(()=>{
-         setDate({
-             day : new Date().getDate(),
-             month : new Date().getMonth(),
-             year : new Date().getFullYear()
-         })
-    },[])
+
+
 
     useEffect(() => {
+        setDate({
+            day: new Date().getDate(),
+            month:new Date().getMonth(),
+            year: new Date().getFullYear()
+        })
+    }, [])
 
-        var monthNames = ["Januvary", "February", "March", "April", "May", "June", "July", "August", "September", "October", "Novemeber", "December"];
-        let d = new Date();
-        let day = d.getDate();
+    useEffect(() => {
         const data = [
             {
                 "date": "2021-03-19",
@@ -83,8 +82,12 @@ function Calender() {
 
         ]
 
+        var monthNames = ["Januvary", "February", "March", "April", "May", "June", "July", "August", "September", "October", "Novemeber", "December"];
+        let d = new Date();
+
+
         if (next !== 0) {
-           
+
             // if(d.getMonth() + next){
             //     d.setFullYear(d.setFullYear()+1);
             //     setNext(0);
@@ -93,19 +96,25 @@ function Calender() {
             //     d.setFullYear(d.setFullYear()-1);
             //     setNext(0);
             // }
-            d.setFullYear(date.year)
+            d.setDate(1);
+            d.setFullYear(date.year);
             d.setMonth(date.month);
-          
+            console.log(d);
+
         }
-        
+        let day = d.getDate();
         let month = d.getMonth();
-        
         let year = d.getFullYear();
+        console.log(day + "/" + month + "/" + year)
 
 
         setToday({ "day": day, "month": monthNames[month], "year": year });
+        console.log({ "day": day, "month": monthNames[month], "year": year });
+
         var daysInMonth = new Date(year, month + 1, 0).getDate();
+        console.log(daysInMonth);
         d.setDate(1);
+        console.log(d);
         let firstDayIndex = d.getDay();
         let lastDayIndex = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDay();
         var prevMonthLastDay = new Date(d.getFullYear(), d.getMonth(), 0).getDate();
@@ -164,7 +173,7 @@ function Calender() {
 
         setNumberOfWeeks(temp.length/7);
         var nWeek=0;
-   
+
         var temp3=[];
         for(let i=0;i<temp.length;i++){
             temp3.push(temp[i]);
@@ -178,54 +187,70 @@ function Calender() {
             }
         }
 
-        if(month===0){
-            setNext(0);
-            d.setFullYear(d.setFullYear-1);
-        }
+        // if(month===0){
+        //     setNext(0);
+        //     d.setFullYear(d.setFullYear-1);
+        // }
 
 
-    }, [next])
-    console.log(days);
+    }, [next,date])
 
     const nextMonth = () => {
 
 
-        if(monthView){
+        if (monthView) {
             setNext(next + 1);
-            setDate((prevState)=>{return{...prevState,month : date.month+1}})
-            if(date.month>12){
-                setDate((prevState)=>{return{...prevState,month : 0}})
-                setDate((prevState)=>{return{...prevState,year : date.year+1}})
-            }
-        }
-        if(weekView){
-            if(currentWeek<numberOfWeeks-1&&currentWeek>=0){
-               setCurrentWeek(currentWeek+1);
+            if (date.month + 1 <= 11) {
+                setDate((prevState) => { return { ...prevState, month: date.month + 1 } })
             }
 
-            if(currentWeek===numberOfWeeks-1){
+            if (date.month + 1 > 11) {
+                setDate({
+                    day: 1,
+                    month: 0,
+                    year: date.year + 1 
+                })
+            }
+        }
+        if (weekView) {
+            if (currentWeek < numberOfWeeks - 1 && currentWeek >= 0) {
+                setCurrentWeek(currentWeek + 1);
+            }
+
+            if (currentWeek === numberOfWeeks - 1) {
                 setNext(next + 1);
                 setCurrentWeek(0);
             }
         }
-  
+
 
     }
     const prevMonth = () => {
-        if(monthView){
+        if (monthView) {
             setNext(next - 1);
-        }
-        if(weekView){
-            if(currentWeek<numberOfWeeks&&currentWeek!==0){
-               setCurrentWeek(currentWeek-1);
+            if (date.month - 1 >=0) {
+                setDate((prevState) => { return { ...prevState, month: date.month - 1 } })
             }
-            if(currentWeek===0){
+
+            if (date.month - 1 < 0) {
+                setDate({
+                    day: 1,
+                    month: 11,
+                    year: date.year - 1 
+                })
+            }
+        }
+        if (weekView) {
+            if (currentWeek < numberOfWeeks && currentWeek !== 0) {
+                setCurrentWeek(currentWeek - 1);
+            }
+            if (currentWeek === 0) {
                 setNext(next - 1);
-                setCurrentWeek(numberOfWeeks-1);
+                setCurrentWeek(numberOfWeeks - 1);
             }
         }
-  
-        
+
+
     }
 
     const toggleDayView = () => {
@@ -286,7 +311,7 @@ function Calender() {
 
 
             {dayView ? <DayView calendarEvents={calendarEvents} /> : null}
-            {weekView ? <WeekView calendarEvents={calendarEvents} days={days} currentWeek={currentWeek} numberOfWeeks={numberOfWeeks}/> : null}
+            {weekView ? <WeekView calendarEvents={calendarEvents} days={days} currentWeek={currentWeek} numberOfWeeks={numberOfWeeks} /> : null}
             {monthView ? <MonthView days={days} /> : null}
 
         </div>

@@ -2,7 +2,7 @@ import './eventList.scss'
 
 
 function Event({event}) {
-    console.log(event)
+    // console.log(event)
     return (
         <div className="eventList_events_event">
             <div className="eventList_events_event_title">{event.title}</div>

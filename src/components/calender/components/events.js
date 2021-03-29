@@ -9,13 +9,9 @@ export default function Events({ calendarEvents, day }) {
 
     useEffect(() => {
         let date = new Date(day.key.toString());
-    
         var month = date.getMonth() + 1;
- 
         var dateString =String( date.getDate() + "/" + month + "/" + date.getFullYear());
-        // dateString
 
-  
         setCurrentDay(dateString)
 
 

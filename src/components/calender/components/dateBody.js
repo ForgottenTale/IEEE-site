@@ -8,7 +8,7 @@ function DateBody(props) {
     const [showEventList, setEventList] = useState(false);
     
 
-    if (props.day.key === new Date().toLocaleDateString()) {
+    if (props.day.key === new Date().toISOString().slice(0,10).replace('/','-')) {
         return (
             <div className="date" onClick={() => console.log(props.day.key)} onMouseEnter={() => { setEventList(!showEventList) }} onMouseLeave={() => { setEventList(!showEventList) }}>
                 <div className="date_day active" >{props.day.day}</div>
