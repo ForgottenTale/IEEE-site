@@ -4,7 +4,8 @@ import './appointments.scss';
 var data = [
     { name: "Webinar", date: "13/02/2021", time: "3pm - 5pm IST", agent: "Alan Mathew", status: "Pending" },
     { name: "Webinar", date: "13/02/2021", time: "6pm - 5pm IST", agent: "Alan Mathew", status: "Pending" },
-
+    { name: "Webinar", date: "13/02/2021", time: "3pm - 6pm IST", agent: "Alan Mathew", status: "Pending" },
+    { name: "Webinar", date: "13/02/2021", time: "6pm - 7pm IST", agent: "Alan Mathew", status: "Pending" },
 ]
 
 
