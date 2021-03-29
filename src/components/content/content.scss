@@ -1,13 +1,13 @@
-.dashboard{
+.content{
     height: 100%;
     display: flex;
     width: 100%;
     transition: width 150ms ease;
 
-    &_content{
+    &_container{
         width: 100%;
 
-         h5{
+        &_user{
             margin-left: 30px;
             padding: 20px 0;
             font-size: 18px;

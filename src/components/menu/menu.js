@@ -1,6 +1,7 @@
 import './menu.scss';
 import logo from '../../images/logo.png';
 import { useState } from 'react/cjs/react.development';
+import {Link} from 'react-router-dom';
 
 export default function Menu({ toggle, state }) {
 
@@ -16,7 +17,6 @@ export default function Menu({ toggle, state }) {
     }
 
     if (!open) {
-        console.log("hi")
         style = {
             display: "none",
             opacity: 0,
@@ -26,13 +26,12 @@ export default function Menu({ toggle, state }) {
         }
     }
 
-
     return (
         <div className="menu" style={menuStyle}>
             <div className="menu_item">
                 <img src={logo} alt="logo" />
             </div>
-            <div className="menu_item active">
+            <Link to="/" className="menu_item active">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
@@ -48,9 +47,9 @@ export default function Menu({ toggle, state }) {
                     <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
                 </svg>
                 <p className="menu_item_name" style={style}>Dashboard</p>
-            </div>
+            </Link>
 
-            <div className="menu_item ">
+            <Link to="/calender"  className="menu_item ">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
@@ -68,9 +67,9 @@ export default function Menu({ toggle, state }) {
                     <path d="M3 10L21 10"></path>
                 </svg>
                 <p className="menu_item_name" style={style}>Calender</p>
-            </div>
+            </Link>
 
-            <div className="menu_item">
+            <Link to="/settings" className="menu_item">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
@@ -86,7 +85,7 @@ export default function Menu({ toggle, state }) {
                     <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"></path>
                 </svg>
                 <p className="menu_item_name" style={style}>Settings</p>
-            </div>
+            </Link>
             <div className="menu_item" onClick={() => {
                 toggle(!state)
                 setOpen(!state)

@@ -1,0 +1,25 @@
+.settings{
+    margin: 30px;
+
+   & button{
+       width: 60px;
+       padding: 5px;
+       background-color: white;
+       border: none;
+       border: 1px #00ffb3 solid;
+       margin-top: 30px;
+       margin-bottom: 30px;
+       &:hover {
+
+        background-image: linear-gradient(#00ffb3, #48ffc8);
+    }
+   }
+
+   &_con{
+    width: 430px;
+    display: flex;
+    justify-content: space-between;
+       
+       
+   }
+}

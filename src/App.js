@@ -1,13 +1,13 @@
-// import Calender from './components/calender/calender';
-import Dashboard from './components/dashboard/dashboard';
+import Content from './components/content/content';
+import { BrowserRouter as Router} from 'react-router-dom';
 import './App.scss';
 function App() {
   return (
-    <div className="App">
-      {/* <Calender/> */}
-
-    <Dashboard/>
-    </div>
+    <Router>
+      <div className="App">
+        <Content/>
+      </div>
+    </Router>
   );
 }
 

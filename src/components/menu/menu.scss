@@ -7,8 +7,6 @@
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.02), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
     transition: width 150ms ease;
 
-    
-
     .active {
         background-color: rgb(71, 151, 255);
         color: white;
@@ -22,6 +20,8 @@
         align-items: center;
         padding-left: 20px;
         height: 42px;
+        text-decoration: none;
+        
 
         &:first-child {
             height: 80px;
@@ -31,6 +31,7 @@
         }
 
         &_name {
+
             padding-left: 10px;
             font-size: 13.5px;
             display: none;
