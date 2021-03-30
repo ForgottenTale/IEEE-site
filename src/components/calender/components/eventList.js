@@ -16,7 +16,7 @@ function EventsList({ events }) {
             <h4 className="eventList_date">Date</h4>
             <p className="eventList_number">Number of events</p>
             <div className="eventList_events">
-                {events !== undefined ?events.events.map((event)=><Event event ={event}/>):null}
+                {events !== undefined ?events.events.map((event)=><Event event ={event}  key={event.timeFrom}/>):null}
 
         
             </div>

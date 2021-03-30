@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import { useEffect, useRef, useState } from 'react';
 import './events.scss';
 
-export default function Events({ calendarEvents, day }) {
+export default function Events({day }) {
 
     const ref = useRef();
     const [currentDay, setCurrentDay] = useState("");
@@ -18,7 +18,7 @@ export default function Events({ calendarEvents, day }) {
         const margin = { top: 30, right: 0, bottom: 30, left: 0 };
         const height = 600;
         const width = "100%";
-        const barWidth = "98%";
+        const barWidth = 200;
         const nowColor = '#EA4335';
         const backgroundColor = '#00ffb3';
         const barStyle = {
@@ -117,7 +117,7 @@ export default function Events({ calendarEvents, day }) {
 
 
 
-    }, [calendarEvents, day])
+    }, [day])
 
     return (
         <div className="events">

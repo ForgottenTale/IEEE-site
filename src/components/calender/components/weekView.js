@@ -4,7 +4,7 @@ import TimeSeries from './timeSeries';
 import WeekNames from './weekNames';
 import { useEffect, useState } from 'react';
 
-function WeekView({ calendarEvents, days, currentWeek, numberOfWeeks }) {
+function WeekView({ days, currentWeek, numberOfWeeks }) {
     const [week, setWeek] = useState([]);
 
     useEffect(() => {
@@ -22,6 +22,7 @@ function WeekView({ calendarEvents, days, currentWeek, numberOfWeeks }) {
 
         }
         setWeek(temp2);
+     
 
     }, [days]);
 
@@ -38,7 +39,7 @@ function WeekView({ calendarEvents, days, currentWeek, numberOfWeeks }) {
                 </div>
                 <div className="weekView_container_events">
                     {/* {(currentWeek >0) ? week[currentWeek].map((day)=><Events calendarEvents={calendarEvents} day={day} key={day.key}/>):null} */}
-                    {week[currentWeek]!==undefined ? week[currentWeek].map((day) => <Events calendarEvents={calendarEvents} day={day} key={day.key} />) : null}
+                    {week[currentWeek]!==undefined ? week[currentWeek].map((day) => <Events day={day} key={day.key} />) : null}
                 </div>
             </div>
 
