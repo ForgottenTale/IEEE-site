@@ -32,6 +32,57 @@ function Calender() {
         //     month: 3,
         //     year: new Date().getFullYear()
         // })
+        const data = [
+            {
+                "date": "2021-02-27T18:30:00.000Z",
+                "events": [
+                    {
+                        "title": "Webinar on CyptoCurrency",
+                        "time": "9 pm - 10 pm IST",
+                        "timeFrom": 1616700600000,
+                        "timeTo": 1616715000000,
+                        "background": '#616161'
+                    },
+                ]
+            },
+            {
+                "date": "2021-03-21T18:30:00.000Z",
+                "events": [
+                    {
+                        "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST",
+                        "timeFrom": 1616700600000,
+                        "timeTo": 1616715000000,
+                        "background": '#616161'
+                    },
+                    {
+                        "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST",
+                        "timeFrom": 1616725800000,
+                        "timeTo": 1616736600000,
+                        "background": '#33B779'
+                    },
+                ]
+            },
+            {
+                "date": "2021-03-30T18:30:00.000Z",
+                "events": [
+                    { "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
+                    { "title": "Webinar on NFT", "time": "6 pm - 8 pm IST" }
+                ]
+            },
+            {
+                "date": "2021-03-27T18:30:00.000Z",
+                "events": [
+                    {
+                        "title": "Webinar on CyptoCurrency",
+                        "time": "9 pm - 10 pm IST",
+                        "timeFrom": 1616700600000,
+                        "timeTo": 1616715000000,
+                        "background": '#616161'
+                    },
+                ]
+            },
+
+        ]
         const startDay = value.clone().startOf("month").startOf("week");
         const endDay = value.clone().endOf("month").endOf("week");
         const weekStart = value.clone().startOf('isoweek');
@@ -43,10 +94,31 @@ function Calender() {
         while (day.isBefore(endDay, "day")) {
             a.push(
                 Array(7)
-                    .fill(0).map(() => day.add(1, "day").clone())
+                    .fill(0).map(() => {
+
+                        var d = day.add(1, "day").clone();
+                        var temp =[];
+                        temp = data.filter((Obj) => {
+                            if (Obj.date.toString() === d.toISOString()) {
+                                return Obj
+                            }
+                            else{
+                                return null
+                            }
+                            
+                        });
+                    
+                        if(temp.length!==0 ){
+                            d.events = temp[0].events; 
+                        }
+                        else{
+                            d.events = null
+                        }
+                        return d;
+                    })
             );
         }
-       
+
         for (var i = 0; i <= 6; i++) {
             days.push(moment(weekStart).add(i, 'days').clone());
         }
@@ -57,57 +129,57 @@ function Calender() {
     }, [value])
 
     // useEffect(() => {
-    //     const data = [
-    //         {
-    //             "date": "2021-02-27T18:30:00.000Z",
-    //             "events": [
-    //                 {
-    //                     "title": "Webinar on CyptoCurrency",
-    //                     "time": "9 pm - 10 pm IST",
-    //                     "timeFrom": 1616700600000,
-    //                     "timeTo": 1616715000000,
-    //                     "background": '#616161'
-    //                 },
-    //             ]
-    //         },
-    //         {
-    //             "date": "2021-03-21T18:30:00.000Z",
-    //             "events": [
-    //                 {
-    //                     "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST",
-    //                     "timeFrom": 1616700600000,
-    //                     "timeTo": 1616715000000,
-    //                     "background": '#616161'
-    //                 },
-    //                 {
-    //                     "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST",
-    //                     "timeFrom": 1616725800000,
-    //                     "timeTo": 1616736600000,
-    //                     "background": '#33B779'
-    //                 },
-    //             ]
-    //         },
-    //         {
-    //             "date": "2021-03-30T18:30:00.000Z",
-    //             "events": [
-    //                 { "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
-    //                 { "title": "Webinar on NFT", "time": "6 pm - 8 pm IST" }
-    //             ]
-    //         },
-    //         {
-    //             "date": "2021-03-27T18:30:00.000Z",
-    //             "events": [
-    //                 {
-    //                     "title": "Webinar on CyptoCurrency",
-    //                     "time": "9 pm - 10 pm IST",
-    //                     "timeFrom": 1616700600000,
-    //                     "timeTo": 1616715000000,
-    //                     "background": '#616161'
-    //                 },
-    //             ]
-    //         },
+    // const data = [
+    //     {
+    //         "date": "2021-02-27T18:30:00.000Z",
+    //         "events": [
+    //             {
+    //                 "title": "Webinar on CyptoCurrency",
+    //                 "time": "9 pm - 10 pm IST",
+    //                 "timeFrom": 1616700600000,
+    //                 "timeTo": 1616715000000,
+    //                 "background": '#616161'
+    //             },
+    //         ]
+    //     },
+    //     {
+    //         "date": "2021-03-21T18:30:00.000Z",
+    //         "events": [
+    //             {
+    //                 "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST",
+    //                 "timeFrom": 1616700600000,
+    //                 "timeTo": 1616715000000,
+    //                 "background": '#616161'
+    //             },
+    //             {
+    //                 "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST",
+    //                 "timeFrom": 1616725800000,
+    //                 "timeTo": 1616736600000,
+    //                 "background": '#33B779'
+    //             },
+    //         ]
+    //     },
+    //     {
+    //         "date": "2021-03-30T18:30:00.000Z",
+    //         "events": [
+    //             { "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
+    //             { "title": "Webinar on NFT", "time": "6 pm - 8 pm IST" }
+    //         ]
+    //     },
+    //     {
+    //         "date": "2021-03-27T18:30:00.000Z",
+    //         "events": [
+    //             {
+    //                 "title": "Webinar on CyptoCurrency",
+    //                 "time": "9 pm - 10 pm IST",
+    //                 "timeFrom": 1616700600000,
+    //                 "timeTo": 1616715000000,
+    //                 "background": '#616161'
+    //             },
+    //         ]
+    //     },
 
-    //     ]
+    // ]
 
     //     var monthNames = ["Januvary", "February", "March", "April", "May", "June", "July", "August", "September", "October", "Novemeber", "December"];
 
@@ -197,7 +269,7 @@ function Calender() {
         //         setCurrentWeek(numberOfWeeks - 1);
         //     }
         // }
- 
+
         if (monthView) {
             return value.clone().subtract(1, "month");
         }
@@ -228,7 +300,7 @@ function Calender() {
         setWeekView(true);
     }
 
-    console.log(calender)
+    // console.log(calender);
 
     return (
         <div className="calender">

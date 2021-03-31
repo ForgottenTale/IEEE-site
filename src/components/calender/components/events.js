@@ -1,10 +1,10 @@
-import * as d3 from 'd3';
-import { useEffect, useRef, useState } from 'react';
+// import * as d3 from 'd3';
+// import { useEffect, useRef, useState } from 'react';
 import './events.scss';
 
 export default function Events({day }) {
 
-    const ref = useRef();
+    // const ref = useRef();
     console.log(day)
     // const [currentDay, setCurrentDay] = useState("");
 
@@ -123,7 +123,7 @@ export default function Events({day }) {
     return (
         <div className="events">
             <div style={{ position: "absolute" }}>{day.format("DD/MM/YYYY")}</div>
-            <div ref={ref}></div>
+            {/* <div ref={ref}></div> */}
         </div>
     );
 }

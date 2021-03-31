@@ -129,6 +129,7 @@ let d = new Date();
                 else {
                     return null
                 }
+                
             })
             temp.push({ "day": i, "key": d.toISOString(), "events": events[0] })
         }

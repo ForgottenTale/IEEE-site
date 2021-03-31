@@ -11,12 +11,13 @@ function Event({event}) {
     );
 }
 function EventsList({ events }) {
+    console.log(events.events)
     return (
         <div className="eventList">
             <h4 className="eventList_date">Date</h4>
             <p className="eventList_number">Number of events</p>
             <div className="eventList_events">
-                {events !== undefined ?events.events.map((event)=><Event event ={event}  key={event.timeFrom}/>):null}
+                {(events !== undefined && events.events !==null )?events.events.map((event)=><Event event ={event}  key={event.timeFrom}/>):null}
 
         
             </div>
