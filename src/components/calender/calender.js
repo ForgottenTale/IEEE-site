@@ -9,31 +9,36 @@ import moment from 'moment';
 function Calender() {
 
 
-    const [days, setDays] = useState([]);
-    const [today, setToday] = useState([]);
+    // const [days, setDays] = useState([]);
+    // const [today, setToday] = useState([]);
     const [monthView, setMonthView] = useState(true);
     const [weekView, setWeekView] = useState(false);
     const [dayView, setDayView] = useState(false);
-    const [next, setNext] = useState(0);
-    const [numberOfWeeks, setNumberOfWeeks] = useState(0);
-    const [currentWeek, setCurrentWeek] = useState(0);
-    const [date, setDate] = useState({});
+    // const [next, setNext] = useState(0);
+    // const [numberOfWeeks, setNumberOfWeeks] = useState(0);
+    // const [currentWeek, setCurrentWeek] = useState(0);
+    // const [date, setDate] = useState({});
 
     const [calender, setCalendar] = useState([]);
+    const [week, setWeek] = useState([]);
+    const [day, setDay] = useState({});
     const [value, setValue] = useState(moment());
-    const startDay = value.clone().startOf("month").startOf("week");
-    const endDay = value.clone().endOf("month").endOf("week");
 
 
 
     useEffect(() => {
-        setDate({
-            day: new Date().getDate(),
-            month: 3,
-            year: new Date().getFullYear()
-        })
+        // setDate({
+        //     day: new Date().getDate(),
+        //     month: 3,
+        //     year: new Date().getFullYear()
+        // })
+        const startDay = value.clone().startOf("month").startOf("week");
+        const endDay = value.clone().endOf("month").endOf("week");
+        const weekStart = value.clone().startOf('isoweek');
+        const dayStart = value.clone().startOf("day");
         const day = startDay.clone().subtract(1, "day");
-        const a = []
+        const a = [];
+        const days = [];
 
         while (day.isBefore(endDay, "day")) {
             a.push(
@@ -41,66 +46,73 @@ function Calender() {
                     .fill(0).map(() => day.add(1, "day").clone())
             );
         }
-        setCalendar(a)
+       
+        for (var i = 0; i <= 6; i++) {
+            days.push(moment(weekStart).add(i, 'days').clone());
+        }
+
+        setCalendar(a);
+        setWeek(days);
+        setDay(dayStart);
     }, [value])
 
-    useEffect(() => {
-        const data = [
-            {
-                "date": "2021-02-27T18:30:00.000Z",
-                "events": [
-                    {
-                        "title": "Webinar on CyptoCurrency",
-                        "time": "9 pm - 10 pm IST",
-                        "timeFrom": 1616700600000,
-                        "timeTo": 1616715000000,
-                        "background": '#616161'
-                    },
-                ]
-            },
-            {
-                "date": "2021-03-21T18:30:00.000Z",
-                "events": [
-                    {
-                        "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST",
-                        "timeFrom": 1616700600000,
-                        "timeTo": 1616715000000,
-                        "background": '#616161'
-                    },
-                    {
-                        "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST",
-                        "timeFrom": 1616725800000,
-                        "timeTo": 1616736600000,
-                        "background": '#33B779'
-                    },
-                ]
-            },
-            {
-                "date": "2021-03-30T18:30:00.000Z",
-                "events": [
-                    { "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
-                    { "title": "Webinar on NFT", "time": "6 pm - 8 pm IST" }
-                ]
-            },
-            {
-                "date": "2021-03-27T18:30:00.000Z",
-                "events": [
-                    {
-                        "title": "Webinar on CyptoCurrency",
-                        "time": "9 pm - 10 pm IST",
-                        "timeFrom": 1616700600000,
-                        "timeTo": 1616715000000,
-                        "background": '#616161'
-                    },
-                ]
-            },
+    // useEffect(() => {
+    //     const data = [
+    //         {
+    //             "date": "2021-02-27T18:30:00.000Z",
+    //             "events": [
+    //                 {
+    //                     "title": "Webinar on CyptoCurrency",
+    //                     "time": "9 pm - 10 pm IST",
+    //                     "timeFrom": 1616700600000,
+    //                     "timeTo": 1616715000000,
+    //                     "background": '#616161'
+    //                 },
+    //             ]
+    //         },
+    //         {
+    //             "date": "2021-03-21T18:30:00.000Z",
+    //             "events": [
+    //                 {
+    //                     "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST",
+    //                     "timeFrom": 1616700600000,
+    //                     "timeTo": 1616715000000,
+    //                     "background": '#616161'
+    //                 },
+    //                 {
+    //                     "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST",
+    //                     "timeFrom": 1616725800000,
+    //                     "timeTo": 1616736600000,
+    //                     "background": '#33B779'
+    //                 },
+    //             ]
+    //         },
+    //         {
+    //             "date": "2021-03-30T18:30:00.000Z",
+    //             "events": [
+    //                 { "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
+    //                 { "title": "Webinar on NFT", "time": "6 pm - 8 pm IST" }
+    //             ]
+    //         },
+    //         {
+    //             "date": "2021-03-27T18:30:00.000Z",
+    //             "events": [
+    //                 {
+    //                     "title": "Webinar on CyptoCurrency",
+    //                     "time": "9 pm - 10 pm IST",
+    //                     "timeFrom": 1616700600000,
+    //                     "timeTo": 1616715000000,
+    //                     "background": '#616161'
+    //                 },
+    //             ]
+    //         },
 
-        ]
+    //     ]
 
-        var monthNames = ["Januvary", "February", "March", "April", "May", "June", "July", "August", "September", "October", "Novemeber", "December"];
+    //     var monthNames = ["Januvary", "February", "March", "April", "May", "June", "July", "August", "September", "October", "Novemeber", "December"];
 
 
-    }, [next, date]);
+    // }, []);
 
 
     const nextMonth = () => {
@@ -144,8 +156,17 @@ function Calender() {
 
         //     }
         // }
-        return value.clone().add(1,"month");
-       
+        if (monthView) {
+            return value.clone().add(1, "month");
+        }
+        if (weekView) {
+            return value.clone().add(1, "week");
+        }
+        if (dayView) {
+            return value.clone().add(1, "day");
+        }
+
+
 
 
 
@@ -176,7 +197,17 @@ function Calender() {
         //         setCurrentWeek(numberOfWeeks - 1);
         //     }
         // }
-        return value.clone().subtract(1,"month");
+ 
+        if (monthView) {
+            return value.clone().subtract(1, "month");
+        }
+        if (weekView) {
+            return value.clone().subtract(1, "week");
+        }
+        if (dayView) {
+            return value.clone().subtract(1, "day");
+        }
+
 
     }
 
@@ -206,8 +237,8 @@ function Calender() {
             <div className="calender_menu">
                 <h2 className="calender_menu_today"> {value.format("MMMM")} {value.format("YYYY")}</h2>
                 <div className="calender_menu_buttons">
-                    <button className="calender_menu_buttons_button" onClick={()=>setValue(prevMonth())}>&#60;</button>
-                    <button className="calender_menu_buttons_button" onClick={()=>setValue(nextMonth())}>&#62;</button>
+                    <button className="calender_menu_buttons_button" onClick={() => setValue(prevMonth())}>&#60;</button>
+                    <button className="calender_menu_buttons_button" onClick={() => setValue(nextMonth())}>&#62;</button>
                     <button className="calender_menu_buttons_button" onClick={toggleDayView}>Day</button>
                     <button className="calender_menu_buttons_button" onClick={toggleWeekView}>Week</button>
                     <button className="calender_menu_buttons_button" onClick={toggleMonthView}>Month</button>
@@ -215,8 +246,8 @@ function Calender() {
             </div>
 
 
-            {/* {dayView ? <DayView /> : null}
-            {weekView ? <WeekView days={days} currentWeek={currentWeek} numberOfWeeks={numberOfWeeks} /> : null} */}
+            {dayView ? <DayView day={day} /> : null}
+            {weekView ? <WeekView days={week} /> : null}
             {monthView ? <MonthView days={calender} /> : null}
             {/* <div>
                 {calender.map((week)=><div>{week.map((day)=><div>{day.format("D").toString()}</div>)}</div>)}

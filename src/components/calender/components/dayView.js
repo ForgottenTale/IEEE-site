@@ -2,12 +2,12 @@ import './dayView.scss';
 import Events from './events';
 import TimeSeries from './timeSeries';
 
-export default function DayView({calendarEvents}) {
-
+export default function DayView({day}) {
+  console.log(day.format("DD/MM/YYYY"));
     return (
         <div className="timeGrid">
             <TimeSeries />
-            <Events calendarEvents={calendarEvents}/>
+            <Events day={day}/>
         </div>
     );
 }

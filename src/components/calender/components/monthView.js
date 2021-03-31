@@ -19,7 +19,7 @@ import WeekNames from './weekNames';
 
 
 function MonthView({ days }) {
-    console.log(days)
+
 
     return (
         <div >

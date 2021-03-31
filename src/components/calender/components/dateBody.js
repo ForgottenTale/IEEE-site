@@ -43,7 +43,7 @@ import './dateBody.scss'
 function DateBody(props) {
 
     const [showEventList, setEventList] = useState(false);
-    console.log(props.day.format("D"))
+
     var d = new Date();
     d.setHours(0,0,0,0);
     if (props.day.key === d.toISOString()) {
