@@ -1,8 +1,8 @@
-import './eventList.scss'
+import './eventList.scss';
 
 
 function Event({event}) {
-    // console.log(event)
+
     return (
         <div className="eventList_events_event">
             <div className="eventList_events_event_title">{event.title}</div>
@@ -11,7 +11,7 @@ function Event({event}) {
     );
 }
 function EventsList({ day }) {
-    console.log(day)
+
     return (
         <div className="eventList">
             <h4 className="eventList_date">{day.format("DD MMM,YYYY")}</h4>

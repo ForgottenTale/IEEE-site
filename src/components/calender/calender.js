@@ -8,17 +8,9 @@ import moment from 'moment';
 
 function Calender() {
 
-
-    // const [days, setDays] = useState([]);
-    // const [today, setToday] = useState([]);
     const [monthView, setMonthView] = useState(true);
     const [weekView, setWeekView] = useState(false);
     const [dayView, setDayView] = useState(false);
-    // const [next, setNext] = useState(0);
-    // const [numberOfWeeks, setNumberOfWeeks] = useState(0);
-    // const [currentWeek, setCurrentWeek] = useState(0);
-    // const [date, setDate] = useState({});
-
     const [calender, setCalendar] = useState([]);
     const [week, setWeek] = useState([]);
     const [day, setDay] = useState({});
@@ -27,11 +19,7 @@ function Calender() {
 
 
     useEffect(() => {
-        // setDate({
-        //     day: new Date().getDate(),
-        //     month: 3,
-        //     year: new Date().getFullYear()
-        // })
+
         const data = [
             {
                 "date": "2021-02-27T18:30:00.000Z",
@@ -97,21 +85,21 @@ function Calender() {
                     .fill(0).map(() => {
 
                         var d = day.add(1, "day").clone();
-                        var temp =[];
+                        var temp = [];
                         temp = data.filter((Obj) => {
                             if (Obj.date.toString() === d.toISOString()) {
                                 return Obj
                             }
-                            else{
+                            else {
                                 return null
                             }
-                            
+
                         });
-                    
-                        if(temp.length!==0 ){
-                            d.events = temp[0].events; 
+
+                        if (temp.length !== 0) {
+                            d.events = temp[0].events;
                         }
-                        else{
+                        else {
                             d.events = null
                         }
                         return d;
@@ -128,106 +116,10 @@ function Calender() {
         setDay(dayStart);
     }, [value])
 
-    // useEffect(() => {
-    // const data = [
-    //     {
-    //         "date": "2021-02-27T18:30:00.000Z",
-    //         "events": [
-    //             {
-    //                 "title": "Webinar on CyptoCurrency",
-    //                 "time": "9 pm - 10 pm IST",
-    //                 "timeFrom": 1616700600000,
-    //                 "timeTo": 1616715000000,
-    //                 "background": '#616161'
-    //             },
-    //         ]
-    //     },
-    //     {
-    //         "date": "2021-03-21T18:30:00.000Z",
-    //         "events": [
-    //             {
-    //                 "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST",
-    //                 "timeFrom": 1616700600000,
-    //                 "timeTo": 1616715000000,
-    //                 "background": '#616161'
-    //             },
-    //             {
-    //                 "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST",
-    //                 "timeFrom": 1616725800000,
-    //                 "timeTo": 1616736600000,
-    //                 "background": '#33B779'
-    //             },
-    //         ]
-    //     },
-    //     {
-    //         "date": "2021-03-30T18:30:00.000Z",
-    //         "events": [
-    //             { "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
-    //             { "title": "Webinar on NFT", "time": "6 pm - 8 pm IST" }
-    //         ]
-    //     },
-    //     {
-    //         "date": "2021-03-27T18:30:00.000Z",
-    //         "events": [
-    //             {
-    //                 "title": "Webinar on CyptoCurrency",
-    //                 "time": "9 pm - 10 pm IST",
-    //                 "timeFrom": 1616700600000,
-    //                 "timeTo": 1616715000000,
-    //                 "background": '#616161'
-    //             },
-    //         ]
-    //     },
-
-    // ]
-
-    //     var monthNames = ["Januvary", "February", "March", "April", "May", "June", "July", "August", "September", "October", "Novemeber", "December"];
-
-
-    // }, []);
-
 
     const nextMonth = () => {
 
 
-        // if (monthView) {
-        //     setNext(next + 1);
-        //     if (date.month + 1 <= 11) {
-        //         setDate((prevState) => { return { ...prevState, month: date.month + 1 } });
-        //     }
-        //     if (date.month + 1 > 11) {
-        //         setDate({
-        //             day: 1,
-        //             month: 0,
-        //             year: date.year + 1
-        //         });
-        //     }
-
-
-        // }
-        // if (weekView) {
-
-        //     if (currentWeek < numberOfWeeks - 1 && currentWeek >= 0) {
-        //         setCurrentWeek(currentWeek + 1);
-        //     }
-
-        //     if (currentWeek === numberOfWeeks - 1) {
-
-        //         setNext(next + 1);
-        //         if (date.month + 1 <= 11) {
-        //             setDate((prevState) => { return { ...prevState, month: date.month + 1 } });
-        //         }
-        //         setCurrentWeek(0);
-        //         if (date.month + 1 > 11) {
-        //             setDate({
-        //                 day: 1,
-        //                 month: 0,
-        //                 year: date.year + 1
-        //             });
-        //         }
-
-        //     }
-        // }
         if (monthView) {
             return value.clone().add(1, "month");
         }
@@ -239,36 +131,10 @@ function Calender() {
         }
 
 
-
-
-
     }
 
     const prevMonth = () => {
-        // if (monthView) {
-        //     setNext(next - 1);
-        //     if (date.month - 1 >= 0) {
-        //         setDate((prevState) => { return { ...prevState, month: date.month - 1 } })
-        //     }
 
-        //     if (date.month - 1 < 0) {
-        //         setDate({
-        //             day: 1,
-        //             month: 11,
-        //             year: date.year - 1
-        //         })
-        //     }
-        // }
-        // if (weekView) {
-
-        //     if (currentWeek < numberOfWeeks && currentWeek !== 0) {
-        //         setCurrentWeek(currentWeek - 1);
-        //     }
-        //     if (currentWeek === 0) {
-        //         setNext(next - 1);
-        //         setCurrentWeek(numberOfWeeks - 1);
-        //     }
-        // }
 
         if (monthView) {
             return value.clone().subtract(1, "month");
@@ -300,7 +166,6 @@ function Calender() {
         setWeekView(true);
     }
 
-    // console.log(calender);
 
     return (
         <div className="calender">
@@ -321,9 +186,6 @@ function Calender() {
             {dayView ? <DayView day={day} /> : null}
             {weekView ? <WeekView days={week} /> : null}
             {monthView ? <MonthView days={calender} /> : null}
-            {/* <div>
-                {calender.map((week)=><div>{week.map((day)=><div>{day.format("D").toString()}</div>)}</div>)}
-            </div> */}
 
         </div>
     );
