@@ -22,35 +22,7 @@ function Calender() {
     useEffect(() => {
 
         const data = [
-            {
-                "date": "2021-02-27T18:30:00.000Z",
-                "events": [
-                    {
-                        "title": "Webinar on CyptoCurrency",
-                        "time": "9 pm - 10 pm IST",
-                        "timeFrom": 1616700600000,
-                        "timeTo": 1616715000000,
-                        "background": '#616161'
-                    },
-                ]
-            },
-            {
-                "date": "2021-03-21T18:30:00.000Z",
-                "events": [
-                    {
-                        "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST",
-                        "timeFrom": 1616700600000,
-                        "timeTo": 1616715000000,
-                        "background": '#616161'
-                    },
-                    {
-                        "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST",
-                        "timeFrom": 1616725800000,
-                        "timeTo": 1616736600000,
-                        "background": '#33B779'
-                    },
-                ]
-            },
+         
             {
                 "date": "2021-03-30T18:30:00.000Z",
                 "events": [
@@ -64,24 +36,13 @@ function Calender() {
                     {
                         "title": "Webinar on CyptoCurrency",
                         "time": "9 pm - 10 pm IST",
-                        "timeFrom": '2021-04-30T23:30:00.000Z',
-                        "timeTo": '2021-05-01T02:30:00.000Z',
+                        "timeFrom": "2021-03-30T22:30:00.000Z",
+                        "timeTo": "2021-03-31T00:30:00.000Z",
                         "background": '#616161'
                     },
                 ]
             },
-            {
-                "date": "2021-03-27T18:30:00.000Z",
-                "events": [
-                    {
-                        "title": "Webinar on CyptoCurrency",
-                        "time": "9 pm - 10 pm IST",
-                        "timeFrom": 1616700600000,
-                        "timeTo": 1616715000000,
-                        "background": '#616161'
-                    },
-                ]
-            },
+            
 
         ]
         const startDay = value.clone().startOf("month").startOf("week");
@@ -110,22 +71,6 @@ function Calender() {
             for (var i = 0; i <= 6; i++) {
                 var da = moment(weekStart).add(i, 'days').clone();
                 weekDays.push(da);
-                // var temp = data.filter((Obj) => {
-                //     if (Obj.date.toString() === da.toISOString()) {
-                //         return Obj
-                //     }
-                //     else {
-                //         return null
-                //     }
-
-                // });
-
-                // if (temp.length !== 0) {
-                //     weekDays[i].events = temp[0].events;
-                // }
-                // else {
-                //     weekDays[i].events = null
-                // }
                 weekDays[i].events=pushEvents(da,data)
 
             }

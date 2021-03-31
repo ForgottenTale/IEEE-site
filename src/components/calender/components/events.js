@@ -24,7 +24,7 @@ export default function Events({ day }) {
             width: barWidth,
             startPadding: 2,
             endPadding: 3,
-            radius: 5
+            radius: 10
         };
 
         const svg = d3
@@ -38,8 +38,6 @@ export default function Events({ day }) {
 
         if (day.events !== null) {
 
-
-            // Make an array of dates to use for our yScale later on
             const dates = [
                 ...day.events.map(d => new Date(d.timeFrom)),
                 ...day.events.map(d => new Date(d.timeTo))

@@ -41,10 +41,5 @@
 .rect{
     fill: #1e2123;
 
-    &::before{
-        content: '';
-        height: 100%;
-        width: 2px;
-        color: #00ffb3;
-    }
+   
 }
