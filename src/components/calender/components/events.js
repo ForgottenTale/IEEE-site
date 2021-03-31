@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import { select} from 'd3';
 import { useEffect, useRef } from 'react';
 import './events.scss';
 
@@ -14,7 +15,7 @@ export default function Events({ day }) {
 
         const margin = { top: 60, right: 0, bottom: 0, left: 0 };
         const height = 1000;
-        const width = "100%";
+        // const width = "100%";
         const barWidth = 200;
         const nowColor = '#EA4335';
         const backgroundColor = '#00ffb3';
@@ -27,13 +28,15 @@ export default function Events({ day }) {
             radius: 10
         };
 
-        const svg = d3
-            .create('svg')
-            .attr('width', width)
-            .attr('height', height);
+        // const svg = d3
+        //     .create('svg')
+        //     .attr('width', width)
+        //     .attr('height', height);
 
 
-        ref.current.append(svg.node());
+        // ref.current.append(svg.node());
+        const svg = select(ref.current)
+
 
 
         if (day.events !== null) {
@@ -42,7 +45,7 @@ export default function Events({ day }) {
                 ...day.events.map(d => new Date(d.timeFrom)),
                 ...day.events.map(d => new Date(d.timeTo))
             ];
-            console.log(dates);
+     
 
             var minTime = new Date(dates[0]);
             minTime.setHours(0, 0, 0, 0);
@@ -125,6 +128,10 @@ export default function Events({ day }) {
                 .attr('width', 4)
                 .attr('rx', barStyle.radius)
         }
+        else{
+            var node= ref.current;
+            node.querySelectorAll('*').forEach(n => n.remove());
+        }
 
 
 
@@ -134,7 +141,7 @@ export default function Events({ day }) {
     return (
         <div className="events">
             <div style={{ position: "absolute" }}>{day.format("DD/MM/YYYY")}</div>
-            <div ref={ref}></div>
+            <svg width="100%" height="844.5px" ref={ref}></svg>
         </div>
     );
 }

@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
+import { select } from 'd3';
 
 function TimeSeries() {
 
@@ -8,14 +9,15 @@ function TimeSeries() {
     useEffect(() => {
 
         const margin = { top: 60, right: 30, bottom: 30, left: 50 };
-        const height = 1000;
+        const height = 900;
 
-        const timeSeries = d3
-            .create('svg')
-            .attr('width', "40px")
-            .attr('height', height);
+        // const timeSeries = d3
+        //     .create('svg')
+        //     .attr('width', "40px")
+        //     .attr('height', height);
 
-        time.current.append(timeSeries.node());
+        // time.current.append(timeSeries.node());
+        const timeSeries = select(time.current)
 
         var minTime = new Date();
         minTime.setHours(0,0,0,0);
@@ -47,7 +49,7 @@ function TimeSeries() {
     }, []);
     return (
         <div>
-            <div ref={time}></div>
+            <svg height="1000px" width="40px" ref={time}></svg>
         </div>
     );
 }
