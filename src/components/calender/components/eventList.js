@@ -10,14 +10,14 @@ function Event({event}) {
         </div>
     );
 }
-function EventsList({ events }) {
-    console.log(events.events)
+function EventsList({ day }) {
+    console.log(day)
     return (
         <div className="eventList">
-            <h4 className="eventList_date">Date</h4>
-            <p className="eventList_number">Number of events</p>
+            <h4 className="eventList_date">{day.format("DD MMM,YYYY")}</h4>
+            <p className="eventList_number"> Number of events : {(day !== undefined && day.events !==null )?day.events.length:0}</p>
             <div className="eventList_events">
-                {(events !== undefined && events.events !==null )?events.events.map((event)=><Event event ={event}  key={event.timeFrom}/>):null}
+                {(day !== undefined && day.events !==null )?day.events.map((event)=><Event event ={event}  key={event.timeFrom}/>):null}
 
         
             </div>

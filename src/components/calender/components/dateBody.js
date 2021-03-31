@@ -52,7 +52,7 @@ function DateBody(props) {
                 <div className="date_day active" >{props.day.format("D")}</div>
                 <p style={{color:"white",fontSize:12}}>{props.day.key}</p>
                 <div className="date_events">
-                    {showEventList ? <EventsList events={props.day} /> : null}
+                    {showEventList ? <EventsList day={props.day} /> : null}
                 </div>
             </div>
         );
@@ -68,7 +68,7 @@ function DateBody(props) {
                 <div className="date_day">{props.day.format("D")}</div>
                 <p style={{color:"white",fontSize:12}}>{props.day.key}</p>
                 <div className="date_events">
-                    {showEventList ? <EventsList  events={props.day}/> : null}
+                    {showEventList ? <EventsList  day={props.day}/> : null}
                 </div>
             </div>
         );
