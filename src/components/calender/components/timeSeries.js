@@ -1,4 +1,4 @@
-import React,{ useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 
 function TimeSeries() {
@@ -7,8 +7,8 @@ function TimeSeries() {
 
     useEffect(() => {
 
-        const margin = { top: 30, right: 0, bottom: 30, left: 0 }; 
-        const height = 600;
+        const margin = { top: 60, right: 30, bottom: 30, left: 50 };
+        const height = 1000;
 
         const timeSeries = d3
             .create('svg')
@@ -18,24 +18,24 @@ function TimeSeries() {
         time.current.append(timeSeries.node());
 
         var minTime = new Date();
-        minTime.setHours(0);
+        minTime.setHours(0,0,0,0);
 
         var maxTime = new Date();
         maxTime.setHours(24);
 
         const yScale = d3
             .scaleTime()
-            .domain([minTime, maxTime])
+            .domain([minTime,maxTime])
             .range([margin.top, height - margin.bottom]);
 
         const yAxis = d3
             .axisLeft()
             .ticks(24)
             .scale(yScale);
-
+        
         timeSeries
             .append('g')
-            .attr('transform', `translate(40,0)`)
+            .attr('transform', `translate(${margin.left},0)`)
             .attr('opacity', 0.5)
             .call(yAxis);
 
@@ -43,12 +43,12 @@ function TimeSeries() {
             .selectAll('g.tick')
             .filter((d, i, ticks) => i === 0 || i === ticks.length - 1)
             .select('text')
-            .text('12 AM');
+            .text('12 AM');;
     }, []);
     return (
         <div>
             <div ref={time}></div>
-            </div>
+        </div>
     );
 }
 

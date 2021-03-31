@@ -5,6 +5,7 @@ import DayView from './components/dayView';
 import WeekView from './components/weekView';
 import MonthView from './components/monthView';
 import moment from 'moment';
+import {pushEvents} from '../utils/date';
 
 function Calender() {
 
@@ -53,8 +54,20 @@ function Calender() {
             {
                 "date": "2021-03-30T18:30:00.000Z",
                 "events": [
-                    { "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
-                    { "title": "Webinar on NFT", "time": "6 pm - 8 pm IST" }
+                    {
+                        "title": "Webinar on CyptoCurrency",
+                        "time": "9 pm - 10 pm IST",
+                        "timeFrom": "2021-03-30T19:30:00.000Z",
+                        "timeTo": "2021-03-30T22:30:00.000Z",
+                        "background": '#616161'
+                    },
+                    {
+                        "title": "Webinar on CyptoCurrency",
+                        "time": "9 pm - 10 pm IST",
+                        "timeFrom": '2021-04-30T23:30:00.000Z',
+                        "timeTo": '2021-05-01T02:30:00.000Z',
+                        "background": '#616161'
+                    },
                 ]
             },
             {
@@ -74,47 +87,77 @@ function Calender() {
         const startDay = value.clone().startOf("month").startOf("week");
         const endDay = value.clone().endOf("month").endOf("week");
         const weekStart = value.clone().startOf('isoweek');
-        const dayStart = value.clone().startOf("day");
+        const currentDay = value.clone().startOf("day");
         const day = startDay.clone().subtract(1, "day");
         const a = [];
-        const days = [];
+        const weekDays = [];
 
-        while (day.isBefore(endDay, "day")) {
-            a.push(
-                Array(7)
-                    .fill(0).map(() => {
-
+        if (monthView) {
+            while (day.isBefore(endDay, "day")) {
+                a.push(
+                    Array(7).fill(0).map(() => {
                         var d = day.add(1, "day").clone();
-                        var temp = [];
-                        temp = data.filter((Obj) => {
-                            if (Obj.date.toString() === d.toISOString()) {
-                                return Obj
-                            }
-                            else {
-                                return null
-                            }
-
-                        });
-
-                        if (temp.length !== 0) {
-                            d.events = temp[0].events;
-                        }
-                        else {
-                            d.events = null
-                        }
+                        d.events = pushEvents(d,data);
                         return d;
                     })
-            );
+                );
+            }
+            setCalendar(a);
+
         }
 
-        for (var i = 0; i <= 6; i++) {
-            days.push(moment(weekStart).add(i, 'days').clone());
+        if (weekView) {
+            for (var i = 0; i <= 6; i++) {
+                var da = moment(weekStart).add(i, 'days').clone();
+                weekDays.push(da);
+                // var temp = data.filter((Obj) => {
+                //     if (Obj.date.toString() === da.toISOString()) {
+                //         return Obj
+                //     }
+                //     else {
+                //         return null
+                //     }
+
+                // });
+
+                // if (temp.length !== 0) {
+                //     weekDays[i].events = temp[0].events;
+                // }
+                // else {
+                //     weekDays[i].events = null
+                // }
+                weekDays[i].events=pushEvents(da,data)
+
+            }
+            setWeek(weekDays);
         }
 
-        setCalendar(a);
-        setWeek(days);
-        setDay(dayStart);
-    }, [value])
+
+        if (dayView) {
+
+            var tem = data.filter((Obj) => {
+                if (Obj.date.toString() === currentDay.toISOString()) {
+                    return Obj
+                }
+                else {
+                    return null
+                }
+
+            });
+
+            if (tem.length !== 0) {
+                currentDay.events = tem[0].events;
+            }
+            else {
+                currentDay.events = null
+            }
+
+
+            setDay(currentDay);
+        }
+
+
+    }, [value, weekView, monthView, dayView])
 
 
     const nextMonth = () => {
