@@ -1,6 +1,7 @@
 import Content from './components/content/content';
 import { BrowserRouter as Router} from 'react-router-dom';
 import './App.scss';
+// import G from './components/calender/components/g';
 function App() {
   return (
     <Router>
@@ -8,6 +9,7 @@ function App() {
         <Content/>
       </div>
     </Router>
+    // <G/>
   );
 }
 

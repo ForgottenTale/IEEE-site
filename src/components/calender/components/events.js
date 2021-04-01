@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import { select} from 'd3';
+import { reduce, select } from 'd3';
 import { useEffect, useRef } from 'react';
 import './events.scss';
 
@@ -11,57 +11,73 @@ export default function Events({ day }) {
 
     useEffect(() => {
 
+        const calendarEvents = [
+            {
+                "title": "Webinar on CyptoCurrency",
+                "time": "9 pm - 10 pm IST",
+                "timeFrom": "2021-03-30T19:30:00.000Z",
+                "timeTo": "2021-03-30T22:30:00.000Z",
+                "background": '#616161'
+            },
+            {
+                "title": "Webinar on CyptoCurrency",
+                "time": "9 pm - 10 pm IST",
+                "timeFrom": "2021-03-30T22:30:00.000Z",
+                "timeTo": "2021-03-31T00:30:00.000Z",
+                "background": '#616161'
+            },
+        ];
 
 
-        const margin = { top: 60, right: 0, bottom: 0, left: 0 };
-        const height = 1000;
-        // const width = "100%";
-        const barWidth = 200;
+
+
+
+        const margin = { top: 30, right: 0, bottom: 30, left: 0 }; // Gives space for axes and other margins
+        const height = 1500;
+        const barWidth = "100%";
         const nowColor = '#EA4335';
-        const backgroundColor = '#00ffb3';
         const barStyle = {
             background: '#616161',
             textColor: 'white',
             width: barWidth,
             startPadding: 2,
             endPadding: 3,
-            radius: 10
+            radius: 3
         };
+        const svg = select(ref.current);
 
-        // const svg = d3
-        //     .create('svg')
-        //     .attr('width', width)
-        //     .attr('height', height);
+        var node = ref.current;
+        node.querySelectorAll('*').forEach(n => n.remove());
 
-
-        // ref.current.append(svg.node());
-        const svg = select(ref.current)
-
-
+        var dates =[];
 
         if (day.events !== null) {
-
-            const dates = [
+           dates = [
                 ...day.events.map(d => new Date(d.timeFrom)),
                 ...day.events.map(d => new Date(d.timeTo))
             ];
-     
+        }
+        else{
+            dates.push(new Date());
+        }
 
             var minTime = new Date(dates[0]);
             minTime.setHours(0, 0, 0, 0);
 
+
             var maxTime = new Date(dates[0]);
-            maxTime.setHours(24)
+            maxTime.setHours(24, 0, 0, 0);
 
             const yScale = d3
                 .scaleTime()
                 .domain([minTime, maxTime])
                 .range([margin.top, height - margin.bottom]);
 
+
             const gridLines = d3
                 .axisRight()
                 .ticks(24)
-                .tickSize(barStyle.width)
+                .tickSize(ref.current.clientWidth) // even though they're "ticks" we've set them to be full-width
                 .tickFormat('')
                 .scale(yScale);
 
@@ -73,13 +89,12 @@ export default function Events({ day }) {
 
             const barGroups = svg
                 .selectAll('g.barGroup')
-                .data(day.events)
+                .data(calendarEvents)
                 .join('g')
                 .attr('class', 'barGroup');
 
             barGroups
                 .append('rect')
-                .attr('fill', backgroundColor)
                 .attr('x', margin.left)
                 .attr('y', d => yScale(new Date(d.timeFrom)) + barStyle.startPadding)
                 .attr('height', d => {
@@ -90,10 +105,9 @@ export default function Events({ day }) {
                     );
                 })
                 .attr('width', barStyle.width)
-                .attr('rx', barStyle.radius)
-                .attr('class', 'rect');
+                .attr('rx', barStyle.radius);
 
-            const currentTimeDate = new Date();
+            const currentTimeDate = new Date(new Date(new Date().setDate(11)).setMonth(10)).setFullYear(2020);
 
             barGroups
                 .append('rect')
@@ -113,9 +127,9 @@ export default function Events({ day }) {
                 .attr('x', margin.left + 10)
                 .attr('y', d => yScale(new Date(d.timeFrom)) + 20)
                 .text(d => d.title);
+
             barGroups
                 .append('rect')
-                .attr('fill', backgroundColor)
                 .attr('x', margin.left)
                 .attr('y', d => yScale(new Date(d.timeFrom)) + barStyle.startPadding)
                 .attr('height', d => {
@@ -125,14 +139,11 @@ export default function Events({ day }) {
                         endPoint - startPoint - barStyle.endPadding - barStyle.startPadding
                     );
                 })
-                .attr('width', 4)
+                .attr('width',4)
                 .attr('rx', barStyle.radius)
-        }
-        else{
-            var node= ref.current;
-            node.querySelectorAll('*').forEach(n => n.remove());
-        }
+                .attr('fill',"#00ffb3");
 
+      
 
 
 
@@ -141,7 +152,7 @@ export default function Events({ day }) {
     return (
         <div className="events">
             <div style={{ position: "absolute" }}>{day.format("DD/MM/YYYY")}</div>
-            <svg width="100%" height="844.5px" ref={ref}></svg>
+            <svg width="100%" height="1500" ref={ref}></svg>
         </div>
     );
 }

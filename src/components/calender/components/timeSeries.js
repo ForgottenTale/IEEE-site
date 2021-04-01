@@ -4,53 +4,54 @@ import { select } from 'd3';
 
 function TimeSeries() {
 
-    const time = useRef();
+    const ref = useRef();
 
     useEffect(() => {
 
-        const margin = { top: 60, right: 30, bottom: 30, left: 50 };
-        const height = 900;
+        const svg = select(ref.current)
+        var node= ref.current;
+        node.querySelectorAll('*').forEach(n => n.remove());
 
-        // const timeSeries = d3
-        //     .create('svg')
-        //     .attr('width', "40px")
-        //     .attr('height', height);
-
-        // time.current.append(timeSeries.node());
-        const timeSeries = select(time.current)
+        const margin = { top: 30, right: 30, bottom: 30, left: 50 }; 
+        const height = 1500;
+  
 
         var minTime = new Date();
-        minTime.setHours(0,0,0,0);
+        minTime.setHours(0, 0, 0, 0);
+
 
         var maxTime = new Date();
-        maxTime.setHours(24);
+        maxTime.setHours(24, 0, 0, 0);
 
         const yScale = d3
             .scaleTime()
-            .domain([minTime,maxTime])
+            .domain([minTime, maxTime])
             .range([margin.top, height - margin.bottom]);
 
+     
         const yAxis = d3
             .axisLeft()
             .ticks(24)
             .scale(yScale);
         
-        timeSeries
+        svg
             .append('g')
             .attr('transform', `translate(${margin.left},0)`)
             .attr('opacity', 0.5)
             .call(yAxis);
 
-        timeSeries
+        svg
             .selectAll('g.tick')
             .filter((d, i, ticks) => i === 0 || i === ticks.length - 1)
             .select('text')
-            .text('12 AM');;
+            .text('12 AM');
+
+
     }, []);
     return (
-        <div>
-            <svg height="1000px" width="40px" ref={time}></svg>
-        </div>
+       
+            <svg width="50" height="1500"  ref={ref}></svg>
+       
     );
 }
 

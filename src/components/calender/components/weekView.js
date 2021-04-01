@@ -8,12 +8,12 @@ function WeekView({ days }) {
 
     return (
         <div className="weekView">
-            <div style={{ marginLeft: 40 }}>
+            <div style={{ marginLeft: 50 }}>
                 < WeekNames />
             </div>
 
             <div className="weekView_container">
-                <div style={{ display: "flex", }}>
+                <div >
                     <TimeSeries />
                 </div>
                 <div className="weekView_container_events">

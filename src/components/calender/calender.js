@@ -7,6 +7,7 @@ import MonthView from './components/monthView';
 import moment from 'moment';
 import {pushEvents} from '../utils/date';
 
+
 function Calender() {
 
     const [monthView, setMonthView] = useState(true);
@@ -171,7 +172,7 @@ function Calender() {
             </div>
 
 
-            {dayView ? <DayView day={day} /> : null}
+            {dayView ? <DayView day={day}/> : null}
             {weekView ? <WeekView days={week} /> : null}
             {monthView ? <MonthView days={calender} /> : null}
 
