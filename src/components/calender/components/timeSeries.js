@@ -12,7 +12,7 @@ function TimeSeries() {
         var node= ref.current;
         node.querySelectorAll('*').forEach(n => n.remove());
 
-        const margin = { top: 30, right: 30, bottom: 30, left: 50 }; 
+        const margin = { top: 70, right: 30, bottom: 30, left: 50 }; 
         const height = 1500;
   
 

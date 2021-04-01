@@ -2,12 +2,21 @@
     width: 100%;
     display: flex;
     justify-content: center;
+
+    &_date{
+        position: absolute;
+        margin-top: 10px;
+        font-weight: 700;
+        font-family: "Inter";
+        font-size: 30px;
+        opacity: .6;
+    }
 }
 // svg{
 //     width: 100%;
 //     height: 1000px;
 // }
 .rect{
-    fill: #1e2123;
+    fill: #F2FAF5;
 
 }
