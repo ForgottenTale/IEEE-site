@@ -33,7 +33,7 @@ module.exports = function(app){
         res.sendFile(process.cwd() + '/coverage/login.html');
     })
     .post(passport.authenticate('local', {failureRedirect: '/failure', failureFlash: true}), (req, res)=>{
-        res.status(400).send(req.user.getPublicInfo());
+        res.status(200).send(req.user.getPublicInfo());
     })
 
     app.route('/failure')

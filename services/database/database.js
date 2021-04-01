@@ -13,7 +13,7 @@ var connection = mysql.createConnection({
 connection.connect();
 
 connection.query(schema.join(), function (err, results, fields) {
-	if (err) throw error;
+	if (err) throw err;
 });
 
 module.exports = {
