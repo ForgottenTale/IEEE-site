@@ -24,7 +24,11 @@ app.use(flash());
 app.use(passport.initialize())
 app.use(passport.session());
 
-auth.setStrategies(app);
-routes(app);
+database.connect((err)=>{
+    if(err) throw err;
 
-app.listen(process.env.PORT || 3000, ()=> console.log('listening on Port', process.env.PORT));
+    auth.setStrategies(app);
+    routes(app);
+
+    app.listen(process.env.PORT || 3000, ()=> console.log('listening on Port', process.env.PORT));
+});

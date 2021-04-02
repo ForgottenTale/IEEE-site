@@ -2,21 +2,35 @@ const mysql = require('mysql');
 const { schema } = require('./ddl.js');
 const { User } = require('../controller.js');
 
-var connection = mysql.createConnection({
-	host: process.env.DB_HOST,
-	user: process.env.DB_USER,
-	password: process.env.DB_PASSWORD,
-	database: process.env.DB_DATABASE,
-	multipleStatements: true
-});
-
-connection.connect();
-
-connection.query(schema.join(), function (err, results, fields) {
-	if (err) throw err;
-});
+let connection;
 
 module.exports = {
+	connect: function (done){
+
+		console.log("Trying to establish connection");
+
+		connection = mysql.createConnection({
+			host: process.env.DB_HOST,
+			user: process.env.DB_USER,
+			password: process.env.DB_PASSWORD,
+			database: process.env.DB_DATABASE,
+			multipleStatements: true
+		});
+		
+		connection.connect((err)=>{
+			if(err){
+				console.log("Error in establishing connection");
+				return done(err);
+			}
+			console.log("Connection established");
+			return done(null);
+		});
+		
+		connection.query(schema.join(), function (err, results, fields) {
+			if (err) return done(err);
+		});
+	},
+
 	findOne: function (params, done) {
 		let values = User.getValues(params).join(' AND ');
 		let query = "SELECT * FROM USERS WHERE " + values + ";";
