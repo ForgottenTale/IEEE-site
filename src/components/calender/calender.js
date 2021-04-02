@@ -158,8 +158,6 @@ function Calender() {
 
     return (
         <div className="calender">
-
-
             <div className="calender_menu">
                 <h2 className="calender_menu_today"> {value.format("MMMM")} {value.format("YYYY")}</h2>
                 <div className="calender_menu_buttons">

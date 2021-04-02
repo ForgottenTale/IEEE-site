@@ -11,19 +11,11 @@ export default function Content() {
 
     const [open, setOpen] = useState(true);
 
-    var style = {}
-    if (!open) {
-        style = { marginLeft: 60 }
-    }
-    else {
-        style = { marginLeft: 220 }
-    }
-
 
     return (
         <div className="content">
             <Menu toggle={setOpen} state={open} />
-            <div className="content_container" style={style}>
+            <div className= {open?"content_container open":"content_container"} >
                 <TopNav />
                 <Switch>
                     <Route exact path="/">

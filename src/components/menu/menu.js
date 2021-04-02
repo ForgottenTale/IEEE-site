@@ -1,33 +1,19 @@
 import './menu.scss';
 import logo from '../../images/logo.png';
-import { useState } from 'react/cjs/react.development';
-import {Link} from 'react-router-dom';
+import { useState, useRef } from 'react/cjs/react.development';
+import { Link } from 'react-router-dom';
+
 
 export default function Menu({ toggle, state }) {
 
+    const ref = useRef();
+
+    const [open, setOpen] = useState(true);
     
-    const[open,setOpen] =useState(true);
-    var style = {
-        opacity: 1,
-        display: "block",
-    }
 
-    var menuStyle={
-        width:220
-    }
-
-    if (!open) {
-        style = {
-            display: "none",
-            opacity: 0,
-        }
-        menuStyle={
-            width:60
-        }
-    }
 
     return (
-        <div className="menu" style={menuStyle}>
+        <div className={open?"menu open":"menu"} ref={ref}>
             <div className="menu_item">
                 <img src={logo} alt="logo" />
             </div>
@@ -46,10 +32,10 @@ export default function Menu({ toggle, state }) {
                     <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"></path>
                     <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
                 </svg>
-                <p className="menu_item_name" style={style}>Dashboard</p>
+                <p className={open?"menu_item_name open":"menu_item_name"}>Dashboard</p>
             </Link>
 
-            <Link to="/calender"  className="menu_item ">
+            <Link to="/calender" className="menu_item ">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
@@ -66,7 +52,7 @@ export default function Menu({ toggle, state }) {
                     <path d="M8 2L8 6"></path>
                     <path d="M3 10L21 10"></path>
                 </svg>
-                <p className="menu_item_name" style={style}>Calender</p>
+                <p className={open?"menu_item_name open":"menu_item_name"}>Calender</p>
             </Link>
 
             <Link to="/settings" className="menu_item">
@@ -84,7 +70,7 @@ export default function Menu({ toggle, state }) {
                     <circle cx="12" cy="12" r="3"></circle>
                     <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"></path>
                 </svg>
-                <p className="menu_item_name" style={style}>Settings</p>
+                <p className={open?"menu_item_name open":"menu_item_name"}>Settings</p>
             </Link>
             <div className="menu_item" onClick={() => {
                 toggle(!state)
@@ -105,7 +91,7 @@ export default function Menu({ toggle, state }) {
                     <path d="M13 19L22 12 13 5 13 19z"></path>
                     <path d="M2 19L11 12 2 5 2 19z"></path>
                 </svg>
-                <p className="menu_item_name" style={style}>Collapse</p>
+                <p className={open?"menu_item_name open":"menu_item_name"}>Collapse</p>
             </div>
 
         </div>

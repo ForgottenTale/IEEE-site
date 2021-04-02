@@ -9,7 +9,7 @@ function WeekView({ days }) {
     return (
         <div className="weekView">
             <div style={{ marginLeft: 50 }}>
-                < WeekNames />
+                {days!==undefined ?< WeekNames  days={days}/>:null}
             </div>
 
             <div className="weekView_container">
