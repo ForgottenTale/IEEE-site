@@ -32,7 +32,7 @@ module.exports = {
 
 	findOne: function (params, done) {
 		let values = User.getValues(params).join(' AND ');
-		let query = "SELECT * FROM USERS WHERE " + values + ";";
+		let query = "SELECT * FROM user WHERE " + values + ";";
 		connection.query(query, (err, results, fields) => {
 			if (err) {return done(err)};
 			try{
@@ -46,7 +46,7 @@ module.exports = {
 
 	insertUser: function (user, done) {
 		let {names, values} = user.getAllNamesAndValues();
-		let query = "INSERT INTO users(" + names.join(',') +") VALUES(" + values.join(',') + ");";
+		let query = "INSERT INTO user(" + names.join(',') +") VALUES(" + values.join(',') + ");";
 		connection.query(query, (err, results, fields) => {
 			if(err) {
 				console.error(err);

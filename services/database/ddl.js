@@ -16,11 +16,11 @@ module.exports = {
             service_name VARCHAR(30),
             description VARCHAR(200),
             poster INT,
+            creator_id INT,
+            comments VARCHAR(30),
             speaker_name VARCHAR(30),
             speaker_mail VARCHAR(30),
-            created_user_id INT,
-            comments VARCHAR(30),
-            FOREIGN KEY(created_user_id) REFERENCES user(_id),
+            FOREIGN KEY(creator_id) REFERENCES user(_id),
             FOREIGN KEY(poster) REFERENCES poster(_id)
         );`,
         `CREATE TABLE IF NOT EXISTS intern_support(
@@ -29,23 +29,23 @@ module.exports = {
             title VARCHAR(30),
             description VARCHAR(200),
             poster INT,
+            creator_id INT,
+            commments VARCHAR(30),
             words_count INT,
             files VARCHAR(30),
-            created_user_id INT,
-            commments VARCHAR(30),
-            FOREIGN KEY(created_user_id) REFERENCES user(_id),
+            FOREIGN KEY(creator_id) REFERENCES user(_id),
             FOREIGN KEY(poster) REFERENCES poster(_id)
         );`,
         `CREATE TABLE IF NOT EXISTS e_notice(
             _id INT PRIMARY KEY AUTO_INCREMENT,
             service_name VARCHAR(30),
-            express BOOLEAN,
-            reminder BOOLEAN,
             description VARCHAR(200),
             poster INT,
-            created_user_id INT,
+            creator_id INT,
             comments VARCHAR(30),
-            FOREIGN KEY(created_user_id) REFERENCES user(_id),
+            express BOOLEAN,
+            reminder BOOLEAN,
+            FOREIGN KEY(creator_id) REFERENCES user(_id),
             FOREIGN KEY(poster) REFERENCES poster(_id)
         );`,
         `CREATE TABLE IF NOT EXISTS publicity(
@@ -53,9 +53,9 @@ module.exports = {
             service_name VARCHAR(30),
             description VARCHAR(200),
             poster INT,
-            created_user_id INT,
+            creator_id INT,
             comments VARCHAR(30),
-            FOREIGN KEY(created_user_id) REFERENCES user(_id),
+            FOREIGN KEY(creator_id) REFERENCES user(_id),
             FOREIGN KEY(poster) REFERENCES poster(_id)
         );`
     ]

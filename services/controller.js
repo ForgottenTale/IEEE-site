@@ -1,6 +1,7 @@
 class User {
     constructor(user){
         try{
+            this._id = user._id || null;
             this.name = user.name;
             this.email = user.email;
             this.password = user.password;
@@ -88,7 +89,84 @@ class NewUser extends User{
 
 }
 
+class Service{
+    constructor(input){
+        try{
+            this._id = input._id || null;
+            this.type = input.type;
+            this.serviceName = input.serviceName;
+            this.description = input.description;
+            this.comments = input.comments;
+            this.creatorId = input.creatorId;
+        }catch(err){
+            throw err;
+        }
+    }
+
+    getPublicInfo(){
+        return{
+            serviceName: this.serviceName,
+            description: this.description,
+            speakerName: this.speakerName,
+            comments: this.comments
+        }
+    }
+}
+
+class OnlineMeeting extends Service {
+    constructor(input){
+        super(input);
+        this.speakerName = input.speakerName;
+        this.speakerEmail = input.speakerEmail;
+    }
+
+    getPublicInfo(){
+        return Object.assign({
+            speakerName: this.speakerName,
+            speakerEmail: this.speakerEmail
+        }, super.getPublicInfo());
+    }
+}
+
+class InternSupport extends Service{
+    constructor(input){
+        super(input);
+        this.wordsCount = input.wordsCount;
+    }
+
+    getPublicInfo(){
+        return Object.assign({
+            wordsCount: this.wordsCount
+        }, super.getPublicInfo());
+    }
+}
+
+class ENotice extends Service{
+    constructor(input){
+        super(input);
+        this.express = input.express;
+        this.reminder = input.reminder;
+    }
+
+    getPublicInfo(){
+        return Object.assign({
+            express: this.express,
+            reminder: this.reminder
+        }, super.getPublicInfo());
+    }
+}
+
+class Publicity extends Service{
+    constructor(input){
+        super(input);
+    }
+};
+
 module.exports = {
     User: User,
-    NewUser: NewUser
+    NewUser: NewUser,
+    OnlineMeeting: OnlineMeeting,
+    InternSupport: InternSupport,
+    ENotice: ENotice,
+    Publicity: Publicity
 }

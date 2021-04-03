@@ -3,6 +3,11 @@ const passport = require('passport');
 const database = require('../database/database.js');
 const {NewUser} = require('../controller.js');
 
+function respondError(err, res){
+    console.error(err);
+    res.status(400).json({error: err});
+}
+
 module.exports = function(app){
     app.route('/register')
     .get((req, res)=>{
@@ -18,13 +23,13 @@ module.exports = function(app){
                         let message = "Unknown error";
                         if(err.code=="ER_DUP_ENTRY")
                             message = "User already exists";
-                        return res.status(400).json({error: message})
+                        return respondError(message, res);
                     };
                     return res.status(200).send(newUser.getPublicInfo());
                 })
             })
         }catch(err){
-            res.status(400).json({error: err})
+            respondError(err.message, res);
         }
     })
     
