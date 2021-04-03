@@ -23,11 +23,10 @@ module.exports = {
 				return done(err);
 			}
 			console.log("Connection established");
-			return done(null);
-		});
-		
-		connection.query(schema.join(), function (err, results, fields) {
-			if (err) return done(err);
+			connection.query(schema.join(''), function (err, results, fields) {
+				if (err) return done(err);
+				return done(null);
+			});
 		});
 	},
 

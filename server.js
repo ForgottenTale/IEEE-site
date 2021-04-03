@@ -25,8 +25,10 @@ app.use(passport.initialize())
 app.use(passport.session());
 
 database.connect((err)=>{
-    if(err) throw err;
-
+    if(err){
+        console.error(err);
+        throw err;
+    }
     auth.setStrategies(app);
     routes(app);
 
