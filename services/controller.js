@@ -1,10 +1,10 @@
 class User {
     constructor(user){
         this._id = user._id || null;
-        this.name = user.name;
-        this.email = user.email;
-        this.password = user.password;
-        this.phone = user.phone;
+        this.name = user.name.trim();
+        this.email = user.email.trim();
+        this.password = user.password.trim();
+        this.phone = user.phone.trim();
     }
 
     getPublicInfo(){
@@ -51,7 +51,7 @@ class NewUser extends User{
             super(input);
             this.check(input);
             this.validate();
-            this.confirmPassword = input.confirmPassword;
+            this.confirmPassword = input.confirmPassword.trim();
             if(this.confirmPassword != this.password)
                 throw "Passwords mismatch";
         }catch(err){
