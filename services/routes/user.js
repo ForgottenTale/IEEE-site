@@ -1,5 +1,6 @@
 const auth = require('../auth.js');
 const {OnlineMeeting, InternSupport, ENotice, Publicity} = require('../controller.js');
+const database = require('../database/database.js');
 
 function respondError(err, res){
     res.status(400).json({error: err});
@@ -26,16 +27,21 @@ module.exports = function(app){
                                         break;                                    
                 case "intern_support":  newAppointment = new InternSupport(req.body);
                                         break;
-                case "e-notice":        newAppointment = new ENotice(req.body);
+                case "e_notice":        newAppointment = new ENotice(req.body);
                                         break;
                 case "publicity":       newAppointment = new Publicity(req.body);
                                         break;
                 default:                throw "Appointment type not found";
             }
-            res.status(200).json(newAppointment.getPublicInfo());
+            database.addAppointment(newAppointment, (err, doc)=>{
+                if(err){
+                    return respondError(err.message || err, res);
+                }
+                return res.status(200).json(newAppointment.getPublicInfo());
+            })
         }
         catch(err){
-            respondError(err || err.message, res);
+            respondError(err.message || err, res);
         }
     })
 }

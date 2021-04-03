@@ -16,7 +16,7 @@ module.exports = {
         });
 
         passport.deserializeUser((id, done) => {
-            database.findOne({ email: id }, (err, doc) => {
+            database.findUser({ email: id }, (err, doc) => {
                 done(null, doc);
             })
         });
@@ -26,7 +26,7 @@ module.exports = {
             passwordField: 'password'
         },
             function (email, password, done) {
-                database.findOne({ email: email}, function (err, user) {
+                database.findUser({ email: email}, function (err, user) {
                     console.log('User ' + email + ' attempted to log in.');
                     if (err) { return done(err); }
                     if (!user) { return done(null, false, {message: 'User does not exist'}); }

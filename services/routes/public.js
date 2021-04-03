@@ -18,7 +18,7 @@ module.exports = function(app){
             let newUser = new NewUser(req.body);
             bcrypt.hash(newUser.password, 12, (err, hash)=>{
                 newUser.password = hash;
-                database.insertUser(newUser, (err, doc)=>{
+                database.addUser(newUser, (err, doc)=>{
                     if(err) {
                         let message = "Unknown error";
                         if(err.code=="ER_DUP_ENTRY")
@@ -29,7 +29,7 @@ module.exports = function(app){
                 })
             })
         }catch(err){
-            respondError(err.message, res);
+            respondError(err.message || err, res);
         }
     })
     

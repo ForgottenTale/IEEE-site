@@ -30,7 +30,7 @@ module.exports = {
 		});
 	},
 
-	findOne: function (params, done) {
+	findUser: function (params, done) {
 		let values = User.getValues(params).join(' AND ');
 		let query = "SELECT * FROM user WHERE " + values + ";";
 		connection.query(query, (err, results, fields) => {
@@ -44,7 +44,7 @@ module.exports = {
 		})
 	},
 
-	insertUser: function (user, done) {
+	addUser: function (user, done) {
 		let {names, values} = user.getAllNamesAndValues();
 		let query = "INSERT INTO user(" + names.join(',') +") VALUES(" + values.join(',') + ");";
 		connection.query(query, (err, results, fields) => {
@@ -52,6 +52,20 @@ module.exports = {
 				console.error(err);
 				return done({code: err.code})
 			};
+			return done(null, results);
+		})
+	},
+
+	addAppointment: function(newAppointment, done){
+		let {names, values} = newAppointment.getAllNamesAndValues();
+		let query = "INSERT INTO " + newAppointment.type 
+			+ "(" + names.join(',') + ") VALUES(" + values.join(',') + ");";
+		console.log(query)
+		connection.query(query, (err, results, fields)=>{
+			if(err){
+				console.error(err);
+				return done(err);
+			}
 			return done(null, results);
 		})
 	}

@@ -1,14 +1,10 @@
 class User {
     constructor(user){
-        try{
-            this._id = user._id || null;
-            this.name = user.name;
-            this.email = user.email;
-            this.password = user.password;
-            this.phone = user.phone;
-        }catch(err){
-            throw err;
-        }
+        this._id = user._id || null;
+        this.name = user.name;
+        this.email = user.email;
+        this.password = user.password;
+        this.phone = user.phone;
     }
 
     getPublicInfo(){
@@ -69,7 +65,7 @@ class NewUser extends User{
             throw "Invalid email";
         }
         //validate phone
-        if(!this.phone.match(/\d/g).length == 10)
+        if(!(this.phone.match(/\d/g).length == 10))
             throw "Invalid phone number";
     }
 
@@ -92,6 +88,7 @@ class NewUser extends User{
 class Service{
     constructor(input){
         try{
+            input = this.check(input);
             this._id = input._id || null;
             this.type = input.type;
             this.serviceName = input.serviceName;
@@ -101,6 +98,29 @@ class Service{
         }catch(err){
             throw err;
         }
+    }
+    
+    check(input){
+        for(let param in input){
+            if(typeof(input[param]) == "string"){
+                if(input[param].trim().length < 1){
+                    input[param] = null;
+                }
+            }
+        }
+        return input;
+    }
+
+    getAllNamesAndValues(){
+        return({
+            names: ['service_name', 'description', 'comments', 'creator_id'],
+            values: [
+                this.serviceName?("'" + this.serviceName + "'"):"null",
+                this.description?("'" + this.description + "'"):"null",
+                this.comments?("'" + this.comments + "'"):"null",
+                this.creatorId
+            ]
+        })
     }
 
     getPublicInfo(){
@@ -120,6 +140,14 @@ class OnlineMeeting extends Service {
         this.speakerEmail = input.speakerEmail;
     }
 
+    getAllNamesAndValues(){
+        let namesAndValues = super.getAllNamesAndValues();
+        namesAndValues.names.push('speaker_name', 'speaker_email');
+        namesAndValues.values.push(this.speakerName?("'" + this.speakerName + "'"):"null");
+        namesAndValues.values.push(this.speakerEmail?("'" + this.speakerEmail + "'"):"null");
+        return(namesAndValues);
+    }
+
     getPublicInfo(){
         return Object.assign({
             speakerName: this.speakerName,
@@ -134,6 +162,13 @@ class InternSupport extends Service{
         this.wordsCount = input.wordsCount;
     }
 
+    getAllNamesAndValues(){
+        let namesAndValues = super.getAllNamesAndValues();
+        namesAndValues.names.push('words_count');
+        namesAndValues.values.push(this.wordsCount);
+        return(namesAndValues);
+    }
+
     getPublicInfo(){
         return Object.assign({
             wordsCount: this.wordsCount
@@ -146,6 +181,14 @@ class ENotice extends Service{
         super(input);
         this.express = input.express;
         this.reminder = input.reminder;
+    }
+
+    getAllNamesAndValues(){
+        let namesAndValues = super.getAllNamesAndValues();
+        namesAndValues.names.push('express', 'reminder');
+        namesAndValues.values.push(this.express);
+        namesAndValues.values.push(this.reminder);
+        return(namesAndValues);
     }
 
     getPublicInfo(){
