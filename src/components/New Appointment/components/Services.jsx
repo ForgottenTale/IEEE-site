@@ -1,22 +1,33 @@
 import React from "react";
+import {useHistory} from 'react-router-dom';
 
-let name = "";
 
-function Services(props) {
-  name = props.match.params.name;
-  console.log(name);
+function Services({type,data,setData}) {
+
+  const history = useHistory();
+
+
+  const next = (item) => {
+    // if (timeFrom !== "") {
+      setData({ ...data,service:item })
+    // }
+    history.push("/date-time/");
+
+  }
 
   let items = [];
-  if (name === "online-meeting") {
+  if (type === "online-meeting") {
     items = ["Webex", "Zoom"];
-  } else if (name === "intern-support") {
+  } else if (type === "intern-support") {
     items = ["Content Writing", "Poster Design", "Website Development"];
-  } else if (name === "enotice") {
+  } else if (type === "enotice") {
     items = ["E-Notice Issue"];
-  } else if (name === "publicity") {
+  } else if (type === "publicity") {
     items = ["Social Media", "Website Posting"];
   }
   console.log(items);
+
+
 
   return (
     <div className="service-container row">
@@ -37,7 +48,7 @@ function Services(props) {
           <div
             key={index}
             className="service-box-x"
-            onClick={() => props.history.push("/date-time/" + item)}
+            onClick={() =>next(item) }
           >
             <p>{item}</p>
           </div>
@@ -46,7 +57,7 @@ function Services(props) {
         <button
           type="button"
           className="mt-5 back-btn"
-          onClick={() => props.history.push("/")}
+          onClick={() =>history.push("/")}
         >
           Prev
         </button>
@@ -56,4 +67,4 @@ function Services(props) {
 }
 
 export default Services;
-export { name };
+

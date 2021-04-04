@@ -1,37 +1,58 @@
-import React from "react"
-import { name } from "./Services"
-
-let service = "";
+import React, { useState } from "react"
+import { useHistory } from 'react-router-dom';
 
 function minDay() {
+
+
   let newday = new Date();
   newday.setDate(newday.getDate() + 5);
   let year = newday.getFullYear();
-  let month = newday.getMonth()+1;
+  let month = newday.getMonth() + 1;
   let day = newday.getDate();
-  
-  if(month < 10)
-      month = '0' + month;
-  if(day < 10)
-      day = '0' + day;
-  
+
+  if (month < 10)
+    month = '0' + month;
+  if (day < 10)
+    day = '0' + day;
+
   let min = year + "-" + month + "-" + day;
-  
-  // console.log(newday);
-  // console.log(year);
-  // console.log(month);
-  // console.log(day);
-  // console.log(min);
+
 
   return min;
 }
 
-function DateTime(props) {
-  service = props.match.params.service;
-  console.log(service);
+function DateTime({ setData, data }) {
+
+
+  const [date, setDate] = useState("");
+  const [timeFrom, setTimeFrom] = useState("");
+  const [timeTo, setTimeTo] = useState("");
+
+  const history = useHistory();
 
   let minDate = minDay();
-  console.log(minDate);
+
+  const next = () => {
+    // if (timeFrom !== "") {
+    var fromHour = timeFrom.slice(0, 2);
+    var fromMin = timeFrom.slice(3, 5);
+    var toHour = timeTo.slice(0, 2);
+    var toMin = timeTo.slice(3, 5);
+
+    console.log(timeFrom);
+    console.log(timeTo);
+
+    setData(
+      {
+        ...data,
+        timeFrom: new Date(new Date(date).setHours(fromHour, fromMin, 0, 0)),
+        timeTo: new Date(new Date(date).setHours(toHour, toMin, 0, 0))
+      });
+    history.push("/contact-info/");
+    // }
+
+  }
+
 
   return (
     <div className="service-container row">
@@ -49,7 +70,7 @@ function DateTime(props) {
 
       <div className="date col">
         <h2>Select Date & Time</h2>
-        {/* <form action="/date-time"> */}
+
         <div className="row">
           <div className="col-6">
             <div className="mb-4">
@@ -59,31 +80,48 @@ function DateTime(props) {
                 className="form-control"
                 min={minDate}
                 name="date"
+                onChange={(e) => setDate(e.target.value)}
               />
             </div>
+
+           
+
             <div className="mb-5">
               <label className="form-label">Time</label>
-              <input type="time" className="form-control" name="time" />
+              <input
+                type="time"
+                className="form-control"
+                name="time"
+                onChange={(e) => setTimeFrom(e.target.value)} />
             </div>
+
+            {data.type === "online-meeting" ? <div className="mb-5">
+              <label className="form-label">Time</label>
+              <input
+                type="time"
+                className="form-control"
+                name="time"
+                onChange={(e) => setTimeTo(e.target.value)} />
+            </div> : null}
           </div>
         </div>
 
         <button
           type="button"
           className="mt-5 back-btn"
-          onClick={() => props.history.push("/services/" + name)}
+          onClick={() => history.push("/services/")}
         >
           Prev
         </button>
 
-        <button onClick={() => props.history.push("/contact-info")} className="btn btn-primary mt-5 next-btn">
+        <button onClick={() => next()} className="btn btn-primary mt-5 next-btn">
           Next
         </button>
-        {/* </form> */}
+
       </div>
     </div>
   );
 }
 
 export default DateTime;
-export { service };
+

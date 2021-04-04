@@ -1,6 +1,6 @@
 import React from "react";
 import { name } from "./Services";
-import { service } from "./DateTime";
+// import { service } from "./DateTime";
 
 function Verify(props) {
   return (

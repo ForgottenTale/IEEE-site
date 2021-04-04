@@ -1,7 +1,9 @@
 import React from "react";
-import { name } from "./Services";
+import { useHistory } from 'react-router-dom';
 
-function OtherInfo(props) {
+function OtherInfo({type,data,setData}) {
+
+  const history = useHistory();
   let [count, setCount] = React.useState(1);
 
   function addCohost() {
@@ -56,7 +58,7 @@ function OtherInfo(props) {
       <div className="info col">
         <h2>Other Details</h2>
 
-        {name === "publicity" ? (
+        {type=== "publicity" ? (
           <form>
             <div className="row mb-3">
               <div className="col-6">
@@ -79,14 +81,14 @@ function OtherInfo(props) {
             <button
               type="button"
               className="back-btn"
-              onClick={() => props.history.push("/event-info")}
+              onClick={() => history.push("/event-info")}
             >
               Prev
             </button>
 
             <button
               type="button"
-              onClick={() => props.history.push("/verify")}
+              onClick={() => history.push("/verify")}
               className="btn btn-primary next-btn"
             >
               Next
@@ -123,14 +125,14 @@ function OtherInfo(props) {
             <button
               type="button"
               className="mt-5 back-btn"
-              onClick={() => props.history.push("/event-info")}
+              onClick={() =>history.push("/event-info")}
             >
               Prev
             </button>
 
             <button
               type="button"
-              onClick={() => props.history.push("/verify")}
+              onClick={() => history.push("/verify")}
               className="btn btn-primary mt-5 next-btn"
             >
               Next

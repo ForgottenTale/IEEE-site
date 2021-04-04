@@ -1,13 +1,33 @@
-import React from "react";
-import { name } from "./Services";
-import { service } from "./DateTime";
+import React, { useState } from "react";
+import { useHistory } from 'react-router-dom';
 
-function ContactInfo(props) {
+
+function ContactInfo({ type, setData, data }) {
+
+  const [userInfo, setUserInfo] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: ""
+  })
+
+  const history = useHistory();
   function nextButton() {
-    if (name === "online-meeting" || name === "publicity") {
-      props.history.push("/event-info");
-    } else if (name === "intern-support" || name === "enotice") {
-      props.history.push("/support-info");
+    setData(
+      {
+        ...data,
+        firstName: userInfo.firstName,
+        lastName: userInfo.lastName,
+        email: userInfo.email,
+        phone: userInfo.phone
+      });
+
+    if (type === "online-meeting" || type === "publicity") {
+      history.push("/event-info");
+
+
+    } else if (type === "intern-support" || type === "enotice") {
+      history.push("/support-info");
     }
   }
 
@@ -28,27 +48,27 @@ function ContactInfo(props) {
       <div className="info col">
         <h2>Contact Information</h2>
 
-        {/* <form action="/contact-info" method="POST"> */}
+
         <div className="row">
           <div className="col-6">
             <div className="mb-3">
               <label className="form-label">First name</label>
-              <input type="text" className="form-control" name="fName" />
+              <input type="text" className="form-control" name="fName" onChange={(e) => { setUserInfo({ ...userInfo, firstName: e.target.value }) }} />
             </div>
             <div className="mb-5">
               <label className="form-label">Phone number</label>
-              <input type="text" className="form-control" name="phoneNumber" />
+              <input type="text" className="form-control" name="phoneNumber" onChange={(e) => { setUserInfo({ ...userInfo, phone: e.target.value }) }} />
             </div>
           </div>
 
           <div className="col-6">
             <div className="mb-3">
               <label className="form-label">Last name</label>
-              <input type="text" className="form-control" name="lName" />
+              <input type="text" className="form-control" name="lName" onChange={(e) => { setUserInfo({ ...userInfo, lastName: e.target.value }) }} />
             </div>
             <div className="mb-5">
               <label className="form-label">Email</label>
-              <input type="email" className="form-control" name="mail" />
+              <input type="email" className="form-control" name="mail" onChange={(e) => { setUserInfo({ ...userInfo, email: e.target.value }) }} />
             </div>
           </div>
         </div>
@@ -56,7 +76,7 @@ function ContactInfo(props) {
         <button
           type="button"
           className="back-btn"
-          onClick={() => props.history.push("/date-time/" + service)}
+          onClick={() => history.push("/date-time/")}
         >
           Prev
         </button>
@@ -64,7 +84,7 @@ function ContactInfo(props) {
         <button onClick={nextButton} className="btn btn-primary next-btn">
           Next
         </button>
-        {/* </form> */}
+
       </div>
     </div>
   );
