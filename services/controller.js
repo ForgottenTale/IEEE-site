@@ -90,10 +90,10 @@ class Service{
         try{
             input = this.check(input);
             this._id = input._id || null;
-            this.type = input.type;
-            this.serviceName = input.serviceName;
-            this.description = input.description;
-            this.comments = input.comments;
+            this.type = input.type.trim();
+            this.serviceName = input.serviceName.trim();
+            this.description = input.description.trim();
+            this.comments = input.comments.trim();
             this.creatorId = input.creatorId;
         }catch(err){
             throw err;
@@ -136,8 +136,8 @@ class Service{
 class OnlineMeeting extends Service {
     constructor(input){
         super(input);
-        this.speakerName = input.speakerName;
-        this.speakerEmail = input.speakerEmail;
+        this.speakerName = input.speakerName.trim();
+        this.speakerEmail = input.speakerEmail.trim();
     }
 
     getAllNamesAndValues(){

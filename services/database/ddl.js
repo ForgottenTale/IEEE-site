@@ -9,7 +9,8 @@ module.exports = {
             );`,
         `CREATE TABLE IF NOT EXISTS poster(
             _id INT PRIMARY KEY AUTO_INCREMENT,
-            name VARCHAR(20)
+            name VARCHAR(20),
+            image BLOB
         );`,
         `CREATE TABLE IF NOT EXISTS online_meeting(
             _id INT PRIMARY KEY AUTO_INCREMENT,
