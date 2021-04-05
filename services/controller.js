@@ -1,10 +1,36 @@
 class User {
     constructor(user){
-        this._id = user._id || null;
-        this.name = user.name.trim();
-        this.email = user.email.trim();
-        this.password = user.password.trim();
-        this.phone = user.phone.trim();
+        this.required = ["name", "email", "phone", "password"];
+        try{
+            this.checkRequired(user);
+            this.validate(user);
+            this._id = user._id;
+            this.name = user.name.trim();
+            this.email = user.email.trim();
+            this.phone = (user.phone+"").trim();
+            this.password = user.password.trim();
+        }catch(err){
+            throw err;
+        }
+    }
+
+    checkRequired(user){
+        this.required.forEach(param=>{
+            if(!user[param])
+                throw (param + " is requried");
+            else if((user[param] + "").trim() < 1)
+                throw (param + " cannot be empty");
+        })
+    }
+
+    validate(user){
+        //validate email
+        if(!(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(user.email))){
+            throw "Invalid email";
+        }
+        //validate phone
+        if(!(user.phone.match(/\d/g).length == 10))
+            throw "Invalid phone number";
     }
 
     getPublicInfo(){
@@ -49,8 +75,9 @@ class NewUser extends User{
     constructor(input){
         try{
             super(input);
-            this.check(input);
-            this.validate();
+            this.required = ["confirmPassword"];
+            super.checkRequired(input);
+            this.validate(input);
             this.confirmPassword = input.confirmPassword.trim();
             if(this.confirmPassword != this.password)
                 throw "Passwords mismatch";
@@ -59,65 +86,42 @@ class NewUser extends User{
         }
     }
 
-    validate(){
-        //validate email
-        if(!(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(this.email))){
-            throw "Invalid email";
-        }
-        //validate phone
-        if(!(this.phone.match(/\d/g).length == 10))
-            throw "Invalid phone number";
-    }
-
-    check(input){
-        if(!input.name || !input.email || !input.phone || !input.password || !input.confirmPassword)
-            throw "Required field(s) missing";
-        for(let param in input){
-            if(!input[param]){
-                throw (param + " field missing");
-            }
-            input[param] = input[param].trim();
-            if(input[param].length < 1){
-                throw (param + " field is empty");
-            }
-        }
-    }
-
 }
 
 class Service{
     constructor(input){
         try{
-            input = this.check(input);
-            this._id = input._id || null;
+            this.required = ["type", "serviceName", "creatorId"];
+            this.checkRequired(input);
+            this._id = input._id;
             this.type = input.type.trim();
             this.serviceName = input.serviceName.trim();
-            this.description = input.description.trim();
-            this.comments = input.comments.trim();
+            this.description = input.description?input.description.trim():null;
+            this.comments = input.comments?input.comments.trim():null;
+            this.poster = input.poster?input.poster.trim():null;
             this.creatorId = input.creatorId;
         }catch(err){
             throw err;
         }
     }
     
-    check(input){
-        for(let param in input){
-            if(typeof(input[param]) == "string"){
-                if(input[param].trim().length < 1){
-                    input[param] = null;
-                }
-            }
-        }
-        return input;
+    checkRequired(user){
+        this.required.forEach(param=>{
+            if(!user[param])
+                throw (param + " is requried");
+            else if((user[param] + "").trim() < 1)
+                throw (param + " cannot be empty");
+        })
     }
 
     getAllNamesAndValues(){
         return({
-            names: ['service_name', 'description', 'comments', 'creator_id'],
+            names: ['service_name', 'description', 'comments', 'poster', 'creator_id'],
             values: [
                 this.serviceName?("'" + this.serviceName + "'"):"null",
                 this.description?("'" + this.description + "'"):"null",
                 this.comments?("'" + this.comments + "'"):"null",
+                this.poster?("'" + this.poster + "'"):"null",
                 this.creatorId
             ]
         })
@@ -136,22 +140,33 @@ class Service{
 class OnlineMeeting extends Service {
     constructor(input){
         super(input);
+        this.required = ["speakerName", "speakerEmail", "startTime", "endTime"];
+        super.checkRequired(input);
         this.speakerName = input.speakerName.trim();
         this.speakerEmail = input.speakerEmail.trim();
+        this.startTime = input.startTime;
+        this.endTime = input.endTime;
+        this.coHosts = input.coHosts?input.coHosts.map(coHost=>{
+            return [coHost[0].trim(), coHost[1].trim()]
+        }):null;
     }
 
     getAllNamesAndValues(){
         let namesAndValues = super.getAllNamesAndValues();
-        namesAndValues.names.push('speaker_name', 'speaker_email');
+        namesAndValues.names.push('speaker_name', 'speaker_email', 'co_hosts', 'start_time', 'end_time');
         namesAndValues.values.push(this.speakerName?("'" + this.speakerName + "'"):"null");
         namesAndValues.values.push(this.speakerEmail?("'" + this.speakerEmail + "'"):"null");
+        namesAndValues.values.push(this.coHosts?("'" + JSON.stringify(this.coHosts) + "'"):"null");
+        namesAndValues.values.push(this.startTime?("'" + this.startTime.replace("T", " ").replace("Z", "") + "'"):"null");
+        namesAndValues.values.push(this.endTime?("'" + this.endTime.replace("T", " ").replace("Z", "") + "'"):"null");
         return(namesAndValues);
     }
 
     getPublicInfo(){
         return Object.assign({
             speakerName: this.speakerName,
-            speakerEmail: this.speakerEmail
+            speakerEmail: this.speakerEmail,
+            coHosts: this.coHosts
         }, super.getPublicInfo());
     }
 }
@@ -159,7 +174,17 @@ class OnlineMeeting extends Service {
 class InternSupport extends Service{
     constructor(input){
         super(input);
+        this.required = ["wordsCount"];
+        super.checkRequired(input);
+        this.validate(input);
         this.wordsCount = input.wordsCount;
+    }
+
+    validate(input){
+        for(let param in input){
+            if(input[param] < 11)
+                throw "More than 11 words required";
+        }
     }
 
     getAllNamesAndValues(){
@@ -179,8 +204,14 @@ class InternSupport extends Service{
 class ENotice extends Service{
     constructor(input){
         super(input);
-        this.express = input.express;
-        this.reminder = input.reminder;
+        this.required = ["express", "reminder"];
+        super.checkRequired(input);
+        if(typeof(input.express)=="boolean" && typeof(input.reminder)=="boolean"){
+            this.express = input.express;
+            this.reminder = input.reminder;   
+        }else{
+            throw "express and reminder required to be boolean"
+        }
     }
 
     getAllNamesAndValues(){

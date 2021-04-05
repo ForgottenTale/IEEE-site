@@ -20,11 +20,19 @@ module.exports = function(app){
     app.route('/book/:params')
     .post(auth.ensureAuthenticated, (req, res)=>{
         upload.single('poster')(req, res, (err)=>{
-            if(err){
-                res.status(400).json({error: err});
-            }
             try{
+                if(err) throw err;
                 let newAppointment;
+
+                req.body.coHosts = [
+                    ["Jimmy Neesham", "jimmyneesham@gmail.com"],
+                    ["MS Dhoni", "msd@gmail.com"],
+                    ["Gautam Gambhir", "gautamgambhir@gmail.com"]
+                ];
+                req.body.startTime = new Date('December 17, 1995 03:24:00').toISOString();
+                req.body.endTime = new Date().toISOString();
+
+                req.body.poster = req.file?req.file.filename:null;
                 req.body.creatorId = req.user._id;
                 req.body.type = req.params.params;
                 switch(req.params.params){
