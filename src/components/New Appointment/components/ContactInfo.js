@@ -9,7 +9,7 @@ function ContactInfo({ type, setData, data }) {
     lastName: "",
     email: "",
     phone: ""
-  })
+  });
 
   const history = useHistory();
   function nextButton() {

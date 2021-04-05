@@ -1,8 +1,32 @@
-import React from "react";
-import { name } from "./Services";
-// import { service } from "./DateTime";
+import React,{useState} from "react";
+import { useHistory } from 'react-router-dom';
 
-function SupportInfo(props) {
+
+function SupportInfo({type,data,setData}) {
+  const history = useHistory();
+
+  const [support, setSupport] = useState({
+    description: "",
+    deliveryType: "",
+    remainder: "",
+    comments: "",
+    purpose:"",
+    dimensions:"",
+    wordsCount:""
+  });
+
+  function nextButton() {
+    setData(
+      {
+        ...data,
+        description: support.description,
+        deliveryType: support.deliveryType,
+        remainder: support.remainder,
+        comments: support.comments
+      });
+    
+    };
+
   return (
     <div className="info-container row">
       <div className="enter-info col-4">
@@ -20,7 +44,7 @@ function SupportInfo(props) {
       <div className="info col">
         <h2>Support Details</h2>
 
-        {name === "intern-support" ? (
+        {type === "intern-support" ? (
           <form>
             <div className="row">
               <div className="col">
@@ -32,11 +56,12 @@ function SupportInfo(props) {
                     rows="3"
                     className="form-control"
                     name="supportDesc"
+                    onChange={(e) => { setSupport({ ...support, description: e.target.value }) }}
                   ></textarea>
                 </div>
                 <div className="mb-4">
                   <label className="form-label">Purpose</label>
-                  <input type="text" className="form-control" name="purpose" />
+                  <input type="text" className="form-control" name="purpose"  onChange={(e) => { setSupport({ ...support, purpose: e.target.value }) }} />
                 </div>
                 <div className="mb-5">
                   <label className="form-label">
@@ -58,14 +83,14 @@ function SupportInfo(props) {
                     type="text"
                     className="form-control"
                     name="serviceName"
-                    value={service}
+                    value={type}
                     readOnly
                   />
                 </div>
 
-                {service === "Poster Design" ||
-                service === "Content Writing" ? (
-                  service === "Poster Design" ? (
+                {type === "Poster Design" ||
+                type === "Content Writing" ? (
+                  type === "Poster Design" ? (
                     <div className="mb-4">
                       <label className="form-label">
                         Poster dimensions (if any)
@@ -74,6 +99,7 @@ function SupportInfo(props) {
                         type="text"
                         className="form-control"
                         name="posterDimensions"
+                        onChange={(e) => { setSupport({ ...support, dimensions: e.target.value }) }}
                       />
                     </div>
                   ) : (
@@ -85,6 +111,7 @@ function SupportInfo(props) {
                         type="number"
                         className="form-control"
                         name="wordsCount"
+                        onChange={(e) => { setSupport({ ...support, wordsCount: e.target.value }) }}
                       />
                     </div>
                   )
@@ -103,6 +130,7 @@ function SupportInfo(props) {
                     rows="3"
                     className="form-control"
                     name="comments"
+                    onChange={(e) => { setSupport({ ...support, comments: e.target.value }) }}
                   ></textarea>
                 </div>
               </div>
@@ -111,14 +139,14 @@ function SupportInfo(props) {
             <button
               type="button"
               className="back-btn"
-              onClick={() => props.history.push("/contact-info")}
+              onClick={() => history.push("/contact-info")}
             >
               Prev
             </button>
 
             <button
               type="button"
-              onClick={() => props.history.push("/verify")}
+              onClick={() => history.push("/verify")}
               className="btn btn-primary next-btn"
             >
               Next
@@ -136,11 +164,12 @@ function SupportInfo(props) {
                     rows="3"
                     className="form-control"
                     name="enoticeDesc"
+                    onChange={(e) => { setSupport({ ...support, description: e.target.value }) }}
                   ></textarea>
                 </div>
                 <div className="mb-4">
                   <label className="form-label">Delivery Type</label>
-                  <select className="form-select" name="deliveryType">
+                  <select className="form-select" name="deliveryType" onChange={(e) => { setSupport({ ...support, deliveryType: e.target.value }) }}>
                     <option selected disabled>
                       Select
                     </option>
@@ -161,7 +190,7 @@ function SupportInfo(props) {
                     type="text"
                     className="form-control"
                     name="serviceName"
-                    value={service}
+                    value={type}
                     readOnly
                   />
                 </div>
@@ -172,6 +201,7 @@ function SupportInfo(props) {
                       className="form-check-input"
                       type="radio"
                       name="remainderEnotice"
+                      onChange={() => { setSupport({ ...support, remainder: "yes" }) }}
                     />
                     <label className="form-check-label">Yes</label>
                   </div>
@@ -180,6 +210,7 @@ function SupportInfo(props) {
                       className="form-check-input"
                       type="radio"
                       name="remainderEnotice"
+                      onChange={(e) => { setSupport({ ...support, remainder: "no" }) }}
                     />
                     <label className="form-check-label">No</label>
                   </div>
@@ -190,6 +221,7 @@ function SupportInfo(props) {
                     rows="3"
                     className="form-control"
                     name="comments"
+                    onChange={(e) => { setSupport({ ...support, comments: e.target.value }) }}
                   ></textarea>
                 </div>
               </div>
@@ -198,14 +230,14 @@ function SupportInfo(props) {
             <button
               type="button"
               className="back-btn"
-              onClick={() => props.history.push("/contact-info")}
+              onClick={() => history.push("/contact-info")}
             >
               Prev
             </button>
 
             <button
               type="button"
-              onClick={() => props.history.push("/verify")}
+              onClick={() => history.push("/verify")}
               className="btn btn-primary next-btn"
             >
               Next

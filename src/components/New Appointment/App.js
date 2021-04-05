@@ -6,8 +6,7 @@ import DateTime from "./components/DateTime";
 import ContactInfo from "./components/ContactInfo";
 import EventInfo from "./components/EventInfo";
 import OtherInfo from "./components/OtherInfo";
-// import SupportInfo from "./components/SupportInfo";
-// import OtherInfo from "./components/OtherInfo";
+import SupportInfo from "./components/SupportInfo";
 // import Verify from "./components/Verify";
 // import Confirmation from "./components/Confirmation";
 
@@ -37,9 +36,9 @@ function App() {
         <Route path="/other-info">
           <OtherInfo type={type} data={data} setData={setData}/>
         </Route>
-        {/* <Route path="/support-info" component={SupportInfo} />
+        <Route path="/support-info"><SupportInfo type={type} setData={setData} data={data}/></Route>
         
-        <Route path="/verify" component={Verify} />
+         {/*<Route path="/verify" component={Verify} />
         <Route path="/confirmation" component={Confirmation} /> */}
       </Switch>
     </Router>
