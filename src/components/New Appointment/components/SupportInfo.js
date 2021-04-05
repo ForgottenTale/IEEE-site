@@ -1,8 +1,8 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { useHistory } from 'react-router-dom';
 
 
-function SupportInfo({type,data,setData}) {
+function SupportInfo({ type, data, setData }) {
   const history = useHistory();
 
   const [support, setSupport] = useState({
@@ -10,9 +10,9 @@ function SupportInfo({type,data,setData}) {
     deliveryType: "",
     remainder: "",
     comments: "",
-    purpose:"",
-    dimensions:"",
-    wordsCount:""
+    purpose: "",
+    dimensions: "",
+    wordsCount: ""
   });
 
   function nextButton() {
@@ -24,8 +24,12 @@ function SupportInfo({type,data,setData}) {
         remainder: support.remainder,
         comments: support.comments
       });
-    
-    };
+     
+        history.push("/verify")
+      
+      
+
+  };
 
   return (
     <div className="info-container row">
@@ -61,7 +65,7 @@ function SupportInfo({type,data,setData}) {
                 </div>
                 <div className="mb-4">
                   <label className="form-label">Purpose</label>
-                  <input type="text" className="form-control" name="purpose"  onChange={(e) => { setSupport({ ...support, purpose: e.target.value }) }} />
+                  <input type="text" className="form-control" name="purpose" onChange={(e) => { setSupport({ ...support, purpose: e.target.value }) }} />
                 </div>
                 <div className="mb-5">
                   <label className="form-label">
@@ -83,13 +87,13 @@ function SupportInfo({type,data,setData}) {
                     type="text"
                     className="form-control"
                     name="serviceName"
-                    value={type}
+                    value={data.type}
                     readOnly
                   />
                 </div>
 
                 {type === "Poster Design" ||
-                type === "Content Writing" ? (
+                  type === "Content Writing" ? (
                   type === "Poster Design" ? (
                     <div className="mb-4">
                       <label className="form-label">
@@ -146,7 +150,7 @@ function SupportInfo({type,data,setData}) {
 
             <button
               type="button"
-              onClick={() => history.push("/verify")}
+              onClick={() => nextButton()}
               className="btn btn-primary next-btn"
             >
               Next
@@ -190,7 +194,7 @@ function SupportInfo({type,data,setData}) {
                     type="text"
                     className="form-control"
                     name="serviceName"
-                    value={type}
+                    value={data.type}
                     readOnly
                   />
                 </div>
@@ -237,7 +241,7 @@ function SupportInfo({type,data,setData}) {
 
             <button
               type="button"
-              onClick={() => history.push("/verify")}
+              onClick={() => nextButton()}
               className="btn btn-primary next-btn"
             >
               Next

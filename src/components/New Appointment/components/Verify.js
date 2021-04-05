@@ -1,8 +1,9 @@
 import React from "react";
-import { name } from "./Services";
-// import { service } from "./DateTime";
+import { useHistory } from 'react-router-dom';
 
-function Verify(props) {
+function Verify({type,data}) {
+  const history = useHistory();
+
   return (
     <div className="service-container row">
       <div className="select-service col-5">
@@ -29,7 +30,7 @@ function Verify(props) {
             </div>
             <div className="mb-4">
               <p className="label">Service:</p>
-              <p>{service}</p>
+              <p>{data.type}</p>
             </div>
           </div>
 
@@ -62,21 +63,21 @@ function Verify(props) {
           </div>
         </div>
 
-        {name === "online-meeting" || name === "publicity" ? (
+        {type=== "online-meeting" || type === "publicity" ? (
           <button
             type="button"
             className="back-btn"
-            onClick={() => props.history.push("/other-info")}
+            onClick={() => history.push("/other-info")}
           >
             Prev
           </button>
         ) : null}
 
-        {name === "intern-support" || name === "enotice" ? (
+        {type === "intern-support" ||type === "enotice" ? (
           <button
             type="button"
             className="back-btn"
-            onClick={() => props.history.push("/support-info")}
+            onClick={() =>history.push("/support-info")}
           >
             Prev
           </button>
@@ -85,7 +86,7 @@ function Verify(props) {
         <button
           type="button"
           className="btn btn-primary submit-btn"
-          onClick={() => props.history.push("/confirmation")}
+          onClick={() => history.push("/confirmation")}
         >
           Submit
         </button>
