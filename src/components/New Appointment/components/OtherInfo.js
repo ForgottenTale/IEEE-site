@@ -1,6 +1,37 @@
 import React, { useState } from "react";
 import { useHistory } from 'react-router-dom';
 
+function CohostData(props) {
+
+  return (
+    <div className="row mb-3">
+
+      <div className="col">
+        <label className="form-label">Co-host name</label>
+        <input
+
+          className="form-control"
+          name="cohostName"
+          value={props.cohost[props.id].cohostName}
+          onChange={e => props.handleChange(props.id, e)}
+        />
+      </div>
+      <div className="col">
+        <label className="form-label">Co-host email</label>
+        <input
+
+          className="form-control"
+          name="cohostMail"
+          value={props.cohost[props.id].cohostMail}
+          onChange={e => props.handleChange(props.id, e)}
+        />
+      </div>
+
+
+    </div>
+  );
+}
+
 function OtherInfo({ type, data, setData }) {
 
   const history = useHistory();
@@ -28,7 +59,7 @@ function OtherInfo({ type, data, setData }) {
   }
 
 
-  const handleChange = (index, e) => {
+  function handleChange(index, e){
 
     let values = [...cohost];
 
@@ -52,38 +83,6 @@ function OtherInfo({ type, data, setData }) {
     // });
 
     // 
-  }
-
-  function CohostData(props) {
-
-
-    return (
-      <div className="row mb-3">
-
-        <div className="col">
-          <label className="form-label">Co-host name</label>
-          <input
-
-            className="form-control"
-            name="cohostName"
-            value={cohost[props.id].cohostName}
-            onChange={e => handleChange(props.id, e)}
-          />
-        </div>
-        <div className="col">
-          <label className="form-label">Co-host email</label>
-          <input
-
-            className="form-control"
-            name="cohostMail"
-            value={cohost[props.id].cohostMail}
-            onChange={e => handleChange(props.id, e)}
-          />
-        </div>
-
-
-      </div>
-    );
   }
 
   return (
@@ -144,7 +143,7 @@ function OtherInfo({ type, data, setData }) {
 
       <form>
         {cohost.map((e, i) => (
-          <CohostData key={i} id={i} />
+          <CohostData key={i} id={i} cohost={cohost} handleChange={handleChange}/>
         ))}
 
         {count !== 3 && (
