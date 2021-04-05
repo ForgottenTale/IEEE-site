@@ -40,49 +40,42 @@ function OtherInfo({ type, data, setData }) {
     { cohostName: "asdas", cohostMail: "sdasd" }
   ]);
 
+  function nextButton() {
+    setData(
+      {
+        ...data,
+        cohosts: cohost
+      });
 
+    history.push("/verify");
+  }
 
   function addCohost() {
-    // if (count < 3) {
-    //   setCount(count + 1);
-    // }
+    if (count < 3) {
+
+    }
+
     setCohost([...cohost, { "cohostName": "", "cohostMail": "" }])
   }
 
   function deleteCohost(i) {
-    // if (count > 1) {
-    //   setCount(count - 1);
-    // }
-    const values = [...cohost];
-    values.splice(i, 1);
-    setCohost(values)
+    if (count < 0) {
+      setCount(count - 1);
+      const values = [...cohost];
+      values.splice(i, 1);
+      setCohost(values)
+    }
+
   }
 
 
-  function handleChange(index, e){
+  function handleChange(index, e) {
 
     let values = [...cohost];
-
     e.preventDefault();
-    console.log(e.target.value);
     values[index][e.target.name] = e.target.value;
-    console.log(values)
-
     setCohost(values);
 
-    // setCohost(prev=>{
-    //   prev.map((item,i)=>{
-    //     if(i !== index){
-    //       return item
-    //     }
-
-    //     return{
-    //       ...item,[e.target.name]:e.target.value
-    //     }
-    //   });
-    // });
-
-    // 
   }
 
   return (
@@ -132,58 +125,58 @@ function OtherInfo({ type, data, setData }) {
 
             <button
               type="button"
-              onClick={() => history.push("/verify")}
+              onClick={() => nextButton()}
               className="btn btn-primary next-btn"
             >
               Next
             </button>
           </form>
         ) : (
-      /* ............................................................................................... */
+          /* ............................................................................................... */
 
-      <form>
-        {cohost.map((e, i) => (
-          <CohostData key={i} id={i} cohost={cohost} handleChange={handleChange}/>
-        ))}
+          <form>
+            {cohost.map((e, i) => (
+              <CohostData key={i} id={i} cohost={cohost} handleChange={handleChange} />
+            ))}
 
-        {count !== 3 && (
-          <button
-            type="button"
-            onClick={addCohost}
-            className="btn btn-secondary btn-sm cohost-btn"
-          >
-            <i className="fas fa-plus"></i>
-          </button>
+            {count !== 3 && (
+              <button
+                type="button"
+                onClick={addCohost}
+                className="btn btn-secondary btn-sm cohost-btn"
+              >
+                <i className="fas fa-plus"></i>
+              </button>
+            )}
+
+
+            <button
+              type="button"
+              onClick={deleteCohost}
+              className="btn btn-secondary btn-sm cohost-btn"
+            >
+              <i className="fas fa-trash"></i>
+            </button>
+
+
+            <button
+              type="button"
+              className="mt-5 back-btn"
+              onClick={() => history.push("/event-info")}
+            >
+              Prev
+            </button>
+
+            <button
+              type="button"
+              onClick={() => nextButton()}
+              className="btn btn-primary mt-5 next-btn"
+            >
+              Next
+            </button>
+          </form>
         )}
-
-
-        <button
-          type="button"
-          onClick={deleteCohost}
-          className="btn btn-secondary btn-sm cohost-btn"
-        >
-          <i className="fas fa-trash"></i>
-        </button>
-
-
-        <button
-          type="button"
-          className="mt-5 back-btn"
-          onClick={() => history.push("/event-info")}
-        >
-          Prev
-            </button>
-
-        <button
-          type="button"
-          onClick={() => history.push("/verify")}
-          className="btn btn-primary mt-5 next-btn"
-        >
-          Next
-            </button>
-      </form>
-      )}
-     </div> 
+      </div>
     </div>
   );
 }

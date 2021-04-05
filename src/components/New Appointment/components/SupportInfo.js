@@ -22,12 +22,15 @@ function SupportInfo({ type, data, setData }) {
         description: support.description,
         deliveryType: support.deliveryType,
         remainder: support.remainder,
-        comments: support.comments
+        comments: support.comments,
+        purpose: support.purpose,
+        dimensions: support.dimensions,
+        wordsCount: support.wordsCount
       });
-     
-        history.push("/verify")
-      
-      
+
+    history.push("/verify")
+
+
 
   };
 

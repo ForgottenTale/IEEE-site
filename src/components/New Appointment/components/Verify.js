@@ -26,7 +26,7 @@ function Verify({type,data}) {
           <div className="col">
             <div className="mb-2">
               <p className="label">Date:</p>
-              <p>01-01-2021</p>
+              <p>{data.timeFrom.toISOString().slice(0,10)}</p>
             </div>
             <div className="mb-4">
               <p className="label">Service:</p>
