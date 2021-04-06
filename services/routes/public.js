@@ -5,7 +5,14 @@ const {NewUser} = require('../controller.js');
 
 function respondError(err, res){
     console.error(err);
-    res.status(400).json({error: err});
+    let message;
+    if(err.code == 'ER_BAD_NULL_ERROR')
+        message = err.sqlMessage;
+    else if(err.code=='ER_DUP_ENTRY' && (/for key 'user.email'/).test(err.message))
+        message = "User already exists";
+    else
+        message = err.message || err;
+    res.status(400).json({error: message});
 }
 
 module.exports = function(app){
@@ -20,16 +27,13 @@ module.exports = function(app){
                 newUser.password = hash;
                 database.addUser(newUser, (err, doc)=>{
                     if(err) {
-                        let message = "Unknown error";
-                        if(err.code=="ER_DUP_ENTRY")
-                            message = "User already exists";
-                        return respondError(message, res);
+                        return respondError(err, res);
                     };
                     return res.status(200).send(newUser.getPublicInfo());
                 })
             })
         }catch(err){
-            respondError(err.message || err, res);
+            respondError(err, res);
         }
     })
     

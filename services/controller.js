@@ -45,7 +45,7 @@ class User {
         return({
             names: ['name', 'email', 'password', 'phone'],
             values: [
-                "'" + this.name + "'",
+                this.name?("'" + this.name + "'"):"null",
                 "'" + this.email + "'",
                 "'" + this.password + "'",
                 "'" + this.phone + "'"
@@ -77,7 +77,6 @@ class NewUser extends User{
             super(input);
             this.required = ["confirmPassword"];
             super.checkRequired(input);
-            this.validate(input);
             this.confirmPassword = input.confirmPassword.trim();
             if(this.confirmPassword != this.password)
                 throw "Passwords mismatch";

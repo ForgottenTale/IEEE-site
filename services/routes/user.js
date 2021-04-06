@@ -4,7 +4,8 @@ const database = require('../database/database.js');
 const upload = require('../upload.js');
 
 function respondError(err, res){
-    res.status(400).json({error: err});
+    console.error(err);
+    res.status(400).json({error: err.message || err});
 }
 
 module.exports = function(app){
@@ -48,13 +49,13 @@ module.exports = function(app){
                 }
                 database.addAppointment(newAppointment, (err, doc)=>{
                     if(err){
-                        return respondError(err.message || err, res);
+                        return respondError(err, res);
                     }
                     return res.status(200).json(newAppointment.getPublicInfo());
                 })
             }
             catch(err){
-                respondError(err.message || err, res);
+                respondError(err, res);
             }
         })
     })

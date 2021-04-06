@@ -49,8 +49,7 @@ module.exports = {
 		let query = "INSERT INTO user(" + names.join(',') +") VALUES(" + values.join(',') + ");";
 		connection.query(query, (err, results, fields) => {
 			if(err) {
-				console.error(err);
-				return done({code: err.code})
+				return done(err, false);
 			};
 			return done(null, results);
 		})
@@ -60,10 +59,8 @@ module.exports = {
 		let {names, values} = newAppointment.getAllNamesAndValues();
 		let query = "INSERT INTO " + newAppointment.type 
 			+ "(" + names.join(',') + ") VALUES(" + values.join(',') + ");";
-		console.log(query)
 		connection.query(query, (err, results, fields)=>{
 			if(err){
-				console.error(err);
 				return done(err);
 			}
 			return done(null, results);
