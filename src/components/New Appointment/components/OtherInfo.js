@@ -12,7 +12,7 @@ function CohostData(props) {
 
           className="form-control"
           name="cohostName"
-          value={props.cohost[props.id].cohostName}
+          value={props.cohost[props.id][0]}
           onChange={e => props.handleChange(props.id, e)}
         />
       </div>
@@ -22,7 +22,7 @@ function CohostData(props) {
 
           className="form-control"
           name="cohostMail"
-          value={props.cohost[props.id].cohostMail}
+          value={props.cohost[props.id][1]}
           onChange={e => props.handleChange(props.id, e)}
         />
       </div>
@@ -37,14 +37,15 @@ function OtherInfo({ type, data, setData }) {
   const history = useHistory();
   let [count, setCount] = useState(1);
   const [cohost, setCohost] = useState([
-    { cohostName: "asdas", cohostMail: "sdasd" }
+    ["", ""]
   ]);
 
   function nextButton() {
     setData(
       {
-        ...data,
-        cohosts: cohost
+        
+        cohosts: cohost,
+        ...data
       });
 
     history.push("/verify");
@@ -52,14 +53,15 @@ function OtherInfo({ type, data, setData }) {
 
   function addCohost() {
     if (count < 3) {
-
+      setCohost([...cohost, ["", ""]]);
+      setCount(count+1);
     }
 
-    setCohost([...cohost, { "cohostName": "", "cohostMail": "" }])
+
   }
 
   function deleteCohost(i) {
-    if (count < 0) {
+    if (count > 1) {
       setCount(count - 1);
       const values = [...cohost];
       values.splice(i, 1);
@@ -73,7 +75,13 @@ function OtherInfo({ type, data, setData }) {
 
     let values = [...cohost];
     e.preventDefault();
-    values[index][e.target.name] = e.target.value;
+    if (e.target.name === 'cohostName') {
+      values[index][0] = e.target.value;
+    }
+    if (e.target.name === 'cohostMail') {
+      values[index][1] = e.target.value;
+    }
+
     setCohost(values);
 
   }

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from 'react-router-dom';
 
 
+
 function SupportInfo({ type, data, setData }) {
   const history = useHistory();
 
@@ -12,8 +13,11 @@ function SupportInfo({ type, data, setData }) {
     comments: "",
     purpose: "",
     dimensions: "",
-    wordsCount: ""
+    wordsCount: "",
+    url: "",
+    img: "",
   });
+
 
   function nextButton() {
     setData(
@@ -25,7 +29,9 @@ function SupportInfo({ type, data, setData }) {
         comments: support.comments,
         purpose: support.purpose,
         dimensions: support.dimensions,
-        wordsCount: support.wordsCount
+        wordsCount: support.wordsCount,
+        url: support.url,
+        img: support.img
       });
 
     history.push("/verify")
@@ -79,6 +85,7 @@ function SupportInfo({ type, data, setData }) {
                     multiple
                     className="form-control"
                     name="relevantFiles"
+                    onChange={(e) => { setSupport({ ...support, img: e.target.files[0] }) }}
                   />
                 </div>
               </div>
@@ -90,14 +97,14 @@ function SupportInfo({ type, data, setData }) {
                     type="text"
                     className="form-control"
                     name="serviceName"
-                    value={data.type}
+                    value={data.service}
                     readOnly
                   />
                 </div>
 
-                {type === "Poster Design" ||
-                  type === "Content Writing" ? (
-                  type === "Poster Design" ? (
+                {data.service === "Poster Design" ||
+                  data.service === "Content Writing" ? (
+                  data.service === "Poster Design" ? (
                     <div className="mb-4">
                       <label className="form-label">
                         Poster dimensions (if any)
@@ -125,9 +132,14 @@ function SupportInfo({ type, data, setData }) {
                 ) : (
                   <div className="mb-4">
                     <label className="form-label">
-                      Mockup of the website (if any)
+                      URL
                     </label>
-                    <input type="file" className="form-control" name="mockup" />
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="mockup"
+                      onChange={(e) => { setSupport({ ...support, url: e.target.value }) }}
+                    />
                   </div>
                 )}
 
@@ -186,7 +198,12 @@ function SupportInfo({ type, data, setData }) {
                 </div>
                 <div className="mb-5">
                   <label className="form-label">Poster (if any)</label>
-                  <input type="file" className="form-control" name="poster" />
+                  <input
+                    type="file"
+                    className="form-control"
+                    name="poster"
+                    onChange={(e) => { setSupport({ ...support, img: e.target.files[0] }) }}
+                  />
                 </div>
               </div>
 
@@ -197,7 +214,7 @@ function SupportInfo({ type, data, setData }) {
                     type="text"
                     className="form-control"
                     name="serviceName"
-                    value={data.type}
+                    value={data.service}
                     readOnly
                   />
                 </div>

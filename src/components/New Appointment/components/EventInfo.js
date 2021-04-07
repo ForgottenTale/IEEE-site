@@ -2,14 +2,15 @@
 import React, { useState } from "react";
 import { useHistory } from 'react-router-dom';
 
-function EventInfo({ type, data,setData }) {
+function EventInfo({ type, data, setData }) {
 
   const history = useHistory();
 
   const [content, setContent] = useState({
     description: "",
     speaker: "",
-    speakerEmail: ""
+    speakerEmail: "",
+    img: ""
 
   })
 
@@ -19,9 +20,10 @@ function EventInfo({ type, data,setData }) {
         ...data,
         description: content.description,
         speaker: content.speaker,
-        speakerEmail: content.speakerEmail
+        speakerEmail: content.speakerEmail,
+        img: content.img
       });
-      history.push("/other-info");
+    history.push("/other-info");
   }
 
   return (
@@ -94,12 +96,22 @@ function EventInfo({ type, data,setData }) {
           {type === "online-meeting" ? (
             <div className="col-6">
               <label className="form-label">Poster (if any)</label>
-              <input type="file" className="form-control" name="poster" />
+              <input
+                type="file"
+                className="form-control"
+                name="poster"
+                onChange={(e) => { setContent({ ...content, img: e.target.files[0] }) }}
+              />
             </div>
           ) : (
             <div className="col-6">
               <label className="form-label">Poster</label>
-              <input type="file" className="form-control" name="poster" />
+              <input
+                type="file"
+                className="form-control"
+                name="poster"
+                onChange={(e) => { setContent({ ...content, img: e.target.files[0] }) }}
+              />
             </div>
           )}
         </div>
@@ -113,7 +125,7 @@ function EventInfo({ type, data,setData }) {
         </button>
 
         <button
-          onClick={() =>next()}
+          onClick={() => next()}
           className="btn btn-primary next-btn"
         >
           Next

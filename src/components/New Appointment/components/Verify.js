@@ -1,8 +1,45 @@
 import React from "react";
 import { useHistory } from 'react-router-dom';
+import axios from 'axios';
 
-function Verify({type,data}) {
+function Verify({ type, data }) {
   const history = useHistory();
+
+
+  const handleSubmit = () => {
+    const keys = Object.keys(data);
+    const values = Object.values(data);
+    const formData = new FormData();
+    const length = keys.length;
+
+    for (let i = 0; i <length; i++) {
+      formData.append(keys[i], values[i]);
+    }
+
+    handleUpload(formData);
+
+    console.log(Array.from(formData))
+    history.push("/confirmation");
+  }
+
+  const handleUpload = async (data) => {
+
+
+    try {
+      const url = 'url /book/online_meeting';
+      const res = await axios.post(url, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      console.log(res);
+
+    } catch (err) {
+      console.log(err);
+    }
+
+  }
+
 
   return (
     <div className="service-container row">
@@ -26,7 +63,7 @@ function Verify({type,data}) {
           <div className="col">
             <div className="mb-2">
               <p className="label">Date:</p>
-              <p>{data.timeFrom.toISOString().slice(0,10)}</p>
+              <p>{data.timeFrom.toISOString().slice(0, 10)}</p>
             </div>
             <div className="mb-4">
               <p className="label">Service:</p>
@@ -63,7 +100,7 @@ function Verify({type,data}) {
           </div>
         </div>
 
-        {type=== "online-meeting" || type === "publicity" ? (
+        {type === "online-meeting" || type === "publicity" ? (
           <button
             type="button"
             className="back-btn"
@@ -73,11 +110,11 @@ function Verify({type,data}) {
           </button>
         ) : null}
 
-        {type === "intern-support" ||type === "enotice" ? (
+        {type === "intern-support" || type === "enotice" ? (
           <button
             type="button"
             className="back-btn"
-            onClick={() =>history.push("/support-info")}
+            onClick={() => history.push("/support-info")}
           >
             Prev
           </button>
@@ -86,7 +123,7 @@ function Verify({type,data}) {
         <button
           type="button"
           className="btn btn-primary submit-btn"
-          onClick={() => history.push("/confirmation")}
+          onClick={() => handleSubmit()}
         >
           Submit
         </button>
