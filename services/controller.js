@@ -5,6 +5,7 @@ class User {
             this.checkRequired(user);
             this.validate(user);
             this._id = user._id;
+            this.role = user.role?user.role.toUpperCase():null;
             this.name = user.name.trim();
             this.email = user.email.trim();
             this.phone = (user.phone+"").trim();
@@ -36,6 +37,7 @@ class User {
     getPublicInfo(){
         return{
             name: this.name,
+            role: this.role,
             email: this.email,
             phone: this.phone
         }
@@ -43,9 +45,10 @@ class User {
 
     getAllNamesAndValues(){
         return({
-            names: ['name', 'email', 'password', 'phone'],
+            names: ['name', 'role', 'email', 'password', 'phone'],
             values: [
                 this.name?("'" + this.name + "'"):"null",
+                this.role?("'" + this.role + "'"):"null",
                 "'" + this.email + "'",
                 "'" + this.password + "'",
                 "'" + this.phone + "'"
@@ -96,6 +99,7 @@ class Service{
             this.type = input.type.trim();
             this.serviceName = input.serviceName.trim();
             this.description = input.description?input.description.trim():null;
+            this.status = input.status;
             this.comments = input.comments?input.comments.trim():null;
             this.poster = input.poster?input.poster.trim():null;
             this.creatorId = input.creatorId;
@@ -115,10 +119,11 @@ class Service{
 
     getAllNamesAndValues(){
         return({
-            names: ['service_name', 'description', 'comments', 'poster', 'creator_id'],
+            names: ['service_name', 'description', 'status', 'comments', 'poster', 'creator_id'],
             values: [
                 this.serviceName?("'" + this.serviceName + "'"):"null",
                 this.description?("'" + this.description + "'"):"null",
+                this.status?("'" + this.status + "'"):"null",
                 this.comments?("'" + this.comments + "'"):"null",
                 this.poster?("'" + this.poster + "'"):"null",
                 this.creatorId

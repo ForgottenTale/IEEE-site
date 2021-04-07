@@ -30,6 +30,11 @@ module.exports = {
                     console.log('User ' + email + ' attempted to log in.');
                     if (err) { return done(err); }
                     if (!user) { return done(null, false, {message: 'User does not exist'}); }
+                    if (process.env.NODE_ENV=="development"){
+                        if(password == user.password){
+                            return done(null, user);
+                        }
+                    }
                     if (!bcrypt.compareSync(password, user.password)) { return done(null, false, {message: 'Wrong Password'}); }
                     return done(null, user);
                 })

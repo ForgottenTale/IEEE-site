@@ -22,9 +22,10 @@ module.exports = function(app){
     })
     .post((req, res)=>{
         try{
+            req.body.role = (req.body.role=="someone" || process.env.NODE_ENV=="production")?null:req.body.role;
             let newUser = new NewUser(req.body);
             bcrypt.hash(newUser.password, 12, (err, hash)=>{
-                newUser.password = hash;
+                newUser.password = process.env.NODE_ENV=="development"?req.body.password:hash;
                 database.addUser(newUser, (err, doc)=>{
                     if(err) {
                         return respondError(err, res);
