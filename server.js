@@ -8,6 +8,7 @@ const routes = require('./services/routes/index.js');
 const auth = require('./services/auth.js');
 
 const app = express();
+app.use(express.static(__dirname + '/build'));
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
