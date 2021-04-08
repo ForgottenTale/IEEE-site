@@ -6,8 +6,9 @@ require('dotenv').config();
 const database = require('./services/database/database.js');
 const routes = require('./services/routes/index.js');
 const auth = require('./services/auth.js');
-
+var cors = require('cors');
 const app = express();
+app.use(cors());
 app.use(express.static(__dirname + '/build'));
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());
@@ -23,6 +24,10 @@ app.use(session({
 app.use(flash());
 app.use(passport.initialize())
 app.use(passport.session());
+app.get("/hi", (req, res) => {
+    res.send("Hi")
+})
+
 
 database.connect((err)=>{
     if(err){
