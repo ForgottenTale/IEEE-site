@@ -92,6 +92,7 @@ module.exports = {
 				})
 			}
 			if(!config[0].follow_hierarchy){
+				//find Alpha Admins
 				[...await(executeQuery("SELECT * FROM user WHERE role='ALPHA_ADMIN';"
 				))]
 				.forEach(user=>{

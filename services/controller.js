@@ -117,6 +117,10 @@ class Service{
         })
     }
 
+    getSQLDateTime(date){
+        return this.date.replace("T", " ").replace("Z", "")
+    }
+
     getAllNamesAndValues(){
         return({
             names: ['service_name', 'description', 'status', 'comments', 'poster', 'creator_id'],
@@ -161,8 +165,8 @@ class OnlineMeeting extends Service {
         namesAndValues.values.push(this.speakerName?("'" + this.speakerName + "'"):"null");
         namesAndValues.values.push(this.speakerEmail?("'" + this.speakerEmail + "'"):"null");
         namesAndValues.values.push(this.coHosts?("'" + JSON.stringify(this.coHosts) + "'"):"null");
-        namesAndValues.values.push(this.startTime?("'" + this.startTime.replace("T", " ").replace("Z", "") + "'"):"null");
-        namesAndValues.values.push(this.endTime?("'" + this.endTime.replace("T", " ").replace("Z", "") + "'"):"null");
+        namesAndValues.values.push(this.startTime?("'" + super.getSQLDateTime(this.startTime) + "'"):"null");
+        namesAndValues.values.push(this.endTime?("'" + super.getSQLDateTime(this.endTime) + "'"):"null");
         return(namesAndValues);
     }
 
