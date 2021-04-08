@@ -9,6 +9,7 @@ import OtherInfo from "./components/OtherInfo";
 import SupportInfo from "./components/SupportInfo";
 import Verify from "./components/Verify";
 import Confirmation from "./components/Confirmation";
+import './style.css';
 
 function App() {
 
