@@ -1,8 +1,8 @@
-import './eventList.scss'
+import './eventList.scss';
 
 
 function Event({event}) {
-    console.log(event)
+
     return (
         <div className="eventList_events_event">
             <div className="eventList_events_event_title">{event.title}</div>
@@ -10,13 +10,14 @@ function Event({event}) {
         </div>
     );
 }
-function EventsList({ events }) {
+function EventsList({ day }) {
+
     return (
         <div className="eventList">
-            <h4 className="eventList_date">Date</h4>
-            <p className="eventList_number">Number of events</p>
+            <h4 className="eventList_date">{day.format("DD MMM,YYYY")}</h4>
+            <p className="eventList_number"> Number of events : {(day !== undefined && day.events !==null )?day.events.length:0}</p>
             <div className="eventList_events">
-                {events !== undefined ?events.events.map((event)=><Event event ={event}/>):null}
+                {(day !== undefined && day.events !==null )?day.events.map((event)=><Event event ={event}  key={event.timeFrom}/>):null}
 
         
             </div>

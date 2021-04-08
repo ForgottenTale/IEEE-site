@@ -1,12 +1,16 @@
-import React from 'react';
-import ServiceSelection from "./components/New Appointment/App";
+
+import Content from './components/content/content';
+import { BrowserRouter as Router} from 'react-router-dom';
+import './App.scss';
 
 function App() {
   return (
-    <div className="App">
-  
-      <ServiceSelection />
-    </div>
+    <Router>
+      <div className="App">
+        <Content/>
+      </div>
+    </Router>
+ 
   );
 }
 

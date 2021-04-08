@@ -1,156 +1,178 @@
 
 import React, { useState, useEffect } from 'react';
 import './calender.scss';
-import DateBody from './components/dateBody';
-import TimeGrid from './components/timeGrid';
+import DayView from './components/dayView';
+import WeekView from './components/weekView';
+import MonthView from './components/monthView';
+import moment from 'moment';
+import {pushEvents} from '../utils/date';
+
+
 function Calender() {
 
-
-    const [days, setDays] = useState([]);
-    const [today, setToday] = useState([]);
-    const [next, setNext] = useState(0);
-
-
-
-    var dayName = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const [monthView, setMonthView] = useState(true);
+    const [weekView, setWeekView] = useState(false);
+    const [dayView, setDayView] = useState(false);
+    const [calender, setCalendar] = useState([]);
+    const [week, setWeek] = useState([]);
+    const [day, setDay] = useState({});
+    const [value, setValue] = useState(moment());
 
 
 
     useEffect(() => {
-        var monthNames = ["Januvary", "February", "March", "April", "May", "June", "July", "August", "September", "October", "Novemeber", "December"];
-        let d = new Date();
-        let day = d.getDate();
+
         const data = [
+         
             {
-                "date": "19/3/2021",
+                "date": "2021-03-30T18:30:00.000Z",
                 "events": [
-                    { "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
+                    {
+                        "title": "Webinar on CyptoCurrency",
+                        "time": "9 pm - 10 pm IST",
+                        "timeFrom": "2021-03-30T19:30:00.000Z",
+                        "timeTo": "2021-03-30T22:30:00.000Z",
+                        "background": '#616161'
+                    },
+                    {
+                        "title": "Webinar on CyptoCurrency",
+                        "time": "9 pm - 10 pm IST",
+                        "timeFrom": "2021-03-30T22:30:00.000Z",
+                        "timeTo": "2021-03-31T00:30:00.000Z",
+                        "background": '#616161'
+                    },
                 ]
             },
-            {
-                "date": "20/3/2021",
-                "events": [
-                    { "title": "Webinar on CyptoCurrency", "time": "9 pm - 10 pm IST" },
-                    { "title": "Webinar on NFT", "time": "6 pm - 8 pm IST" }
-                ]
-            },
+            
 
         ]
+        const startDay = value.clone().startOf("month").startOf("week");
+        const endDay = value.clone().endOf("month").endOf("week");
+        const weekStart = value.clone().startOf('isoweek');
+        const currentDay = value.clone().startOf("day");
+        const day = startDay.clone().subtract(1, "day");
+        const a = [];
+        const weekDays = [];
 
-        if (next !== 0) {
+        if (monthView) {
+            while (day.isBefore(endDay, "day")) {
+                a.push(
+                    Array(7).fill(0).map(() => {
+                        var d = day.add(1, "day").clone();
+                        d.events = pushEvents(d,data);
+                        return d;
+                    })
+                );
+            }
+            setCalendar(a);
 
-            d.setMonth(d.getMonth() + next);
         }
 
-        let month = d.getMonth();
-        let year = d.getFullYear();
+        if (weekView) {
+            for (var i = 0; i <= 6; i++) {
+                var da = moment(weekStart).add(i, 'days').clone();
+                weekDays.push(da);
+                weekDays[i].events=pushEvents(da,data)
+
+            }
+            setWeek(weekDays);
+        }
 
 
-        setToday({ "day": day, "month": monthNames[month], "year": year });
-        var daysInMonth = new Date(year, month + 1, 0).getDate();
-        d.setDate(1);
-        let firstDayIndex = d.getDay();
-        let lastDayIndex = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDay();
-        var prevMonthLastDay = new Date(d.getFullYear(), d.getMonth(), 0).getDate();
-        var events = [];
-        var temp = [];
-        var p = [];
-        for (let i = firstDayIndex; i > 0; i--) {
-            d.setDate(prevMonthLastDay);
-            d.setMonth(month - 1);
-            events = data.filter((Obj) => {
-                if (Obj.date.toString() === d.toLocaleDateString()) {
-                    return Obj.events
+        if (dayView) {
+
+            var tem = data.filter((Obj) => {
+                if (Obj.date.toString() === currentDay.toISOString()) {
+                    return Obj
                 }
                 else {
                     return null
                 }
-            })
-            p.push({ "day": prevMonthLastDay, "key": d.toLocaleDateString(), "events": events[0] })
-            prevMonthLastDay = prevMonthLastDay - 1;
-        }
-        for (let i = firstDayIndex - 1; i >= 0; i--) {
-            temp.push(p[i]);
-        }
 
-        for (let i = 1; i <= daysInMonth; i++) {
-            d.setDate(i);
-            d.setMonth(month);
+            });
 
-            events = data.filter((Obj) => {
-                if (Obj.date.toString() === d.toLocaleDateString()) {
-                    return Obj.events
-                }
-                else {
-                    return null
-                }
-            })
+            if (tem.length !== 0) {
+                currentDay.events = tem[0].events;
+            }
+            else {
+                currentDay.events = null
+            }
 
-            temp.push({ "day": i, "key": d.toLocaleDateString(), "events": events[0] })
 
+            setDay(currentDay);
         }
 
-        for (let i = lastDayIndex; i < 6; i++) {
-            d.setDate(i - lastDayIndex + 1);
-            d.setMonth(month + 1);
-            events = data.filter((Obj) => {
-                if (Obj.date.toString() === d.toLocaleDateString()) {
-                    return Obj.events
-                }
-                else {
-                    return null
-                }
-            })
-            temp.push({ "day": i - lastDayIndex + 1, "key": d.toLocaleDateString(), "events": events[0] })
-        }
-        setDays(temp)
 
-
-    }, [next])
+    }, [value, weekView, monthView, dayView])
 
 
     const nextMonth = () => {
-        setNext(next + 1);
+
+
+        if (monthView) {
+            return value.clone().add(1, "month");
+        }
+        if (weekView) {
+            return value.clone().add(1, "week");
+        }
+        if (dayView) {
+            return value.clone().add(1, "day");
+        }
+
 
     }
+
     const prevMonth = () => {
-        setNext(next - 1);
+
+
+        if (monthView) {
+            return value.clone().subtract(1, "month");
+        }
+        if (weekView) {
+            return value.clone().subtract(1, "week");
+        }
+        if (dayView) {
+            return value.clone().subtract(1, "day");
+        }
+
+
+    }
+
+    const toggleDayView = () => {
+        setDayView(true);
+        setMonthView(false);
+        setWeekView(false);
+    }
+    const toggleMonthView = () => {
+        setDayView(false);
+        setMonthView(true);
+        setWeekView(false);
+    }
+
+    const toggleWeekView = () => {
+        setDayView(false);
+        setMonthView(false);
+        setWeekView(true);
     }
 
 
-
-    function DayNameBody(props) {
-
-        return (
-            <div className="dayNameBody">
-                <div className="dayNameBody_name">{props.day}</div>
-            </div>
-        );
-
-
-    }
     return (
         <div className="calender">
-
-
             <div className="calender_menu">
-                <h2 className="calender_menu_today">{today.day} {today.month} {today.year}</h2>
+                <h2 className="calender_menu_today"> {value.format("MMMM")} {value.format("YYYY")}</h2>
                 <div className="calender_menu_buttons">
-                    <button className="calender_menu_buttons_button" onClick={prevMonth}>&#60;</button>
-                    <button className="calender_menu_buttons_button" onClick={nextMonth}>&#62;</button>
-                    <button className="calender_menu_buttons_button" onClick={nextMonth}>Day</button>
-                    <button className="calender_menu_buttons_button" onClick={nextMonth}>Month</button>
+                    <button className="calender_menu_buttons_button" onClick={() => setValue(prevMonth())}>&#60;</button>
+                    <button className="calender_menu_buttons_button" onClick={() => setValue(nextMonth())}>&#62;</button>
+                    <button className="calender_menu_buttons_button" onClick={toggleDayView}>Day</button>
+                    <button className="calender_menu_buttons_button" onClick={toggleWeekView}>Week</button>
+                    <button className="calender_menu_buttons_button" onClick={toggleMonthView}>Month</button>
                 </div>
             </div>
 
-            <div className="calender_monthView">
 
-                {dayName.map((name) => <DayNameBody day={name} key={name} />)}
-
-                {(days === []) ? {} : days.map((date) => <DateBody day={date} key={date.key} events={date.events} />)}
-
-            </div>
-            <TimeGrid />
+            {dayView ? <DayView day={day}/> : null}
+            {weekView ? <WeekView days={week} /> : null}
+            {monthView ? <MonthView days={calender} /> : null}
 
         </div>
     );
