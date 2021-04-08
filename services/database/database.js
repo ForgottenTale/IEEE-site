@@ -4,6 +4,15 @@ const { User } = require('../controller.js');
 
 let connection;
 
+function executeQuery(query){
+	return new Promise((resolve, reject)=>{
+		connection.query(query, (err, results, fields)=>{
+			if(err) return reject(err);
+			return resolve(results);
+		})
+	})
+}
+
 module.exports = {
 	connect: function (done){
 
@@ -23,17 +32,16 @@ module.exports = {
 				return done(err);
 			}
 			console.log("Connection established");
-			return done(null);
-		});
-		
-		connection.query(schema.join(), function (err, results, fields) {
-			if (err) return done(err);
+			connection.query(schema.join(''), function (err, results, fields) {
+				if (err) return done(err);
+				return done(null);
+			});
 		});
 	},
 
-	findOne: function (params, done) {
+	findUser: function (params, done) {
 		let values = User.getValues(params).join(' AND ');
-		let query = "SELECT * FROM USERS WHERE " + values + ";";
+		let query = "SELECT * FROM user WHERE " + values + ";";
 		connection.query(query, (err, results, fields) => {
 			if (err) {return done(err)};
 			try{
@@ -45,15 +53,68 @@ module.exports = {
 		})
 	},
 
-	insertUser: function (user, done) {
+	addUser: function (user, done) {
 		let {names, values} = user.getAllNamesAndValues();
-		let query = "INSERT INTO users(" + names.join(',') +") VALUES(" + values.join(',') + ");";
+		let query = "INSERT INTO user(" + names.join(',') +") VALUES(" + values.join(',') + ");";
 		connection.query(query, (err, results, fields) => {
 			if(err) {
-				console.error(err);
-				return done({code: err.code})
+				return done(err, false);
 			};
 			return done(null, results);
 		})
+	},
+
+	addAppointment: async function(newAppointment, done){
+		try{
+			newAppointment.status = "PENDING";
+			let {names, values} = newAppointment.getAllNamesAndValues();
+			let config = await executeQuery("SELECT * FROM config WHERE appointment_type='" + newAppointment.type + "';");
+			let nextApprovers = [];
+			if(config[0].follow_service_assignment){
+				//find Assignees
+				[...await(executeQuery("SELECT * FROM service_assignment WHERE appointment_type=" 
+					+ ("'" + newAppointment.type + "'") 
+					+" AND (service_name=" 
+					+ ("'" + newAppointment.serviceName + "'" )
+					+ " OR service_name is null);"
+				))]
+				.forEach(info=>{
+					if(nextApprovers.indexOf(info.assigned_to)==-1)
+						nextApprovers.push(info.assigned_to);
+				});
+			}else{
+				//find Beta Admins
+				[...await(executeQuery("SELECT * FROM user WHERE role='BETA_ADMIN';"
+				))]
+				.forEach(user=>{
+					if(nextApprovers.indexOf(user._id)==-1)
+						nextApprovers.push(user._id);
+				})
+			}
+			if(!config[0].follow_hierarchy){
+				//find Alpha Admins
+				[...await(executeQuery("SELECT * FROM user WHERE role='ALPHA_ADMIN';"
+				))]
+				.forEach(user=>{
+					if(nextApprovers.indexOf(user._id)==-1)
+						nextApprovers.push(user._id);
+				})
+			}
+			
+			let addAppointmentQ = "INSERT INTO " + newAppointment.type 
+				+ "(" + names.join(',') + ") VALUES(" + values.join(',') + ");";
+			let addedAppointment = await executeQuery(addAppointmentQ);
+			let addNextApprovers = nextApprovers.map(userId=>{
+				return ("INSERT INTO next_to_approve(user_id," +newAppointment.type + "_id) VALUES("
+					+ userId +","+addedAppointment.insertId
+					+ ");"
+				)
+			}).join("");
+			await executeQuery(addNextApprovers);
+			return done(null, addedAppointment);			
+		}
+		catch(err){
+			return done(err);
+		}
 	}
 }

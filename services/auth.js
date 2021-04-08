@@ -16,7 +16,7 @@ module.exports = {
         });
 
         passport.deserializeUser((id, done) => {
-            database.findOne({ email: id }, (err, doc) => {
+            database.findUser({ email: id }, (err, doc) => {
                 done(null, doc);
             })
         });
@@ -26,10 +26,15 @@ module.exports = {
             passwordField: 'password'
         },
             function (email, password, done) {
-                database.findOne({ email: email}, function (err, user) {
+                database.findUser({ email: email}, function (err, user) {
                     console.log('User ' + email + ' attempted to log in.');
                     if (err) { return done(err); }
                     if (!user) { return done(null, false, {message: 'User does not exist'}); }
+                    if (process.env.NODE_ENV=="development"){
+                        if(password == user.password){
+                            return done(null, user);
+                        }
+                    }
                     if (!bcrypt.compareSync(password, user.password)) { return done(null, false, {message: 'Wrong Password'}); }
                     return done(null, user);
                 })

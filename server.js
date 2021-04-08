@@ -1,5 +1,4 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const passport = require('passport');
 const session = require('express-session');
 const flash = require('connect-flash');
@@ -9,9 +8,10 @@ const routes = require('./services/routes/index.js');
 const auth = require('./services/auth.js');
 
 const app = express();
+app.use(express.static(__dirname + '/build'));
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(express.urlencoded({extended: true}));
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: true,
@@ -25,8 +25,10 @@ app.use(passport.initialize())
 app.use(passport.session());
 
 database.connect((err)=>{
-    if(err) throw err;
-
+    if(err){
+        console.error(err);
+        throw err;
+    }
     auth.setStrategies(app);
     routes(app);
 

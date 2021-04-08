@@ -3,6 +3,18 @@ const passport = require('passport');
 const database = require('../database/database.js');
 const {NewUser} = require('../controller.js');
 
+function respondError(err, res){
+    console.error(err);
+    let message;
+    if(err.code == 'ER_BAD_NULL_ERROR')
+        message = err.sqlMessage;
+    else if(err.code=='ER_DUP_ENTRY' && (/for key 'user.email'/).test(err.message))
+        message = "User already exists";
+    else
+        message = err.message || err;
+    res.status(400).json({error: message});
+}
+
 module.exports = function(app){
     app.route('/register')
     .get((req, res)=>{
@@ -10,21 +22,19 @@ module.exports = function(app){
     })
     .post((req, res)=>{
         try{
+            req.body.role = (req.body.role=="someone" || process.env.NODE_ENV=="production")?null:req.body.role;
             let newUser = new NewUser(req.body);
             bcrypt.hash(newUser.password, 12, (err, hash)=>{
-                newUser.password = hash;
-                database.insertUser(newUser, (err, doc)=>{
+                newUser.password = process.env.NODE_ENV=="development"?req.body.password:hash;
+                database.addUser(newUser, (err, doc)=>{
                     if(err) {
-                        let message = "Unknown error";
-                        if(err.code=="ER_DUP_ENTRY")
-                            message = "User already exists";
-                        return res.status(400).json({error: message})
+                        return respondError(err, res);
                     };
                     return res.status(200).send(newUser.getPublicInfo());
                 })
             })
         }catch(err){
-            res.status(400).json({error: err})
+            respondError(err, res);
         }
     })
     
