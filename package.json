@@ -18,17 +18,19 @@
     "multer": "^1.4.2",
     "mysql": "^2.18.1",
     "node-sass": "^5.0.0",
+    "off": "0.0.10",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
+    "progress": "^2.0.3",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.3",
-    "web-vitals": "^1.1.0"
+    "web-vitals": "^1.1.0",
+    "with": "^7.0.2"
   },
   "scripts": {
     "start": "PORT=3000 react-scripts start",
-
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
