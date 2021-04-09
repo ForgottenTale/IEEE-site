@@ -117,8 +117,8 @@ class Service{
         })
     }
 
-    getSQLDateTime(date){
-        return this.date.replace("T", " ").replace("Z", "")
+    getSQLDateTime(dateTime){
+        return dateTime.toISOString().replace("T", " ").replace("Z", "");
     }
 
     getAllNamesAndValues(){
@@ -152,8 +152,8 @@ class OnlineMeeting extends Service {
         super.checkRequired(input);
         this.speakerName = input.speakerName.trim();
         this.speakerEmail = input.speakerEmail.trim();
-        this.startTime = input.startTime;
-        this.endTime = input.endTime;
+        this.startTime = new Date(input.startTime);
+        this.endTime = new Date(input.endTime);
         this.coHosts = input.coHosts?input.coHosts.map(coHost=>{
             return [coHost[0].trim(), coHost[1].trim()]
         }):null;
@@ -182,9 +182,11 @@ class OnlineMeeting extends Service {
 class InternSupport extends Service{
     constructor(input){
         super(input);
-        this.required = ["wordsCount"];
+        this.required = ["wordsCount", "startTime", "endTime"];
         super.checkRequired(input);
         this.validate(input);
+        this.startTime = new Date(input.startTime);
+        this.endTime = new Date(input.endTime);
         this.wordsCount = input.wordsCount;
     }
 
@@ -197,7 +199,9 @@ class InternSupport extends Service{
 
     getAllNamesAndValues(){
         let namesAndValues = super.getAllNamesAndValues();
-        namesAndValues.names.push('words_count');
+        namesAndValues.names.push('start_time', 'end_time', 'words_count');
+        namesAndValues.values.push(this.startTime?("'" + super.getSQLDateTime(this.startTime) + "'"):"null");
+        namesAndValues.values.push(this.endTime?("'" + super.getSQLDateTime(this.endTime) + "'"):"null");
         namesAndValues.values.push(this.wordsCount);
         return(namesAndValues);
     }
@@ -212,19 +216,17 @@ class InternSupport extends Service{
 class ENotice extends Service{
     constructor(input){
         super(input);
-        this.required = ["express", "reminder"];
+        this.required = ["express", "reminder", "publishTime"];
         super.checkRequired(input);
-        if(typeof(input.express)=="boolean" && typeof(input.reminder)=="boolean"){
-            this.express = input.express;
-            this.reminder = input.reminder;   
-        }else{
-            throw "express and reminder required to be boolean"
-        }
+        this.express = input.express=="express"?true:false;
+        this.reminder = input.reminder=="yes"?true:false;
+        this.publishTime = new Date(input.publishTime)
     }
 
     getAllNamesAndValues(){
         let namesAndValues = super.getAllNamesAndValues();
-        namesAndValues.names.push('express', 'reminder');
+        namesAndValues.names.push('publish_time', 'express', 'reminder');
+        namesAndValues.values.push(this.publishTime?("'" + super.getSQLDateTime(this.publishTime) + "'"):"null");
         namesAndValues.values.push(this.express);
         namesAndValues.values.push(this.reminder);
         return(namesAndValues);
@@ -241,6 +243,23 @@ class ENotice extends Service{
 class Publicity extends Service{
     constructor(input){
         super(input);
+        this.required = ["dateTime"];
+        super.checkRequired(input);
+        this.dateTime = new Date(input.dateTime);
+    }
+
+    getAllNamesAndValues(){
+        let namesAndValues = super.getAllNamesAndValues();
+        namesAndValues.names.push('date_time');
+        namesAndValues.values.push(this.dateTime?("'" + super.getSQLDateTime(this.dateTime) + "'"):"null");
+        return(namesAndValues);
+    }
+    
+    getPublicInfo(){
+        return Object.assign({
+            express: this.express,
+            reminder: this.reminder
+        }, super.getPublicInfo());
     }
 };
 
