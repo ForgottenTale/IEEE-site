@@ -1,8 +1,22 @@
 const mysql = require('mysql');
 const { schema } = require('./ddl.js');
-const { User } = require('../controller.js');
+const { User, getClass } = require('../controller.js');
 
 let connection;
+
+function getConfig(type, done){
+	let query = "SELECT * FROM config INNER JOIN service ON service._id=config.type_id WHERE service.type='"
+	+ type
+	+"';";
+	connection.query(query, (err, results, fields)=>{
+		if(err) return done(err);
+		return done(null, results.reduce((total, variable)=>{
+			total[variable.name] = variable.value;
+			return total;
+		}, {})
+		);
+	})
+}
 
 function executeQuery(query){
 	return new Promise((resolve, reject)=>{
@@ -68,15 +82,18 @@ module.exports = {
 		try{
 			newAppointment.status = "PENDING";
 			let {names, values} = newAppointment.getAllNamesAndValues();
-			let config = await executeQuery("SELECT * FROM config INNER JOIN service ON service._id=config.type_id WHERE service.type='"
-				+ newAppointment.type
-				+"';")
-				.then(data=>{
-					return data.reduce((total, variable)=>{
-						total[variable.name] = variable.value;
-						return total;
-					}, {});
+			let config = await new Promise((resolve, reject)=>{
+				getConfig(newAppointment.type, (err, result)=>{
+					if(err) return reject(err);
+					return resolve(result);
+				})
+			})
+			await new Promise((resolve, reject)=>{
+				this.checkAvailability(newAppointment, (err, msg)=>{
+					if(err) return reject(err);
+					return resolve(msg);
 				});
+			})
 			let nextApprovers = [];
 			if(config.follow_service_assignment){
 				//find Assignees
@@ -126,7 +143,24 @@ module.exports = {
 		}
 	},
 
-	isTimeSlotAvailable: function(newAppointment){
-		let query = 'SELECT * FROM '
+	checkAvailability: function(input, done){
+		AppointmentClass = getClass(input.type);
+		getConfig(input.type, (err, config)=>{
+			if(err) return done(err);
+			let query;
+			try{
+				AppointmentClass.validateTime(input, config);
+				query = AppointmentClass.getTimeAvailQuery(input, config);
+			}catch(err){
+				return done(err);
+			}
+			connection.query(query, (err, results, fields)=>{
+				if(err) return done(err);
+				if(results.length < 1){
+					return done(null, "Available");
+				}
+				return done("Time slot unavailable");
+			})
+		})
 	}
 }

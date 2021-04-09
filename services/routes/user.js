@@ -1,5 +1,5 @@
 const auth = require('../auth.js');
-const {OnlineMeeting, InternSupport, ENotice, Publicity} = require('../controller.js');
+const {getClass} = require('../controller.js');
 const database = require('../database/database.js');
 const upload = require('../upload.js');
 
@@ -25,28 +25,14 @@ module.exports = function(app){
                 if(err) throw err;
                 let newAppointment;
 
-                req.body.coHosts = [
-                    ["Jimmy Neesham", "jimmyneesham@gmail.com"],
-                    ["MS Dhoni", "msd@gmail.com"],
-                    ["Gautam Gambhir", "gautamgambhir@gmail.com"]
-                ];
-                req.body.startTime = new Date('December 17, 1995 03:24:00').toISOString();
-                req.body.endTime = new Date().toISOString();
+                req.body.startTime = new Date('April 15, 2021 01:05:00').toISOString();
+                req.body.endTime = new Date('April 15, 2021 01:30:00').toISOString();
 
                 req.body.poster = req.file?req.file.filename:null;
                 req.body.creatorId = req.user._id;
                 req.body.type = req.params.params;
-                switch(req.params.params){
-                    case "online_meeting":  newAppointment = new OnlineMeeting(req.body);
-                                            break;                                    
-                    case "intern_support":  newAppointment = new InternSupport(req.body);
-                                            break;
-                    case "e_notice":        newAppointment = new ENotice(req.body);
-                                            break;
-                    case "publicity":       newAppointment = new Publicity(req.body);
-                                            break;
-                    default:                throw "Appointment type not found";
-                }
+                AppointmentClass= getClass(req.params.params);
+                newAppointment = new AppointmentClass(req.body);
                 database.addAppointment(newAppointment, (err, doc)=>{
                     if(err){
                         return respondError(err, res);
