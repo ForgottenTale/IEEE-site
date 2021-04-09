@@ -68,9 +68,17 @@ module.exports = {
 		try{
 			newAppointment.status = "PENDING";
 			let {names, values} = newAppointment.getAllNamesAndValues();
-			let config = await executeQuery("SELECT * FROM config WHERE appointment_type='" + newAppointment.type + "';");
+			let config = await executeQuery("SELECT * FROM config INNER JOIN service ON service._id=config.type_id WHERE service.type='"
+				+ newAppointment.type
+				+"';")
+				.then(data=>{
+					return data.reduce((total, variable)=>{
+						total[variable.name] = variable.value;
+						return total;
+					}, {});
+				});
 			let nextApprovers = [];
-			if(config[0].follow_service_assignment){
+			if(config.follow_service_assignment){
 				//find Assignees
 				[...await(executeQuery("SELECT * FROM service_assignment WHERE appointment_type=" 
 					+ ("'" + newAppointment.type + "'") 
@@ -91,7 +99,7 @@ module.exports = {
 						nextApprovers.push(user._id);
 				})
 			}
-			if(!config[0].follow_hierarchy){
+			if(!config.follow_hierarchy){
 				//find Alpha Admins
 				[...await(executeQuery("SELECT * FROM user WHERE role='ALPHA_ADMIN';"
 				))]
@@ -101,9 +109,9 @@ module.exports = {
 				})
 			}
 			
-			let addAppointmentQ = "INSERT INTO " + newAppointment.type 
+			let addAppointment = "INSERT INTO " + newAppointment.type 
 				+ "(" + names.join(',') + ") VALUES(" + values.join(',') + ");";
-			let addedAppointment = await executeQuery(addAppointmentQ);
+			let addedAppointment = await executeQuery(addAppointment);
 			let addNextApprovers = nextApprovers.map(userId=>{
 				return ("INSERT INTO next_to_approve(user_id," +newAppointment.type + "_id) VALUES("
 					+ userId +","+addedAppointment.insertId
@@ -116,5 +124,9 @@ module.exports = {
 		catch(err){
 			return done(err);
 		}
+	},
+
+	isTimeSlotAvailable: function(newAppointment){
+		let query = 'SELECT * FROM '
 	}
 }

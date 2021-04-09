@@ -1,5 +1,9 @@
 module.exports = {
     schema: [
+        `CREATE TABLE IF NOT EXISTS service(
+            _id INT PRIMARY KEY AUTO_INCREMENT,
+            type VARCHAR(20)
+        );`,
         `CREATE TABLE IF NOT EXISTS user(
             _id INT PRIMARY KEY AUTO_INCREMENT,
             role VARCHAR(20),
@@ -63,9 +67,10 @@ module.exports = {
             FOREIGN KEY(creator_id) REFERENCES user(_id)
         );`,
         `CREATE TABLE IF NOT EXISTS config(
-            appointment_type VARCHAR(30) PRIMARY KEY,
-            follow_hierarchy BOOLEAN DEFAULT 1,
-            follow_service_assignment BOOLEAN DEFAULT 1
+            type_id INT,
+            name VARCHAR(30) NOT NULL,
+            value TINYINT,
+            FOREIGN KEY(type_id) REFERENCES service(_id)
         );`,
         `CREATE TABLE IF NOT EXISTS service_assignment(
             appointment_type VARCHAR(30) NOT NULL,
