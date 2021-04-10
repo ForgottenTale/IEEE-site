@@ -63,7 +63,7 @@ module.exports = {
             status VARCHAR(10) DEFAULT "PENDING",
             creator_id INT NOT NULL,
             comments VARCHAR(30),
-            date_time DATETIME NOT NULL,
+            publish_time DATETIME NOT NULL,
             FOREIGN KEY(creator_id) REFERENCES user(_id)
         );`,
         `CREATE TABLE IF NOT EXISTS config(

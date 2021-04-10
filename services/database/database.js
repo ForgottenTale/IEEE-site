@@ -37,7 +37,8 @@ module.exports = {
 			user: process.env.DB_USER,
 			password: process.env.DB_PASSWORD,
 			database: process.env.DB_DATABASE,
-			multipleStatements: true
+			multipleStatements: true,
+			dateStrings: true
 		});
 		
 		connection.connect((err)=>{
@@ -162,5 +163,37 @@ module.exports = {
 				return done("Time slot unavailable");
 			})
 		})
+	},
+
+	getUserAppointments: function(user_id, done){
+		let serviceTypes = ["online_meeting", "intern_support", "e_notice", "publicity"];
+		let query = serviceTypes.reduce((total, type)=>{
+			return (total+"SELECT * FROM " + type + " WHERE creator_id=" + user_id +";");
+		}, "");
+		executeQuery(query)
+		.then(data=>{
+			return done(null, data.map((elem, idx)=>{
+				return {
+					type: serviceTypes[idx],
+					appointments: elem
+				}
+			}))
+		})
+		.catch(err=>done(err));
+	},
+
+	removeAppointment: function(input, done){
+		executeQuery("SELECT * FROM " + input.type + " WHERE _id=" + input.appointmentId + ";")
+		.then(data=>{
+			if(data[0].creator_id==input.userId){
+				let query = "DELETE FROM next_to_approve WHERE " + input.type + "_id=" + input.appointmentId + ";"
+					+ "DELETE FROM " + input.type + " WHERE _id=" + input.appointmentId + ";"
+				executeQuery(query)
+				.then(response=>done(null, "Deleted Successfully"))
+				.catch(err=>done(err))
+			}else
+				done("Appointments can only be deleted by the creator");
+		})
+		.catch(err=>done(err))
 	}
 }

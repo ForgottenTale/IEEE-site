@@ -9,6 +9,31 @@ function respondError(err, res){
 }
 
 module.exports = function(app){
+
+    app.route('/my-appointments')
+    .get(auth.ensureAuthenticated, (req, res)=>{
+        database.getUserAppointments(req.user._id, (err, appointments)=>{
+            if(err) return respondError(err, res);
+            res.status(200).json(appointments);
+        });
+    })
+    
+    app.route('/my-appointments/:type')
+    .post(auth.ensureAuthenticated, (req, res)=>{
+        if(req.query.cancel){
+            database.removeAppointment({
+                type: req.params.type,
+                userId: req.user._id,
+                appointmentId: req.query.cancel
+            }, (err, msg)=>{
+                if(err) return respondError(err, res);
+                res.status(200).json({message: msg});
+            })
+        }else{
+            respondError('Unsupported query', res);
+        }
+    })
+
     app.route('/protected')
     .get(auth.ensureAuthenticated, (req, res)=>{
         res.sendFile(process.cwd() + '/coverage/protected.html');
@@ -18,7 +43,7 @@ module.exports = function(app){
     .get(auth.ensureAuthenticated, (req, res)=>{
         res.sendFile(process.cwd() + '/coverage/new_appointment.html');
     })
-    app.route('/book/:params')
+    app.route('/api/book/:type')
     .post(auth.ensureAuthenticated, (req, res)=>{
         upload.single('poster')(req, res, (err)=>{
             try{
@@ -30,8 +55,8 @@ module.exports = function(app){
 
                 req.body.poster = req.file?req.file.filename:null;
                 req.body.creatorId = req.user._id;
-                req.body.type = req.params.params;
-                AppointmentClass= getClass(req.params.params);
+                req.body.type = req.params.type;
+                AppointmentClass= getClass(req.params.type);
                 newAppointment = new AppointmentClass(req.body);
                 database.addAppointment(newAppointment, (err, doc)=>{
                     if(err){
@@ -44,5 +69,18 @@ module.exports = function(app){
                 respondError(err, res);
             }
         })
+    })
+
+    app.route('/api/check-availability/:type')
+    .post(auth.ensureAuthenticated, (req, res)=>{
+        req.body.type = req.params.type;
+        
+        req.body.startTime = new Date('April 16, 2021 01:05:00');
+        req.body.endTime = new Date('April 16, 2021 01:30:00');
+        
+        database.checkAvailability(req.body, (err, msg)=>{
+            if(err) return respondError(err, res);
+            res.status(200).json({message: msg});
+        });
     })
 }

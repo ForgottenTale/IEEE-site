@@ -224,6 +224,31 @@ class InternSupport extends Service{
         }
     }
 
+    static validateTime(input, config){
+        if(input.startTime>input.endTime)
+            throw 'End Date must be greater than Start Date';
+        if(input.startTime<(new Date()))
+            throw 'Time slot selected is past';
+        let startOfAdvanceTime = new Date(input.startTime);
+        startOfAdvanceTime.setHours(0, 0, 0);
+        startOfAdvanceTime.setDate(startOfAdvanceTime.getDate() - config.advance_days);
+        if(startOfAdvanceTime<=(new Date())){
+            throw 'Booking has to be done ' + config.advance_days + ' days in advance';
+        }
+    }
+
+    static getTimeAvailQuery(input, config){
+        let padding = config.padding_between_bookings_mins;
+        let paddedStart = convertISOToSql(new Date(input.startTime.getTime() - (padding*60000)));
+        let paddedEnd = convertISOToSql(new Date(input.endTime.getTime() + (padding*60000)));
+        return ("SELECT * FROM " + input.type 
+            + " WHERE"
+            + " (start_time<='" + paddedStart + "' AND end_time>'" + paddedStart + "') OR "
+            + " (start_time<='" + paddedStart +"' AND end_time>='" + paddedEnd + "') OR "
+            + " (start_time<='" + paddedEnd +"' AND end_time>'" + paddedEnd + "');"
+        )
+    }
+
     getAllNamesAndValues(){
         let namesAndValues = super.getAllNamesAndValues();
         namesAndValues.names.push('start_time', 'end_time', 'words_count');
@@ -250,6 +275,27 @@ class ENotice extends Service{
         this.publishTime = new Date(input.publishTime)
     }
 
+    static validateTime(input, config){
+        let startOfAdvanceTime = new Date(input.publishTime);
+        startOfAdvanceTime.setHours(0, 0, 0);
+        startOfAdvanceTime.setDate(startOfAdvanceTime.getDate() - config.advance_days);
+        if(startOfAdvanceTime<=(new Date())){
+            throw 'Booking has to be done ' + config.advance_days + ' days in advance';
+        }
+    }
+
+    static getTimeAvailQuery(input, config){
+        let padding = config.padding_between_bookings_mins;
+        let paddedStart = convertISOToSql(new Date(input.publishTime.getTime() - (padding*60000)));
+        let paddedEnd = convertISOToSql(new Date(input.publishTime.getTime() + (padding*60000)));
+        return ("SELECT * FROM " + input.type 
+            + " WHERE service_name='" + input.serviceName
+            + "' (start_time<='" + paddedStart + "' AND end_time>'" + paddedStart + "') OR "
+            + " (start_time<='" + paddedStart +"' AND end_time>='" + paddedEnd + "') OR "
+            + " (start_time<='" + paddedEnd +"' AND end_time>'" + paddedEnd + "');"
+        )
+    }
+
     getAllNamesAndValues(){
         let namesAndValues = super.getAllNamesAndValues();
         namesAndValues.names.push('publish_time', 'express', 'reminder');
@@ -270,15 +316,34 @@ class ENotice extends Service{
 class Publicity extends Service{
     constructor(input){
         super(input);
-        this.required = ["dateTime"];
+        this.required = ["publishTime"];
         super.checkRequired(input);
-        this.dateTime = new Date(input.dateTime);
+        this.publishTime = new Date(input.publishTime);
+    }
+
+    static validateTime(input, config){
+        let startOfAdvanceTime = new Date(input.publishTime);
+        startOfAdvanceTime.setHours(0, 0, 0);
+        startOfAdvanceTime.setDate(startOfAdvanceTime.getDate() - config.advance_days);
+        if(startOfAdvanceTime<=(new Date())){
+            throw 'Booking has to be done ' + config.advance_days + ' days in advance';
+        }
+    }
+
+    static getTimeAvailQuery(input, config){
+        let padding = config.padding_between_bookings_mins;
+        let paddedStart = convertISOToSql(new Date(input.publishTime.getTime() - (padding*60000)));
+        let paddedEnd = convertISOToSql(new Date(input.publishTime.getTime() + (padding*60000)));
+        return ("SELECT * FROM " + input.type 
+            + " WHERE"
+            + " (publish_time>='" + paddedStart +"' AND publish_time<='" + paddedEnd + "');"
+        )
     }
 
     getAllNamesAndValues(){
         let namesAndValues = super.getAllNamesAndValues();
-        namesAndValues.names.push('date_time');
-        namesAndValues.values.push(this.dateTime?("'" + super.convertISOToSql(this.dateTime) + "'"):"null");
+        namesAndValues.names.push('publish_time');
+        namesAndValues.values.push(this.publishTime?("'" + super.convertISOToSql(this.dateTime) + "'"):"null");
         return(namesAndValues);
     }
     
