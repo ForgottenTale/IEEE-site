@@ -1,6 +1,6 @@
 import React from "react";
 import {useHistory} from 'react-router-dom';
-
+import serviceIcon from '../../../images/select.png';
 
 function Services({type,data,setData}) {
 
@@ -32,7 +32,7 @@ function Services({type,data,setData}) {
   return (
     <div className="service-container row">
       <div className="select-service col-5">
-        <img src="/images/select.png" alt="" />
+        <img src={serviceIcon} alt="" />
         <h2>Select Service</h2>
         <p>
           Please select a service for which you want to schedule an appointment.

@@ -1,6 +1,7 @@
 import React from "react";
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import confirmIcon from '../../../images/info.png'
 
 function Verify({ type, data }) {
   const history = useHistory();
@@ -44,7 +45,7 @@ function Verify({ type, data }) {
   return (
     <div className="service-container row">
       <div className="select-service col-5">
-        <img src="/images/info.png" alt="" />
+        <img src={confirmIcon} alt="" />
         <h2>Verify Order Details</h2>
         <p>
           Double check your reservation details and click submit button if

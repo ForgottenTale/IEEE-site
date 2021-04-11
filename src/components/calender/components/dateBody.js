@@ -13,14 +13,14 @@ function DateBody(props) {
 
 
     return (
-        <div className="date"
+        <div className="daytime"
             onClick={() => console.log(props.day.key)}
             onMouseEnter={() => { setEventList(!showEventList) }}
             onMouseLeave={() => { setEventList(!showEventList) }}
         >
-            <div className="date_day">{props.day.format("D")}</div>
+            <div className="daytime_day">{props.day.format("D")}</div>
             <p style={{ color: "white", fontSize: 12 }}>{props.day.key}</p>
-            <div className="date_events">
+            <div className="daytime_events">
                 {showEventList ? <EventsList day={props.day} /> : null}
             </div>
         </div>

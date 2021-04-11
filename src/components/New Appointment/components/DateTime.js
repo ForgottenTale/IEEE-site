@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { useHistory } from 'react-router-dom';
+import dateIcon from '../../../images/date.png';
 
 function minDay() {
 
@@ -57,7 +58,7 @@ function DateTime({ setData, data }) {
   return (
     <div className="service-container row">
       <div className="select-service col-5">
-        <img src="/images/date.png" alt="" />
+        <img src={dateIcon} alt="" />
         <h2>Select Date & Time</h2>
         <p>
           Click on a date to see a timeline of available slots. Click on a green

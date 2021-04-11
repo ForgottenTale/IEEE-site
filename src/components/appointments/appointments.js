@@ -1,4 +1,6 @@
 import './appointments.scss';
+import {useState} from 'react';
+import ServiceSelection from '../New Appointment/App';
 
 
 var data = [
@@ -42,11 +44,14 @@ function Appointment({ data }) {
 
 export default function Appointments() {
 
+    const [pop,setPop] =useState(false);
+
     return (
         <div className="appointments">
+            {pop?<ServiceSelection/>:null}
             <div className="appointments_header">
                 <h6 className="appointments_header_title">My Appointments</h6>
-                <button className="appointments_header_button">+ New Appointment</button>
+                <button className="appointments_header_button" onClick={()=>{setPop(!pop)}}>+ New Appointment</button>
             </div>
             <div className="appointments_items">
                 {data.map((data) => <Appointment data={data} key={data.time} />)}

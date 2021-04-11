@@ -1,5 +1,9 @@
 import React from 'react';
 import { Link } from "react-router-dom";
+import meetIcon from "../../../images/onlinemeeting.png";
+import internIcon from '../../../images/internsupport.png';
+import enoticeIcon from '../../../images/enotice.png';
+import serviceIcon from '../../../images/select.png';
 
 function ServiceList({ setType, setData }) {
 
@@ -15,7 +19,7 @@ function ServiceList({ setType, setData }) {
     return (
         <div className="service-container row">
             <div className="select-service col-5">
-                <img src="/images/select.png" alt="" />
+                <img src={serviceIcon} alt="" />
                 <h2>Select Service</h2>
                 <p>Please select a service for which you want to schedule an appointment.</p>
 
@@ -32,7 +36,7 @@ function ServiceList({ setType, setData }) {
                         <Link onClick={()=>clickHander("online-meeting")} to="/services/online-meeting" className="btn btn-outline-primary btn-sm"><i className="fas fa-plus"></i></Link>
                     </div>
                     <div className="service-name">
-                        <img src="/images/onlinemeeting.png" alt="" />
+                        <img src={meetIcon} alt="" />
                         <p>Online Meetings/ Webinar</p>
                     </div>
                 </div>
@@ -43,7 +47,7 @@ function ServiceList({ setType, setData }) {
                         <Link onClick={()=>clickHander("intern-support")} to="/services/intern-support" className="btn btn-outline-primary btn-sm"><i className="fas fa-plus"></i></Link>
                     </div>
                     <div className="service-name">
-                        <img src="/images/internsupport.png" alt="" />
+                        <img src={internIcon} alt="" />
                         <p>Intern Support</p>
                     </div>
                 </div>
@@ -54,7 +58,7 @@ function ServiceList({ setType, setData }) {
                         <Link onClick={()=>clickHander("enotice")} to="/services/enotice" className="btn btn-outline-primary btn-sm"><i className="fas fa-plus"></i></Link>
                     </div>
                     <div className="service-name">
-                        <img src="/images/enotice.png" alt="" />
+                        <img src={enoticeIcon} alt="" />
                         <p>E-Notice</p>
                     </div>
                 </div>

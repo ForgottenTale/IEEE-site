@@ -1,11 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import confirmIcon from '../../../images/info.png'
 
 function Confirmation() {
   return (
     <div className="service-container row">
       <div className="select-service col-5">
-        <img src="/images/info.png" alt="" />
+        <img src={confirmIcon} alt="" />
         <h2>Confirmation</h2>
         <p>
           Your appointment has been successfully scheduled. Please retain this
