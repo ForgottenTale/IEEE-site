@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from 'react-router-dom';
+import infoIcon from '../../../images/info.png';
 
 function CohostData(props) {
 
@@ -89,7 +90,7 @@ function OtherInfo({ type, data, setData }) {
   return (
     <div className="info-container row">
       <div className="enter-info col-4">
-        <img src="/images/info.png" alt="" />
+        <img src={infoIcon} alt="" />
         <h2>Enter Information</h2>
         <p>
           Please provide your contact info and other details so that we can send
