@@ -3,6 +3,10 @@ function convertISOToSql(dateTime){
     return dateTime.toISOString().replace("T", " ").replace("Z", "");
 }
 
+function convertSqlToDate(mysqlTime){
+    return new Date(mysqlTime.replace(" ", "T") + "Z");
+}
+
 class User {
     constructor(user){
         this.required = ["name", "email", "phone", "password"];
@@ -373,5 +377,7 @@ module.exports = {
     InternSupport: InternSupport,
     ENotice: ENotice,
     Publicity: Publicity,
-    getClass: getClass
+    getClass: getClass,
+    convertISOToSql: convertISOToSql,
+    convertSqlToDate: convertSqlToDate
 }

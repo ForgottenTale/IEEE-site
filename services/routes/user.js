@@ -49,10 +49,6 @@ module.exports = function(app){
             try{
                 if(err) throw err;
                 let newAppointment;
-
-                req.body.startTime = new Date('April 15, 2021 01:05:00').toISOString();
-                req.body.endTime = new Date('April 15, 2021 01:30:00').toISOString();
-
                 req.body.poster = req.file?req.file.filename:null;
                 req.body.creatorId = req.user._id;
                 req.body.type = req.params.type;
@@ -73,11 +69,7 @@ module.exports = function(app){
 
     app.route('/api/check-availability/:type')
     .post(auth.ensureAuthenticated, (req, res)=>{
-        req.body.type = req.params.type;
-        
-        req.body.startTime = new Date('April 16, 2021 01:05:00');
-        req.body.endTime = new Date('April 16, 2021 01:30:00');
-        
+        req.body.type = req.params.type;     
         database.checkAvailability(req.body, (err, msg)=>{
             if(err) return respondError(err, res);
             res.status(200).json({message: msg});
