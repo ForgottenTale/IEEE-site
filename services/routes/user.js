@@ -1,5 +1,5 @@
 const auth = require('../auth.js');
-const {OnlineMeeting, InternSupport, ENotice, Publicity} = require('../controller.js');
+const {getClass} = require('../controller.js');
 const database = require('../database/database.js');
 const upload = require('../upload.js');
 
@@ -9,6 +9,31 @@ function respondError(err, res){
 }
 
 module.exports = function(app){
+
+    app.route('/my-appointments')
+    .get(auth.ensureAuthenticated, (req, res)=>{
+        database.getUserAppointments(req.user._id, (err, appointments)=>{
+            if(err) return respondError(err, res);
+            res.status(200).json(appointments);
+        });
+    })
+    
+    app.route('/my-appointments/:type')
+    .post(auth.ensureAuthenticated, (req, res)=>{
+        if(req.query.cancel){
+            database.removeAppointment({
+                type: req.params.type,
+                userId: req.user._id,
+                appointmentId: req.query.cancel
+            }, (err, msg)=>{
+                if(err) return respondError(err, res);
+                res.status(200).json({message: msg});
+            })
+        }else{
+            respondError('Unsupported query', res);
+        }
+    })
+
     app.route('/protected')
     .get(auth.ensureAuthenticated, (req, res)=>{
         res.sendFile(process.cwd() + '/coverage/protected.html');
@@ -18,35 +43,17 @@ module.exports = function(app){
     .get(auth.ensureAuthenticated, (req, res)=>{
         res.sendFile(process.cwd() + '/coverage/new_appointment.html');
     })
-    app.route('/book/:params')
+    app.route('/api/book/:type')
     .post(auth.ensureAuthenticated, (req, res)=>{
         upload.single('poster')(req, res, (err)=>{
             try{
                 if(err) throw err;
                 let newAppointment;
-
-                req.body.coHosts = [
-                    ["Jimmy Neesham", "jimmyneesham@gmail.com"],
-                    ["MS Dhoni", "msd@gmail.com"],
-                    ["Gautam Gambhir", "gautamgambhir@gmail.com"]
-                ];
-                req.body.startTime = new Date('December 17, 1995 03:24:00').toISOString();
-                req.body.endTime = new Date().toISOString();
-
                 req.body.poster = req.file?req.file.filename:null;
                 req.body.creatorId = req.user._id;
-                req.body.type = req.params.params;
-                switch(req.params.params){
-                    case "online_meeting":  newAppointment = new OnlineMeeting(req.body);
-                                            break;                                    
-                    case "intern_support":  newAppointment = new InternSupport(req.body);
-                                            break;
-                    case "e_notice":        newAppointment = new ENotice(req.body);
-                                            break;
-                    case "publicity":       newAppointment = new Publicity(req.body);
-                                            break;
-                    default:                throw "Appointment type not found";
-                }
+                req.body.type = req.params.type;
+                AppointmentClass= getClass(req.params.type);
+                newAppointment = new AppointmentClass(req.body);
                 database.addAppointment(newAppointment, (err, doc)=>{
                     if(err){
                         return respondError(err, res);
@@ -58,5 +65,14 @@ module.exports = function(app){
                 respondError(err, res);
             }
         })
+    })
+
+    app.route('/api/check-availability/:type')
+    .post(auth.ensureAuthenticated, (req, res)=>{
+        req.body.type = req.params.type;     
+        database.checkAvailability(req.body, (err, msg)=>{
+            if(err) return respondError(err, res);
+            res.status(200).json({message: msg});
+        });
     })
 }

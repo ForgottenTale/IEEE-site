@@ -1,3 +1,12 @@
+
+function convertISOToSql(dateTime){
+    return dateTime.toISOString().replace("T", " ").replace("Z", "");
+}
+
+function convertSqlToDate(mysqlTime){
+    return new Date(mysqlTime.replace(" ", "T") + "Z");
+}
+
 class User {
     constructor(user){
         this.required = ["name", "email", "phone", "password"];
@@ -103,6 +112,7 @@ class Service{
             this.comments = input.comments?input.comments.trim():null;
             this.poster = input.poster?input.poster.trim():null;
             this.creatorId = input.creatorId;
+            this.convertISOToSql = convertISOToSql;
         }catch(err){
             throw err;
         }
@@ -115,10 +125,6 @@ class Service{
             else if((user[param] + "").trim() < 1)
                 throw (param + " cannot be empty");
         })
-    }
-
-    getSQLDateTime(date){
-        return this.date.replace("T", " ").replace("Z", "")
     }
 
     getAllNamesAndValues(){
@@ -152,11 +158,36 @@ class OnlineMeeting extends Service {
         super.checkRequired(input);
         this.speakerName = input.speakerName.trim();
         this.speakerEmail = input.speakerEmail.trim();
-        this.startTime = input.startTime;
-        this.endTime = input.endTime;
+        this.startTime = new Date(input.startTime);
+        this.endTime = new Date(input.endTime);
         this.coHosts = input.coHosts?input.coHosts.map(coHost=>{
             return [coHost[0].trim(), coHost[1].trim()]
         }):null;
+    }
+
+    static validateTime(input, config){
+        if(input.startTime>input.endTime)
+            throw 'End Date must be greater than Start Date';
+        if(input.startTime<(new Date()))
+            throw 'Time slot selected is past';
+        let startOfAdvanceTime = new Date(input.startTime);
+        startOfAdvanceTime.setHours(0, 0, 0);
+        startOfAdvanceTime.setDate(startOfAdvanceTime.getDate() - config.advance_days);
+        if(startOfAdvanceTime<=(new Date())){
+            throw 'Booking has to be done ' + config.advance_days + ' days in advance';
+        }
+    }
+
+    static getTimeAvailQuery(input, config){
+        let padding = config.padding_between_bookings_mins;
+        let paddedStart = convertISOToSql(new Date(input.startTime.getTime() - (padding*60000)));
+        let paddedEnd = convertISOToSql(new Date(input.endTime.getTime() + (padding*60000)));
+        return ("SELECT * FROM " + input.type 
+            + " WHERE"
+            + " (start_time<='" + paddedStart + "' AND end_time>'" + paddedStart + "') OR "
+            + " (start_time<='" + paddedStart +"' AND end_time>='" + paddedEnd + "') OR "
+            + " (start_time<='" + paddedEnd +"' AND end_time>'" + paddedEnd + "');"
+        )
     }
 
     getAllNamesAndValues(){
@@ -165,8 +196,8 @@ class OnlineMeeting extends Service {
         namesAndValues.values.push(this.speakerName?("'" + this.speakerName + "'"):"null");
         namesAndValues.values.push(this.speakerEmail?("'" + this.speakerEmail + "'"):"null");
         namesAndValues.values.push(this.coHosts?("'" + JSON.stringify(this.coHosts) + "'"):"null");
-        namesAndValues.values.push(this.startTime?("'" + super.getSQLDateTime(this.startTime) + "'"):"null");
-        namesAndValues.values.push(this.endTime?("'" + super.getSQLDateTime(this.endTime) + "'"):"null");
+        namesAndValues.values.push(this.startTime?("'" + this.convertISOToSql(this.startTime) + "'"):"null");
+        namesAndValues.values.push(this.endTime?("'" + this.convertISOToSql(this.endTime) + "'"):"null");
         return(namesAndValues);
     }
 
@@ -182,9 +213,11 @@ class OnlineMeeting extends Service {
 class InternSupport extends Service{
     constructor(input){
         super(input);
-        this.required = ["wordsCount"];
+        this.required = ["wordsCount", "startTime", "endTime"];
         super.checkRequired(input);
         this.validate(input);
+        this.startTime = new Date(input.startTime);
+        this.endTime = new Date(input.endTime);
         this.wordsCount = input.wordsCount;
     }
 
@@ -195,9 +228,36 @@ class InternSupport extends Service{
         }
     }
 
+    static validateTime(input, config){
+        if(input.startTime>input.endTime)
+            throw 'End Date must be greater than Start Date';
+        if(input.startTime<(new Date()))
+            throw 'Time slot selected is past';
+        let startOfAdvanceTime = new Date(input.startTime);
+        startOfAdvanceTime.setHours(0, 0, 0);
+        startOfAdvanceTime.setDate(startOfAdvanceTime.getDate() - config.advance_days);
+        if(startOfAdvanceTime<=(new Date())){
+            throw 'Booking has to be done ' + config.advance_days + ' days in advance';
+        }
+    }
+
+    static getTimeAvailQuery(input, config){
+        let padding = config.padding_between_bookings_mins;
+        let paddedStart = convertISOToSql(new Date(input.startTime.getTime() - (padding*60000)));
+        let paddedEnd = convertISOToSql(new Date(input.endTime.getTime() + (padding*60000)));
+        return ("SELECT * FROM " + input.type 
+            + " WHERE"
+            + " (start_time<='" + paddedStart + "' AND end_time>'" + paddedStart + "') OR "
+            + " (start_time<='" + paddedStart +"' AND end_time>='" + paddedEnd + "') OR "
+            + " (start_time<='" + paddedEnd +"' AND end_time>'" + paddedEnd + "');"
+        )
+    }
+
     getAllNamesAndValues(){
         let namesAndValues = super.getAllNamesAndValues();
-        namesAndValues.names.push('words_count');
+        namesAndValues.names.push('start_time', 'end_time', 'words_count');
+        namesAndValues.values.push(this.startTime?("'" + super.convertISOToSql(this.startTime) + "'"):"null");
+        namesAndValues.values.push(this.endTime?("'" + super.convertISOToSql(this.endTime) + "'"):"null");
         namesAndValues.values.push(this.wordsCount);
         return(namesAndValues);
     }
@@ -212,19 +272,38 @@ class InternSupport extends Service{
 class ENotice extends Service{
     constructor(input){
         super(input);
-        this.required = ["express", "reminder"];
+        this.required = ["express", "reminder", "publishTime"];
         super.checkRequired(input);
-        if(typeof(input.express)=="boolean" && typeof(input.reminder)=="boolean"){
-            this.express = input.express;
-            this.reminder = input.reminder;   
-        }else{
-            throw "express and reminder required to be boolean"
+        this.express = input.express=="express"?true:false;
+        this.reminder = input.reminder=="yes"?true:false;
+        this.publishTime = new Date(input.publishTime)
+    }
+
+    static validateTime(input, config){
+        let startOfAdvanceTime = new Date(input.publishTime);
+        startOfAdvanceTime.setHours(0, 0, 0);
+        startOfAdvanceTime.setDate(startOfAdvanceTime.getDate() - config.advance_days);
+        if(startOfAdvanceTime<=(new Date())){
+            throw 'Booking has to be done ' + config.advance_days + ' days in advance';
         }
+    }
+
+    static getTimeAvailQuery(input, config){
+        let padding = config.padding_between_bookings_mins;
+        let paddedStart = convertISOToSql(new Date(input.publishTime.getTime() - (padding*60000)));
+        let paddedEnd = convertISOToSql(new Date(input.publishTime.getTime() + (padding*60000)));
+        return ("SELECT * FROM " + input.type 
+            + " WHERE service_name='" + input.serviceName
+            + "' (start_time<='" + paddedStart + "' AND end_time>'" + paddedStart + "') OR "
+            + " (start_time<='" + paddedStart +"' AND end_time>='" + paddedEnd + "') OR "
+            + " (start_time<='" + paddedEnd +"' AND end_time>'" + paddedEnd + "');"
+        )
     }
 
     getAllNamesAndValues(){
         let namesAndValues = super.getAllNamesAndValues();
-        namesAndValues.names.push('express', 'reminder');
+        namesAndValues.names.push('publish_time', 'express', 'reminder');
+        namesAndValues.values.push(this.publishTime?("'" + super.convertISOToSql(this.publishTime) + "'"):"null");
         namesAndValues.values.push(this.express);
         namesAndValues.values.push(this.reminder);
         return(namesAndValues);
@@ -241,8 +320,55 @@ class ENotice extends Service{
 class Publicity extends Service{
     constructor(input){
         super(input);
+        this.required = ["publishTime"];
+        super.checkRequired(input);
+        this.publishTime = new Date(input.publishTime);
+    }
+
+    static validateTime(input, config){
+        let startOfAdvanceTime = new Date(input.publishTime);
+        startOfAdvanceTime.setHours(0, 0, 0);
+        startOfAdvanceTime.setDate(startOfAdvanceTime.getDate() - config.advance_days);
+        if(startOfAdvanceTime<=(new Date())){
+            throw 'Booking has to be done ' + config.advance_days + ' days in advance';
+        }
+    }
+
+    static getTimeAvailQuery(input, config){
+        let padding = config.padding_between_bookings_mins;
+        let paddedStart = convertISOToSql(new Date(input.publishTime.getTime() - (padding*60000)));
+        let paddedEnd = convertISOToSql(new Date(input.publishTime.getTime() + (padding*60000)));
+        return ("SELECT * FROM " + input.type 
+            + " WHERE"
+            + " (publish_time>='" + paddedStart +"' AND publish_time<='" + paddedEnd + "');"
+        )
+    }
+
+    getAllNamesAndValues(){
+        let namesAndValues = super.getAllNamesAndValues();
+        namesAndValues.names.push('publish_time');
+        namesAndValues.values.push(this.publishTime?("'" + super.convertISOToSql(this.dateTime) + "'"):"null");
+        return(namesAndValues);
+    }
+    
+    getPublicInfo(){
+        return Object.assign({
+            express: this.express,
+            reminder: this.reminder
+        }, super.getPublicInfo());
     }
 };
+
+
+function getClass(type){
+    switch(type){
+        case "online_meeting":  return OnlineMeeting;  
+        case "intern_support":  return InternSupport;
+        case "e_notice":        return ENotice;
+        case "publicity":       return Publicity;
+        default:                throw "Class not found";
+    }
+}
 
 module.exports = {
     User: User,
@@ -250,5 +376,8 @@ module.exports = {
     OnlineMeeting: OnlineMeeting,
     InternSupport: InternSupport,
     ENotice: ENotice,
-    Publicity: Publicity
+    Publicity: Publicity,
+    getClass: getClass,
+    convertISOToSql: convertISOToSql,
+    convertSqlToDate: convertSqlToDate
 }
