@@ -1,6 +1,6 @@
 import './menu.scss';
 import logo from '../../images/logo.png';
-import { useState, useRef } from 'react/cjs/react.development';
+import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 
