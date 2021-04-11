@@ -9,11 +9,9 @@ import axios from 'axios';
 function App() {
   useEffect(()=>{
     axios.get("http://localhost:5000/hi").then(function (response) {
-      // handle success
       console.log(response);
     })
     .catch(function (error) {
-      // handle error
       console.log(error);
     })
     },[])
