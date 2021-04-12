@@ -1,8 +1,11 @@
 
 import './users.scss';
-import { Input2 } from '../utils/myReactLib';
+import Admins from './components/admin';
 
+import { Route, Switch } from 'react-router-dom';
 export default function Users() {
+
+    
 
     return (
         <div className="users">
@@ -15,11 +18,13 @@ export default function Users() {
                 <h6 className="users_type_title">Admins</h6>
 
             </div>
-            <div className="users_sub">
-                <Input2 className="users_sub_input" />
-                <Input2 className="users_sub_input" />
+            <Route path="/">
+                <Admins />
+            </Route>
+            {/* <Route path="/">
+                <Users />
+            </Route> */}
 
-            </div>
         </div>
     )
 }

@@ -22,7 +22,7 @@ function EventInfo({ type, data, setData }) {
         description: content.description,
         speaker: content.speaker,
         speakerEmail: content.speakerEmail,
-        img: content.img
+        poster: content.img
       });
     history.push("/other-info");
   }

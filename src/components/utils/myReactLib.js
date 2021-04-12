@@ -32,9 +32,36 @@ export function Input2({ setValue }) {
                     <path d="M21 21L16.65 16.65"></path>
                 </svg>
                 <p>Search for request</p>
-                </label>
+            </label>
             <input className="inputTag2_input" type="text" />
 
+        </div>
+    )
+}
+
+export function Table({ headers, data }) {
+
+    return (
+        <div className="tableTag">
+            <table>
+                <tr>
+                    {headers.map((header) => <th>{header}</th>)}
+                </tr>
+
+
+                {
+                    data.map((row) =>
+                        <tr>
+                            {
+                                row.map((value) =>
+                                    <td>{value}</td>)
+                            }
+                        </tr>
+                    )
+                }
+
+
+            </table>
         </div>
     )
 }
