@@ -6,6 +6,8 @@ import { useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Calender from '../calender/calender';
 import Setting from '../settings/settings';
+import Request from '../request/request';
+import Users from '../users/users';
 
 export default function Content() {
 
@@ -27,6 +29,12 @@ export default function Content() {
                     </Route>
                     <Route path="/settings">
                         <Setting/>
+                    </Route>
+                    <Route path="/request">
+                        <Request/>
+                    </Route>
+                    <Route path="/users">
+                        <Users/>
                     </Route>
                 </Switch>
             </div>
