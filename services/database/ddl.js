@@ -1,5 +1,9 @@
 module.exports = {
     schema: [
+        `CREATE TABLE IF NOT EXISTS service(
+            _id INT PRIMARY KEY AUTO_INCREMENT,
+            type VARCHAR(20)
+        );`,
         `CREATE TABLE IF NOT EXISTS user(
             _id INT PRIMARY KEY AUTO_INCREMENT,
             role VARCHAR(20),
@@ -32,6 +36,8 @@ module.exports = {
             status VARCHAR(10) DEFAULT "PENDING",
             creator_id INT NOT NULL,
             commments VARCHAR(30),
+            start_time DATETIME NOT NULL,
+            end_time DATETIME NOT NULL,
             words_count INT,
             files VARCHAR(30),
             FOREIGN KEY(creator_id) REFERENCES user(_id)
@@ -44,8 +50,9 @@ module.exports = {
             status VARCHAR(10) DEFAULT "PENDING",
             creator_id INT NOT NULL,
             comments VARCHAR(30),
-            express BOOLEAN NOT NULL,
-            reminder BOOLEAN NOT NULL,
+            publish_time DATETIME NOT NULL,
+            express BOOLEAN NOT NULL DEFAULT false,
+            reminder BOOLEAN NOT NULL DEFAULT true,
             FOREIGN KEY(creator_id) REFERENCES user(_id)
         );`,
         `CREATE TABLE IF NOT EXISTS publicity(
@@ -56,12 +63,14 @@ module.exports = {
             status VARCHAR(10) DEFAULT "PENDING",
             creator_id INT NOT NULL,
             comments VARCHAR(30),
+            publish_time DATETIME NOT NULL,
             FOREIGN KEY(creator_id) REFERENCES user(_id)
         );`,
         `CREATE TABLE IF NOT EXISTS config(
-            appointment_type VARCHAR(30) PRIMARY KEY,
-            follow_hierarchy BOOLEAN DEFAULT 1,
-            follow_service_assignment BOOLEAN DEFAULT 1
+            type_id INT,
+            name VARCHAR(30) NOT NULL,
+            value TINYINT,
+            FOREIGN KEY(type_id) REFERENCES service(_id)
         );`,
         `CREATE TABLE IF NOT EXISTS service_assignment(
             appointment_type VARCHAR(30) NOT NULL,
@@ -94,6 +103,6 @@ module.exports = {
             FOREIGN KEY (intern_support_id) REFERENCES intern_support(_id),
             FOREIGN KEY (e_notice_id) REFERENCES e_notice(_id),
             FOREIGN KEY (publicity_id) REFERENCES publicity(_id)
-        );`,
+        );`
     ]
 }

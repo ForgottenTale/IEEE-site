@@ -9,7 +9,7 @@ function EventInfo({ type, data, setData }) {
 
   const [content, setContent] = useState({
     description: "",
-    speaker: "",
+    speakerName: "",
     speakerEmail: "",
     img: ""
 

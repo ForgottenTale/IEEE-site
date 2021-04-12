@@ -46,6 +46,18 @@ module.exports = function(app){
         res.status(200).send(req.user.getPublicInfo());
     })
 
+    app.route('/calendar')
+    .get((req, res)=>{
+        if(!req.query.month || !req.query.year)
+            return respondError('query parameters missing', res);
+        let startTime = new Date(req.query.year, req.query.month, 1);
+        let endTime = new Date(req.query.year, req.query.month + 1, 1);
+        database.getCalendarData(startTime, endTime, (err, result)=>{
+            if(err) return respondError(err, res);
+            res.status(200).json(result);
+        });
+    })
+
     app.route('/failure')
     .get((req, res)=>{
         res.status(401).json({error: req.flash('error')[0]});
