@@ -20,7 +20,7 @@ function EventInfo({ type, data, setData }) {
       {
         ...data,
         description: content.description,
-        speaker: content.speaker,
+        speakerName: content.speaker,
         speakerEmail: content.speakerEmail,
         img: content.img
       });
