@@ -1,8 +1,15 @@
 
 import './request.scss';
-import { Input2 } from '../utils/myReactLib';
+import { Input2, Table } from '../utils/myReactLib';
 
 export default function Request() {
+
+    const header = ['Id', "Name", "Service", "Type", "Time", "Status","Action"];
+    const data = [
+        [ 1, "Sara Anan Jose", "Online meeting", "Zoom ", "2pm IST 05/27/2021","Pending",],
+        [ 2, "Sara Anan Jose", "Online meeting", "Zoom ", "2pm IST 05/27/2021","Pending",],
+
+   ];
 
     return (
         <div className="request">
@@ -13,10 +20,11 @@ export default function Request() {
             <div className="request_sub">
                 <h6 className="request_sub_title">You have 360 request</h6>
 
-                <Input2 className="request_sub_input"/>
+                <Input2 className="request_sub_input" />
 
             </div>
-            </div>
+            <Table headers={header} data={data} />
+        </div>
     )
 }
 

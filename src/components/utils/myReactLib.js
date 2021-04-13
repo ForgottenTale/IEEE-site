@@ -39,8 +39,8 @@ export function Input2({ setValue }) {
     )
 }
 
-export function Table({ headers, data }) {
-
+export function Table({ headers, data,j }) {
+  console.log(j);
     return (
         <div className="tableTag">
             <table>
