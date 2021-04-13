@@ -1,8 +1,11 @@
 .admin{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 30px;
+    &_sub{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 30px;
+    }
+    
     &_title{
         color: rgb(48, 48, 48);
         font-size: 18px;

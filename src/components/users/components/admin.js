@@ -1,13 +1,14 @@
 import './admin.scss';
 import { Input2,Table } from '../../utils/myReactLib';
 
+
 export default function Admin(){
     const header = ['Id', "Name", "Email", "Role", "Team", ""];
     const data = [[
-        1, "Sara Anan Jose", "sarananajose@ieee.org", "Alpha admin ", "Content", ""
+        1, "Sara Anan Jose", "sarananajose@ieee.org", "Alpha admin ", "Content",
     ],
     [
-        2, "Sara Anan Jose", "sarananajose@ieee.org", "Alpha admin ", "Content", ""
+        2, "Sara Anan Jose", "sarananajose@ieee.org", "Alpha admin ", "Content",
     ]]
     return (
         <div className="admin">

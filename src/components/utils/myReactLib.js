@@ -56,6 +56,7 @@ export function Table({ headers, data }) {
                                 row.map((value) =>
                                     <td>{value}</td>)
                             }
+                             <td>View</td>
                         </tr>
                     )
                 }
