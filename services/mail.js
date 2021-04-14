@@ -1,7 +1,8 @@
 const nodemailer = require("nodemailer");
 
+let transporterData;
 if(process.env.NODE_ENV == "development"){
-    const transporterData = {
+    transporterData = {
         host: "smtp.ethereal.email",
         port: 587,
         secure: false,
@@ -14,7 +15,7 @@ if(process.env.NODE_ENV == "development"){
         }
     };    
 }else if(process.env.NODE_ENV=="production"){
-    const transporterData = {
+    transporterData = {
         host: process.env.MAIL_HOST,
         port: process.env.MAIL_PORT,
         auth: {
@@ -28,40 +29,59 @@ if(process.env.NODE_ENV == "development"){
 }
 
 module.exports= {
-    sendOTP: function(emailID){
+    sendNeedsApproval: function(input){
         return new Promise(async(resolve, reject)=>{
-            var rand = Date.now() + "";
-            rand = rand.split('').slice(rand.length-4, rand.length).join('');
             let transporter = nodemailer.createTransport(transporterData);
-        
-            let info = await transporter.sendMail({
-                from: '<noreplyilluminati@example.com',
-                to: emailID,
-                subject: "Verification Email",
-                html: "<span>OTP: <b>" + rand + "</b>",
-            })
-            .catch((err)=>console.error(err))
-        
-            console.log("Message sent: %s", info.messageId);
-            console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+            
+            for(let idx in input.emailIds){
+                let info = await transporter.sendMail({
+                    from: '<' + transporterData.auth.user + '>',
+                    to: input.emailIds[idx],
+                    subject: "An appointment needs your approval",
+                    html: "<span>An" + input.type + " needs your approval </span>"
+                })
+                .catch(err=>reject(err))   
+                console.log("Message sent: %s", info.messageId);
+                console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+            }
+            resolve("message send");
+        })
+    },
+
+    sendResponses: function(input){
+        return new Promise(async(resolve, reject)=>{
+            let transporter = nodemailer.createTransport(transporterData);
+            
+            for(let idx in input.emailIds){
+                let info = await transporter.sendMail({
+                    from: '<' + transporterData.auth.user + '>',
+                    to: input.emailIds[idx],
+                    subject: "An appointment needs your approval",
+                    html: "<span>An" + input.type + " needs your approval </span>"
+                })
+                .catch(err=>reject(err))   
+                console.log("Message sent: %s", info.messageId);
+                console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+            }
             resolve(rand);
         })
     },
 
-    sendResetLink: function (emailID){
+    sendFinal: function(input){
         return new Promise(async(resolve, reject)=>{
-            var rand = Date.now() + "";
             let transporter = nodemailer.createTransport(transporterData);
-            var link = 'http://localhost:3000/reset-password/' + rand;
-            let info = await transporter.sendMail({
-                from: '<noreplyilluminati@example.com',
-                to: emailID,
-                subject: "Password Reset",
-                html: "<span>Follow this link: <a href='" + link + "'>"+ link +"</a><span>",
-            });
-        
-            console.log("Message sent: %s", info.messageId);        
-            console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+            
+            for(let idx in input.emailIds){
+                let info = await transporter.sendMail({
+                    from: '<' + transporterData.auth.user + '>',
+                    to: input.emailIds(idx),
+                    subject: "An appointment needs your approval",
+                    html: "<span>An" + input.type + " needs your approval </span>"
+                })
+                .catch(err=>reject(err))   
+                console.log("Message sent: %s", info.messageId);
+                console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+            }
             resolve(rand);
         })
     }
