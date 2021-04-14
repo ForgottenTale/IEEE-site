@@ -1,12 +1,11 @@
 import './admin.scss';
 import { Input2} from '../../utils/myReactLib';
-import {useState} from 'react';
+
 import Table from '../../table/table';
 
 
 export default function Admin(){
 
-    const [view, setView] = useState(false);
 
     const header = ['Id', "Name", "Email", "Role", "Team", ""];
     const data = [{
@@ -22,7 +21,7 @@ export default function Admin(){
                 <Input2 className="admin_sub_input" />
 
             </div>
-            <Table headers={header} data={data} setView={setView} type='admin'/>
+            <Table headers={header} data={data} type='admin'/>
         </div>
     )
 }

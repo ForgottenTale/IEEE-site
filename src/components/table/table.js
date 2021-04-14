@@ -1,7 +1,10 @@
 import './table.scss';
+import View from '../view/view';
+import {useState} from 'react';
 
 export default function Table({ headers, data, type }) {
 
+    const [view, setView] = useState(false);
     return (
         <div className="tableTag">
             <table>
@@ -29,13 +32,15 @@ export default function Table({ headers, data, type }) {
                                 <td>{row.time}</td>,
                                 <td>{row.status}</td>,
                             ] : null}
-                            <td>View</td>
+                            <td onClick={()=>setView(!view)}>View</td>
+                            {view?<View data={row} setView={setView} type={type}/>:null}
                         </tr>
                     )
                 }
 
 
             </table>
+       
         </div>
     )
 }

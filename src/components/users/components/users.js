@@ -1,16 +1,16 @@
 import './admin.scss';
 import { Input2} from '../../utils/myReactLib';
 import Table from '../../table/table';
-import View from '../../view/view';
+
 
 
 export default function Admin() {
     const header = ['Id', "Name", "Email", "Role",];
     const data = [{
-        "id": 1, name: "Sara Anan Jose", email: "sarananajose@ieee.org", role: "Alpha admin ",
+        "id": 1, name: "Sara Anan Jose", email: "sarananajose@ieee.org", role: "Alpha admin ", college : "College of Engineering, Kidangoor"
     },
     {
-        "id": 2, name: "Sara Anan Jose", email: "sarananajose@ieee.org", role: "Alpha admin ", 
+        "id": 2, name: "Sara Anan Jose", email: "sarananajose@ieee.org", role: "Alpha admin ",  college : "College of Engineering, Kidangoor", 
     }]
     return (
         <div className="admin">
@@ -20,7 +20,7 @@ export default function Admin() {
 
             </div>
             <Table headers={header} data={data} type='user' />
-            <View data={data}/>
+           
         </div>
     )
 }
