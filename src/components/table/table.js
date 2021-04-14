@@ -1,6 +1,7 @@
 import './table.scss';
-import View from '../view/view';
+import UserView from '../userView/userView';
 import {useState} from 'react';
+import RequestView from '../requestView/requestView';
 
 export default function Table({ headers, data, type }) {
 
@@ -33,7 +34,8 @@ export default function Table({ headers, data, type }) {
                                 <td>{row.status}</td>,
                             ] : null}
                             <td onClick={()=>setView(!view)}>View</td>
-                            {view?<View data={row} setView={setView} type={type}/>:null}
+                            {view&&(type==='user'||type==='admin')?<UserView data={row} setView={setView} type={type}/>:null}
+                            {view&&type==='request'?<RequestView data={row} setView={setView}/>:null}
                         </tr>
                     )
                 }

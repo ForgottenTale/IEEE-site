@@ -9,6 +9,14 @@ export default function Request() {
     const data = [
         { id:1, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
         { id:2, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
+        { id:1, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
+        { id:2, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
+        { id:1, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
+        { id:2, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
+        { id:1, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
+        { id:2, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
+        { id:1, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
+        { id:2, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
 
    ];
 

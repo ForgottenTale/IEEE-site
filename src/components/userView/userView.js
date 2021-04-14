@@ -1,5 +1,6 @@
-import './view.scss';
-import pic from '../../images/pic3.jpg'
+import './userView.scss';
+import pic from '../../images/pic3.jpg';
+
 
 const user = (data) => [
     <center>
@@ -70,25 +71,6 @@ const admin = (data) => [
     </div>
 ]
 
-const request = (data) => [
-    <div className="view_container_item">
-        <p>Name : &nbsp;</p>
-        <p>{data.name}</p>
-    </div>,
-    <div className="view_container_item">
-        <p>Email : &nbsp;</p>
-        <p>{data.email}</p>
-    </div>,
-    <div className="view_container_item">
-        <p>Service : &nbsp;</p>
-        <p>{data.service}</p>
-    </div>,
-     <div className="view_container_item">
-     <p>Type : &nbsp;</p>
-     <p>{data.type}</p>
- </div>,
-
-]
 
 export default function View({ data, setView, type }) {
     return (
@@ -98,7 +80,6 @@ export default function View({ data, setView, type }) {
             <div className="view_container">
                 {type === "user" || type === "admin" ? user(data) : null}
                 {type === 'admin' ? admin(data) : null}
-                {type === 'request' ? request(data) : null}
             </div>
         </div>
     );
