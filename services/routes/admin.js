@@ -26,8 +26,7 @@ module.exports = function(app){
     app.route('/api/:type/:action')
     .post(auth.ensureAuthenticated, auth.ensureAdmin, (req, res)=>{
         database.changeAppointmentStatus({
-            user_id: req.user._id,
-            userRole: req.user.role,
+            user: req.user,
             appointmentId: req.body.id,
             type: req.params.type,
             response: req.body.response,

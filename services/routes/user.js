@@ -48,6 +48,10 @@ module.exports = function(app){
                 req.body.img = req.file?req.file.filename:null;
                 req.body.creatorId = req.user._id;
                 req.body.type = req.params.type;
+
+                req.body.startTime = new Date("April 29, 2021 7:00:00").toISOString();
+                req.body.endTime = new Date("April 29, 2021 8:00:00").toISOString();
+
                 AppointmentClass= getClass(req.params.type);
                 newAppointment = new AppointmentClass(req.body);
                 database.addAppointment(newAppointment, (err, doc)=>{
