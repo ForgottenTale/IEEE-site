@@ -5,6 +5,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    
 
     &_container {
         background-color: rgb(255, 255, 255);
@@ -15,15 +16,27 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-
+        border-radius: 10px;
         &_item{
             display: flex;
+            margin: 10px;
+            margin-left: 40px;
         }
         &_img{
             width: 150px;
-            clip-path: circle();
-            display: block;
+            height: 150px;
+            border-radius: 50%;
+            margin-top: 30px;
+            object-fit: cover;
+            margin-bottom: 20px;
 
+
+        }
+
+        & center{
+            & p{
+                font-weight: 600;
+            }
         }
     }
     &_overlay {
