@@ -33,7 +33,7 @@ function ServiceList({ setType, setData }) {
                 <div className="service-box">
                     <div className="sub-services">
                         <p>2 services</p>
-                        <Link onClick={()=>clickHander("online-meeting")} to="/services/online-meeting" className="btn btn-outline-primary btn-sm"><i className="fas fa-plus"></i></Link>
+                        <Link onClick={()=>clickHander("online_meeting")} to="/services/online-meeting" className="btn btn-outline-primary btn-sm"><i className="fas fa-plus"></i></Link>
                     </div>
                     <div className="service-name">
                         <img src={meetIcon} alt="" />
@@ -44,7 +44,7 @@ function ServiceList({ setType, setData }) {
                 <div className="service-box">
                     <div className="sub-services">
                         <p>2 services</p>
-                        <Link onClick={()=>clickHander("intern-support")} to="/services/intern-support" className="btn btn-outline-primary btn-sm"><i className="fas fa-plus"></i></Link>
+                        <Link onClick={()=>clickHander("intern_support")} to="/services/intern-support" className="btn btn-outline-primary btn-sm"><i className="fas fa-plus"></i></Link>
                     </div>
                     <div className="service-name">
                         <img src={internIcon} alt="" />
@@ -55,7 +55,7 @@ function ServiceList({ setType, setData }) {
                 <div className="service-box">
                     <div className="sub-services">
                         <p>1 service</p>
-                        <Link onClick={()=>clickHander("enotice")} to="/services/enotice" className="btn btn-outline-primary btn-sm"><i className="fas fa-plus"></i></Link>
+                        <Link onClick={()=>clickHander("e_notice")} to="/services/enotice" className="btn btn-outline-primary btn-sm"><i className="fas fa-plus"></i></Link>
                     </div>
                     <div className="service-name">
                         <img src={enoticeIcon} alt="" />
