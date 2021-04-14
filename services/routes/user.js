@@ -12,7 +12,8 @@ module.exports = function(app){
 
     app.route('/api/my-appointments')
     .get(auth.ensureAuthenticated, (req, res)=>{
-        database.getUserAppointments(req.user._id, (err, appointments)=>{
+        req.query.user_id = req.user._id;
+        database.getUserAppointments(req.query, (err, appointments)=>{
             if(err) return respondError(err, res);
             res.status(200).json(appointments);
         });
@@ -49,11 +50,6 @@ module.exports = function(app){
             try{
                 if(err) throw err;
                 let newAppointment;
-                
-                req.body.coHosts = [['Jimmy Neesham', 'jimmyneesham@gmail.com'],['MS Dhoni', 'msdhoni@gmail.com']];
-                req.body.startTime = new Date("April 24 2021").toISOString();
-                req.body.endTime = new Date("April 29 2021").toISOString();
-
                 req.body.img = req.file?req.file.filename:null;
                 req.body.creatorId = req.user._id;
                 req.body.type = req.params.type;

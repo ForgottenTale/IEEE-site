@@ -181,25 +181,40 @@ module.exports = {
 		})
 	},
 
-	getUserAppointments: function(user_id, done){
-		let serviceTypes = ["online_meeting", "intern_support", "e_notice", "publicity"];
-		let query = serviceTypes.reduce((total, type)=>{
-			return (total+"SELECT * FROM " + type + " WHERE creator_id=" + user_id +";");
-		}, "");
-		executeQuery(query)
-		.then(data=>{
-			return done(null, data.map((elem, idx)=>{
-				elem.forEach(som=>{
-					som.start_time = convertSqlDateTimeToDate(som.start_time).toISOString();
-					som.end_time = convertSqlDateTimeToDate(som.end_time).toISOString();
+	getUserAppointments: function(constraint, done){
+		if(constraint.type)
+			executeQuery("SELECT * FROM " + constraint.type + " WHERE creator_id=" + constraint.user_id + ";")
+			.then(data=>{
+				AppointmentClass = getClass(constraint.type);
+				return done(null, data.map(appointment=>{
+					appointment.type = constraint.type;
+					return Object.assign({}, {id: appointment._id}, (new AppointmentClass(transmuteSnakeToCamel(appointment))).getPublicInfo());
+				}))
+			})
+			.catch(err=>done(err));
+		else{
+			executeQuery("SELECT DISTINCT(service) FROM service_config;")
+			.then(serviceTypes=>{
+				let query = serviceTypes.reduce((total, type)=>{
+					return (total+"SELECT * FROM " + type.service + " WHERE creator_id=" + constraint.user_id +";");
+				}, "");
+				executeQuery(query)
+				.then(data=>{
+					return done(null, data.map((elem, idx)=>{
+						elem.forEach(som=>{
+							som.start_time = convertSqlDateTimeToDate(som.start_time).toISOString();
+							som.end_time = convertSqlDateTimeToDate(som.end_time).toISOString();
+						})
+						return {
+							type: serviceTypes[idx],
+							appointments: elem
+						}
+					}))
 				})
-				return {
-					type: serviceTypes[idx],
-					appointments: elem
-				}
-			}))
-		})
-		.catch(err=>done(err));
+				.catch(err=>done(err));
+			})
+			.catch(err=>done(err));
+		}
 	},
 
 	removeAppointment: function(input, done){

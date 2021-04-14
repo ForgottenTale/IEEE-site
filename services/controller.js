@@ -140,6 +140,16 @@ class Service{
         })
     }
 
+    getPrivateInfo(){
+        return{
+            serviceName: this.serviceName,
+            description: this.description,
+            speakerName: this.speakerName,
+            status: this.status,
+            comments: this.comments
+        }
+    }
+
     getPublicInfo(){
         return{
             serviceName: this.serviceName,
