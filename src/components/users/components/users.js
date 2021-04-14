@@ -1,6 +1,7 @@
 import './admin.scss';
 import { Input2} from '../../utils/myReactLib';
 import Table from '../../table/table';
+import View from '../../view/view';
 
 
 export default function Admin() {
@@ -19,6 +20,7 @@ export default function Admin() {
 
             </div>
             <Table headers={header} data={data} type='user' />
+            <View data={data}/>
         </div>
     )
 }

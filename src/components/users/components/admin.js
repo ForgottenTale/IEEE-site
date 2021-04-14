@@ -3,15 +3,6 @@ import { Input2} from '../../utils/myReactLib';
 import {useState} from 'react';
 import Table from '../../table/table';
 
-function View(){
-    return(
-        <div className="view">
-E
-        </div>
-    );
-}
-
-
 
 export default function Admin(){
 
