@@ -12,6 +12,7 @@ const[details,setDetails] =useState({
 
 
 const handleLogin= async()=>{
+    console.log(details);
     try {
         const url = '/api/login/'
         const res = await axios.post(url,details, {
