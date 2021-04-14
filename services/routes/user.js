@@ -10,7 +10,7 @@ function respondError(err, res){
 
 module.exports = function(app){
 
-    app.route('/my-appointments')
+    app.route('/api/my-appointments')
     .get(auth.ensureAuthenticated, (req, res)=>{
         database.getUserAppointments(req.user._id, (err, appointments)=>{
             if(err) return respondError(err, res);
@@ -18,7 +18,7 @@ module.exports = function(app){
         });
     })
     
-    app.route('/my-appointments/:type')
+    app.route('/api/my-appointments/:type')
     .post(auth.ensureAuthenticated, (req, res)=>{
         if(req.query.cancel){
             database.removeAppointment({
@@ -45,11 +45,16 @@ module.exports = function(app){
     })
     app.route('/api/book/:type')
     .post(auth.ensureAuthenticated, (req, res)=>{
-        upload.single('poster')(req, res, (err)=>{
+        upload.single('img')(req, res, (err)=>{
             try{
                 if(err) throw err;
                 let newAppointment;
-                req.body.poster = req.file?req.file.filename:null;
+                
+                req.body.coHosts = [['Jimmy Neesham', 'jimmyneesham@gmail.com'],['MS Dhoni', 'msdhoni@gmail.com']];
+                req.body.startTime = new Date("April 24 2021").toISOString();
+                req.body.endTime = new Date("April 29 2021").toISOString();
+
+                req.body.img = req.file?req.file.filename:null;
                 req.body.creatorId = req.user._id;
                 req.body.type = req.params.type;
                 AppointmentClass= getClass(req.params.type);

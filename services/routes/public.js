@@ -20,6 +20,8 @@ module.exports = function(app){
     .get((req, res)=>{
         res.sendFile(process.cwd() + '/coverage/register.html')
     })
+
+    app.route('/api/register')
     .post((req, res)=>{
         try{
             req.body.role = (req.body.role=="someone" || process.env.NODE_ENV=="production")?null:req.body.role;
@@ -42,28 +44,30 @@ module.exports = function(app){
     .get((req, res)=>{
         res.sendFile(process.cwd() + '/coverage/login.html');
     })
+    
+    app.route('/api/login')
     .post(passport.authenticate('local', {failureRedirect: '/failure', failureFlash: true}), (req, res)=>{
         res.status(200).send(req.user.getPublicInfo());
     })
 
-    app.route('/calendar')
+    app.route('/api/calendar')
     .get((req, res)=>{
         if(!req.query.month || !req.query.year)
             return respondError('query parameters missing', res);
         let startTime = new Date(req.query.year, req.query.month, 1);
         let endTime = new Date(req.query.year, req.query.month + 1, 1);
-        database.getCalendarData(startTime, endTime, (err, result)=>{
+        database.getCalendarData({startTime, endTime, type: 'online_meeting'}, (err, result)=>{
             if(err) return respondError(err, res);
             res.status(200).json(result);
         });
     })
 
-    app.route('/failure')
+    app.route('/api/failure')
     .get((req, res)=>{
         res.status(401).json({error: req.flash('error')[0]});
     })
 
-    app.route('/logout')
+    app.route('/api/logout')
     .get((req, res)=>{
         req.logout();
         res.redirect('/protected');

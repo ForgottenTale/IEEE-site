@@ -1,9 +1,8 @@
-
-function convertISOToSql(dateTime){
+function convertDateToSqlDateTime(dateTime){
     return dateTime.toISOString().replace("T", " ").replace("Z", "");
 }
 
-function convertSqlToDate(mysqlTime){
+function convertSqlDateTimeToDate(mysqlTime){
     return new Date(mysqlTime.replace(" ", "T") + "Z");
 }
 
@@ -11,36 +10,36 @@ class User {
     constructor(user){
         this.required = ["name", "email", "phone", "password"];
         try{
-            this.checkRequired(user);
-            this.validate(user);
             this._id = user._id;
             this.role = user.role?user.role.toUpperCase():null;
             this.name = user.name.trim();
             this.email = user.email.trim();
             this.phone = (user.phone+"").trim();
             this.password = user.password.trim();
+            this.checkRequired();
+            this.validate();
         }catch(err){
             throw err;
         }
     }
 
-    checkRequired(user){
+    checkRequired(){
         this.required.forEach(param=>{
-            if(!user[param])
+            if(!this[param])
                 throw (param + " is requried");
-            else if((user[param] + "").trim() < 1)
+            else if((this[param] + "").trim() < 1)
                 throw (param + " cannot be empty");
         })
     }
 
-    validate(user){
+    validate(){
         //validate email
-        if(!(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(user.email))){
-            throw "Invalid email";
+        if(!(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(this.email))){
+            throw new Error("Invalid email");
         }
         //validate phone
-        if(!(user.phone.match(/\d/g).length == 10))
-            throw "Invalid phone number";
+        if(!(this.phone.match(/\d/g).length == 10))
+            throw new Error("Invalid phone number");
     }
 
     getPublicInfo(){
@@ -75,8 +74,8 @@ class User {
                                 break;
                 case 'password':values.push("password='" + params.password + "'");
                                 break;
-                case 'phone': values.push("phone='" + params.phone + "'");
-                default     :   throw 'Undefined parameter provided';
+                case 'phone':   values.push("phone='" + params.phone + "'");
+                default     :   throw new Error("Undefined parameter provided");
             }
         }
         return values;
@@ -88,10 +87,10 @@ class NewUser extends User{
         try{
             super(input);
             this.required = ["confirmPassword"];
-            super.checkRequired(input);
             this.confirmPassword = input.confirmPassword.trim();
+            this.checkRequired();
             if(this.confirmPassword != this.password)
-                throw "Passwords mismatch";
+                throw new Error("Passwords mismatch");
         }catch(err){
             throw err;
         }
@@ -103,39 +102,39 @@ class Service{
     constructor(input){
         try{
             this.required = ["type", "serviceName", "creatorId"];
-            this.checkRequired(input);
             this._id = input._id;
             this.type = input.type.trim();
             this.serviceName = input.serviceName.trim();
             this.description = input.description?input.description.trim():null;
-            this.status = input.status;
+            this.status = input.status?input.status:"PENDING";
             this.comments = input.comments?input.comments.trim():null;
-            this.poster = input.poster?input.poster.trim():null;
+            this.img = input.img?input.img.trim():null;
             this.creatorId = input.creatorId;
-            this.convertISOToSql = convertISOToSql;
+            this.checkRequired();
+            this.convertISOToSql = convertDateToSqlDateTime;
         }catch(err){
             throw err;
         }
     }
     
-    checkRequired(user){
+    checkRequired(){
         this.required.forEach(param=>{
-            if(!user[param])
+            if(!this[param])
                 throw (param + " is requried");
-            else if((user[param] + "").trim() < 1)
+            else if((this[param] + "").trim() < 1)
                 throw (param + " cannot be empty");
         })
     }
 
     getAllNamesAndValues(){
         return({
-            names: ['service_name', 'description', 'status', 'comments', 'poster', 'creator_id'],
+            names: ['service_name', 'description', 'status', 'comments', 'img', 'creator_id'],
             values: [
                 this.serviceName?("'" + this.serviceName + "'"):"null",
                 this.description?("'" + this.description + "'"):"null",
                 this.status?("'" + this.status + "'"):"null",
                 this.comments?("'" + this.comments + "'"):"null",
-                this.poster?("'" + this.poster + "'"):"null",
+                this.img?("'" + this.img + "'"):"null",
                 this.creatorId
             ]
         })
@@ -146,6 +145,7 @@ class Service{
             serviceName: this.serviceName,
             description: this.description,
             speakerName: this.speakerName,
+            status: this.status,
             comments: this.comments
         }
     }
@@ -155,11 +155,15 @@ class OnlineMeeting extends Service {
     constructor(input){
         super(input);
         this.required = ["speakerName", "speakerEmail", "startTime", "endTime"];
-        super.checkRequired(input);
         this.speakerName = input.speakerName.trim();
         this.speakerEmail = input.speakerEmail.trim();
+        input.startTime = input.startTime[input.startTime.length-1]=="Z"?input.startTime:convertSqlDateTimeToDate(input.startTime);
+        input.endTime = input.endTime[input.endTime.length-1]=="Z"?input.endTime:convertSqlDateTimeToDate(input.endTime);
         this.startTime = new Date(input.startTime);
         this.endTime = new Date(input.endTime);
+        super.checkRequired();
+        if(typeof(input.coHosts)=="string")
+            input.coHosts = JSON.parse(input.coHosts);
         this.coHosts = input.coHosts?input.coHosts.map(coHost=>{
             return [coHost[0].trim(), coHost[1].trim()]
         }):null;
@@ -180,8 +184,8 @@ class OnlineMeeting extends Service {
 
     static getTimeAvailQuery(input, config){
         let padding = config.padding_between_bookings_mins;
-        let paddedStart = convertISOToSql(new Date(input.startTime.getTime() - (padding*60000)));
-        let paddedEnd = convertISOToSql(new Date(input.endTime.getTime() + (padding*60000)));
+        let paddedStart = convertDateToSqlDateTime(new Date(input.startTime.getTime() - (padding*60000)));
+        let paddedEnd = convertDateToSqlDateTime(new Date(input.endTime.getTime() + (padding*60000)));
         return ("SELECT * FROM " + input.type 
             + " WHERE"
             + " (start_time<='" + paddedStart + "' AND end_time>'" + paddedStart + "') OR "
@@ -203,6 +207,8 @@ class OnlineMeeting extends Service {
 
     getPublicInfo(){
         return Object.assign({
+            startTime: this.startTime,
+            endTime: this.endTime,
             speakerName: this.speakerName,
             speakerEmail: this.speakerEmail,
             coHosts: this.coHosts
@@ -216,6 +222,8 @@ class InternSupport extends Service{
         this.required = ["wordsCount", "startTime", "endTime"];
         super.checkRequired(input);
         this.validate(input);
+        input.startTime = input.startTime[input.startTime.length-1]=="Z"?input.startTime:convertSqlDateTimeToDate(input.startTime);
+        input.endTime = input.endTime[input.endTime.length-1]=="Z"?input.endTime:convertSqlDateTimeToDate(input.endTime);
         this.startTime = new Date(input.startTime);
         this.endTime = new Date(input.endTime);
         this.wordsCount = input.wordsCount;
@@ -243,8 +251,8 @@ class InternSupport extends Service{
 
     static getTimeAvailQuery(input, config){
         let padding = config.padding_between_bookings_mins;
-        let paddedStart = convertISOToSql(new Date(input.startTime.getTime() - (padding*60000)));
-        let paddedEnd = convertISOToSql(new Date(input.endTime.getTime() + (padding*60000)));
+        let paddedStart = convertDateToSqlDateTime(new Date(input.startTime.getTime() - (padding*60000)));
+        let paddedEnd = convertDateToSqlDateTime(new Date(input.endTime.getTime() + (padding*60000)));
         return ("SELECT * FROM " + input.type 
             + " WHERE"
             + " (start_time<='" + paddedStart + "' AND end_time>'" + paddedStart + "') OR "
@@ -274,9 +282,9 @@ class ENotice extends Service{
         super(input);
         this.required = ["express", "reminder", "publishTime"];
         super.checkRequired(input);
-        this.express = input.express=="express"?true:false;
-        this.reminder = input.reminder=="yes"?true:false;
-        this.publishTime = new Date(input.publishTime)
+        this.express = input.express=="express"||(input.express+"")=="1"?true:false;
+        this.reminder = input.reminder=="yes"||(input.reminder+"")=="1"?true:false;
+        this.publishTime = new Date(input.publishTime[input.publishTime.length-1]=="Z"?input.publishTime:convertSqlDateTimeToDate(input.publishTime));
     }
 
     static validateTime(input, config){
@@ -290,8 +298,8 @@ class ENotice extends Service{
 
     static getTimeAvailQuery(input, config){
         let padding = config.padding_between_bookings_mins;
-        let paddedStart = convertISOToSql(new Date(input.publishTime.getTime() - (padding*60000)));
-        let paddedEnd = convertISOToSql(new Date(input.publishTime.getTime() + (padding*60000)));
+        let paddedStart = convertDateToSqlDateTime(new Date(input.publishTime.getTime() - (padding*60000)));
+        let paddedEnd = convertDateToSqlDateTime(new Date(input.publishTime.getTime() + (padding*60000)));
         return ("SELECT * FROM " + input.type 
             + " WHERE service_name='" + input.serviceName
             + "' (start_time<='" + paddedStart + "' AND end_time>'" + paddedStart + "') OR "
@@ -322,7 +330,7 @@ class Publicity extends Service{
         super(input);
         this.required = ["publishTime"];
         super.checkRequired(input);
-        this.publishTime = new Date(input.publishTime);
+        this.publishTime = new Date(input.publishTime[input.publishTime.length-1]=="Z"?input.publishTime:convertSqlDateTimeToDate(input.publishTime));
     }
 
     static validateTime(input, config){
@@ -336,8 +344,8 @@ class Publicity extends Service{
 
     static getTimeAvailQuery(input, config){
         let padding = config.padding_between_bookings_mins;
-        let paddedStart = convertISOToSql(new Date(input.publishTime.getTime() - (padding*60000)));
-        let paddedEnd = convertISOToSql(new Date(input.publishTime.getTime() + (padding*60000)));
+        let paddedStart = convertDateToSqlDateTime(new Date(input.publishTime.getTime() - (padding*60000)));
+        let paddedEnd = convertDateToSqlDateTime(new Date(input.publishTime.getTime() + (padding*60000)));
         return ("SELECT * FROM " + input.type 
             + " WHERE"
             + " (publish_time>='" + paddedStart +"' AND publish_time<='" + paddedEnd + "');"
@@ -378,6 +386,6 @@ module.exports = {
     ENotice: ENotice,
     Publicity: Publicity,
     getClass: getClass,
-    convertISOToSql: convertISOToSql,
-    convertSqlToDate: convertSqlToDate
+    convertDateToSqlDateTime: convertDateToSqlDateTime,
+    convertSqlDateTimeToDate: convertSqlDateTimeToDate
 }

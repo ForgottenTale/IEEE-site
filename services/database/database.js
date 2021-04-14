@@ -1,20 +1,36 @@
 const mysql = require('mysql');
 const { schema } = require('./ddl.js');
-const { User, convertSqlToDate, convertISOToSql, getClass } = require('../controller.js');
+const { User, convertSqlDateTimeToDate, convertDateToSqlDateTime, getClass } = require('../controller.js');
 
 let connection;
 
-function getConfig(type, done){
-	let query = "SELECT * FROM config INNER JOIN service ON service._id=config.type_id WHERE service.type='"
-	+ type
-	+"';";
+function transmuteSnakeToCamel(input){
+	let output = {};
+    for(let param in input){
+		let temp = param;
+		output[param.replace(
+            /((?<=[a-z])_[a-z])|(_)/g,
+            (group) => group.toUpperCase()
+                            .replace('-', '')
+                            .replace('_', '')
+        )] = input[temp];
+    }
+    return output;
+}
+
+function getConfig(type, serviceName, done){
+	let query = "SELECT * FROM service_config WHERE type='" + type 
+		+ "' AND (service_name='" + serviceName + "' OR service_name is null);" ;
 	connection.query(query, (err, results, fields)=>{
 		if(err) return done(err);
-		return done(null, results.reduce((total, variable)=>{
-			total[variable.name] = variable.value;
-			return total;
-		}, {})
-		);
+		if(results.length<1)
+			return done(new Error("Config not found"))
+		if(results.length>2)
+			results.forEach(result=>{
+				if(result.service_name != null)
+					return done(null, results);
+			})
+		return done(null, results[0]);
 	})
 }
 
@@ -84,7 +100,7 @@ module.exports = {
 			newAppointment.status = "PENDING";
 			let {names, values} = newAppointment.getAllNamesAndValues();
 			let config = await new Promise((resolve, reject)=>{
-				getConfig(newAppointment.type, (err, result)=>{
+				getConfig(newAppointment.type, newAppointment.serviceName, (err, result)=>{
 					if(err) return reject(err);
 					return resolve(result);
 				})
@@ -146,7 +162,7 @@ module.exports = {
 
 	checkAvailability: function(input, done){
 		AppointmentClass = getClass(input.type);
-		getConfig(input.type, (err, config)=>{
+		getConfig(input.type,input.serviceName, (err, config)=>{
 			if(err) return done(err);
 			let query;
 			try{
@@ -174,8 +190,8 @@ module.exports = {
 		.then(data=>{
 			return done(null, data.map((elem, idx)=>{
 				elem.forEach(som=>{
-					som.start_time = convertSqlToDate(som.start_time).toISOString();
-					som.end_time = convertSqlToDate(som.end_time).toISOString();
+					som.start_time = convertSqlDateTimeToDate(som.start_time).toISOString();
+					som.end_time = convertSqlDateTimeToDate(som.end_time).toISOString();
 				})
 				return {
 					type: serviceTypes[idx],
@@ -201,32 +217,37 @@ module.exports = {
 		.catch(err=>done(err))
 	},
 
-	getCalendarData: function(startTime, endTime, done){
-		startTime = convertISOToSql(startTime);
-		endTime = convertISOToSql(endTime);
-		let query = "SELECT distinct DATE(start_time) FROM online_meeting WHERE"
+	getCalendarData: function(constraint, done){
+		startTime = convertDateToSqlDateTime(constraint.startTime);
+		endTime = convertDateToSqlDateTime(constraint.endTime);
+		let query = "SELECT distinct DATE(start_time) FROM " + constraint.type + " WHERE"
 			+ " (start_time<='" + startTime + "' AND end_time>'" + endTime + "')"
 			+ " OR (end_time<'" + endTime + "' AND end_time>='" + startTime + "')"
 			+ " OR (start_time<'" + endTime + "' AND start_time>='" + startTime + "');" ;
 		executeQuery(query)
-		.then(data=>{
+		.then(distinctDates=>{
 			let dataArray = [];
 			let query = "";
-			data.forEach(distinctDate=>{
-				query += "SELECT * FROM online_meeting WHERE DATE(start_time)=DATE('" + distinctDate["DATE(start_time)"] + "');";
+			distinctDates.forEach(distinctDate=>{
+				query += "SELECT * FROM " + constraint.type + " WHERE DATE(start_time)=DATE('" + distinctDate["DATE(start_time)"] + "');";
 			})
 			if(query.length>0)
 				executeQuery(query)
-				.then(data=>{
-					if(data[0][0])
-						data.forEach(distinctDateData=>{
-							distinctDate = new Date(distinctDateData[0].start_time).toISOString();	
-							dataArray.push({date: distinctDate, events: distinctDateData});	
+				.then(datesAndEvents=>{
+					if(datesAndEvents[0][0])
+						datesAndEvents.forEach(distinctDateEvents=>{
+							distinctDate = new Date(distinctDateEvents[0].start_time).toISOString();
+							distinctDateEvents = distinctDateEvents.map(event=>{
+								event.type = constraint.type;
+								AppointmentClass = getClass(constraint.type);
+								return (new AppointmentClass(transmuteSnakeToCamel(event))).getPublicInfo();
+							});
+							dataArray.push({date: distinctDate, events: distinctDateEvents});	
 						})
 					else
-						data.forEach(event=>{
+						datesAndEvents.forEach(event=>{
 							distinctDate = new Date(event.start_time).toISOString();
-							dataArray.push({date: distinctDate, events: data})
+							dataArray.push({date: distinctDate, events: datesAndEvents})
 						})
 					return done(null, dataArray);
 				})
