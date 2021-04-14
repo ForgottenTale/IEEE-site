@@ -16,11 +16,11 @@ function Services({type,data,setData}) {
   }
 
   let items = [];
-  if (type === "online-meeting") {
+  if (type === "online_meeting") {
     items = ["Webex", "Zoom"];
-  } else if (type === "intern-support") {
+  } else if (type === "intern_support") {
     items = ["Content Writing", "Poster Design", "Website Development"];
-  } else if (type === "enotice") {
+  } else if (type === "e_notice") {
     items = ["E-Notice Issue"];
   } else if (type === "publicity") {
     items = ["Social Media", "Website Posting"];
