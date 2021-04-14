@@ -56,14 +56,14 @@ module.exports= {
                 let info = await transporter.sendMail({
                     from: '<' + transporterData.auth.user + '>',
                     to: input.emailIds[idx],
-                    subject: "An appointment needs your approval",
-                    html: "<span>An" + input.type + " needs your approval </span>"
+                    subject: input.user.name + input.encourages?" en":" dis" + "courages this",
+                    html: "<span>This is "+input.encourages?"en":"dis" + "couraging because " + input.response + " </span>"
                 })
                 .catch(err=>reject(err))   
                 console.log("Message sent: %s", info.messageId);
                 console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
             }
-            resolve(rand);
+            resolve("Message Send");
         })
     },
 
@@ -75,14 +75,14 @@ module.exports= {
                 let info = await transporter.sendMail({
                     from: '<' + transporterData.auth.user + '>',
                     to: input.emailIds(idx),
-                    subject: "An appointment needs your approval",
-                    html: "<span>An" + input.type + " needs your approval </span>"
+                    subject: "This appointment has completed hierarchy",
+                    html: "<span>An" + input.type + " has completed hierarchy </span>"
                 })
                 .catch(err=>reject(err))   
                 console.log("Message sent: %s", info.messageId);
                 console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
             }
-            resolve(rand);
+            resolve("Message Send");
         })
     }
 }

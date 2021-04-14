@@ -301,7 +301,7 @@ module.exports = {
 		try{
 			let appointment = await executeQuery("SELECT * FROM " + input.type 
 				+ " AS t INNER JOIN next_to_approve AS n ON n.next_to_approve=t._id "
-				+ " WHERE n.user_id=" + input.user_id + " AND t." + input.type + "_id=" + input.appointmentId +";");
+				+ " WHERE n.user_id=" + input.user._id + " AND t." + input.type + "_id=" + input.appointmentId +";");
 			if(appointment!=1)
 				throw new Error("Invalid number of appointments selected");
 			appointment = appointment[0];
@@ -314,8 +314,8 @@ module.exports = {
 			let alphaAdmins = await executeQuery("SELECT * FROM user WHERE role='ALPHA_ADMIN';");
 			let nextMails = alphaAdmins.map(admin=>admin.email);
 			let query = "INSERT INTO response(user_id, " + input.type + "_id, encourages, response) VALUES ("
-				+ [input.user_id, input.appointmentId, input.encourages, input.response].join(",") + ");"
-			if(input.role == "ALPHA_ADMIN"){
+				+ [input.user._id, input.appointmentId, input.encourages, input.response].join(",") + ");"
+			if(input.user.role == "ALPHA_ADMIN"){
 				let creator = await executeQuery("SELECT * FROM user WHERE _id=" + appointment.creator_id);
 				mail.sendFinal({type: input, emailIds: [...nextMails, creator.email]});
 				query+="DELETE FROM next_to_approve WHERE "
@@ -324,14 +324,20 @@ module.exports = {
 					+ input.encourages?"APPROVED":"DECLINED"
 					+ "' WHERE _id=" + input.appointmentId);
 			}else{
-				mail.sendResponses({type: input.type, emailIds: nextMails});
+				mail.sendResponses({
+					type: input.type,
+					user:input.user,
+					response: input.response,
+					encourages: input.encourages,
+					emailIds: nextMails
+				});
 				if(config.follow_hierarchy)
 					alphaAdmins.forEach(alpha=>{
 						query+="INSERT INTO next_to_approve(user_id," + input.type + "_id) VALUES("
 						+ alpha._id + "," + appointment._id
 						+");"
 					})
-				query+="DELETE FROM next_to_approve WHERE user_id=" + input.user_id
+				query+="DELETE FROM next_to_approve WHERE user_id=" + input.user._id
 				+ " AND " + input.type + "_id=" + input.appointmentId + ";";
 			}
 			await executeQuery(query);
