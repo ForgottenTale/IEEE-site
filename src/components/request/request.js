@@ -1,13 +1,14 @@
 
 import './request.scss';
-import { Input2, Table } from '../utils/myReactLib';
+import Table from '../table/table';
+import { Input2 } from '../utils/myReactLib';
 
 export default function Request() {
 
     const header = ['Id', "Name", "Service", "Type", "Time", "Status","Action"];
     const data = [
-        [ 1, "Sara Anan Jose", "Online meeting", "Zoom ", "2pm IST 05/27/2021","Pending",],
-        [ 2, "Sara Anan Jose", "Online meeting", "Zoom ", "2pm IST 05/27/2021","Pending",],
+        { id:1, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
+        { id:2, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
 
    ];
 
@@ -23,7 +24,7 @@ export default function Request() {
                 <Input2 className="request_sub_input" />
 
             </div>
-            <Table headers={header} data={data} />
+            <Table headers={header} data={data} type='request' />
         </div>
     )
 }

@@ -1,7 +1,7 @@
 import './admin.scss';
-import { Input2,Table } from '../../utils/myReactLib';
+import { Input2} from '../../utils/myReactLib';
 import {useState} from 'react';
- 
+import Table from '../../table/table';
 
 function View(){
     return(
@@ -12,17 +12,18 @@ E
 }
 
 
+
 export default function Admin(){
 
     const [view, setView] = useState(false);
 
     const header = ['Id', "Name", "Email", "Role", "Team", ""];
-    const data = [[
-        1, "Sara Anan Jose", "sarananajose@ieee.org", "Alpha admin ", "Content",
-    ],
-    [
-        2, "Sara Anan Jose", "sarananajose@ieee.org", "Alpha admin ", "Content",
-    ]];
+    const data = [{
+        "id": 1, name: "Sara Anan Jose", email: "sarananajose@ieee.org", role: "Alpha admin ", team: "Content",
+    },
+    {
+        "id": 2, name: "Sara Anan Jose", email: "sarananajose@ieee.org", role: "Alpha admin ", team: "Content",
+    }]
     return (
         <div className="admin">
             <div className="admin_sub">
@@ -30,7 +31,7 @@ export default function Admin(){
                 <Input2 className="admin_sub_input" />
 
             </div>
-            <Table headers={header} data={data} setView={setView}/>
+            <Table headers={header} data={data} setView={setView} type='admin'/>
         </div>
     )
 }

@@ -1,0 +1,28 @@
+
+.tableTag{
+    margin: 0 30px;
+    & table{
+        width: 100%;
+        border-spacing: 0;
+        border-collapse: collapse;
+       
+        & tr {
+            & th{
+                text-align: left;
+                padding: 20px;
+                font-size: 14px;
+            }
+            & td{
+                padding: 20px;
+            }
+            &:hover{
+                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.02), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+            }
+            &:nth-child(even){
+                background-color: #F2F4F5;
+            }
+        }
+       
+    }
+   
+}

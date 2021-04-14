@@ -39,30 +39,3 @@ export function Input2({ setValue }) {
     )
 }
 
-export function Table({ headers, data,j }) {
-  console.log(j);
-    return (
-        <div className="tableTag">
-            <table>
-                <tr>
-                    {headers.map((header) => <th>{header}</th>)}
-                </tr>
-
-
-                {
-                    data.map((row) =>
-                        <tr>
-                            {
-                                row.map((value) =>
-                                    <td>{value}</td>)
-                            }
-                             <td>View</td>
-                        </tr>
-                    )
-                }
-
-
-            </table>
-        </div>
-    )
-}
