@@ -27,7 +27,7 @@ function Verify({ type, data }) {
 
 
     try {
-      const url = '/api/book/'+data.type;
+      const url = '/api/book/'+type;
       const res = await axios.post(url, data, {
         headers: {
           'Content-Type': 'multipart/form-data'
