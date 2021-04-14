@@ -45,7 +45,7 @@ function OtherInfo({ type, data, setData }) {
     setData(
       {
         
-        cohosts: cohost,
+        cohosts: JSON.stringify(cohost),
         ...data
       });
 
