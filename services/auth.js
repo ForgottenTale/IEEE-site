@@ -10,6 +10,12 @@ module.exports = {
         res.redirect('/login');
     },
 
+    ensureAdmin: function(req, res, next){
+        if(req.user.role=="ALPHA_ADMIN" || req.user.role=="BETA_ADMIN" || req.user.role=="SUPER_ADMIN")
+            return next();
+        res.redirect('/unauthorized');
+    },
+
     setStrategies: function (app) {
         passport.serializeUser((user, done) => {
             done(null, user.email);
