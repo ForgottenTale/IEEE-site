@@ -114,11 +114,11 @@ module.exports = {
 			let nextApprovers = [];
 			if(config.follow_service_assignment){
 				//find Assignees
-				[...await(executeQuery("SELECT * FROM service_assignment WHERE appointment_type=" 
+				[...await(executeQuery("SELECT * FROM service_config WHERE type=" 
 					+ ("'" + newAppointment.type + "'") 
 					+" AND (service_name=" 
 					+ ("'" + newAppointment.serviceName + "'" )
-					+ " OR service_name is null);"
+					+ " OR service_name IS null);"
 				))]
 				.forEach(info=>{
 					if(nextApprovers.indexOf(info.assigned_to)==-1)
@@ -269,5 +269,63 @@ module.exports = {
 				.catch(err=>done(err))
 		})
 		.catch(err=>done(err));
+	},
+
+	findUserApprovals: function(constraint, done){
+		let query = "SELECT * FROM next_to_approve" 
+		+ " INNER JOIN online_meeting ON online_meeting._id=next_to_approve.online_meeting_id" 
+		+ " LEFT JOIN response ON response.online_meeting_id=next_to_approve.online_meeting_id"
+		+ " WHERE next_to_approve.user_id=" + constraint.user_id  + ";"
+		executeQuery(query)
+		.then(appointments=>{
+			let dataArray = [];
+			appointments.forEach(appointment=>{
+				appointment.type=constraint.type;
+				AppointmentClass = getClass(constraint.type);
+				dataArray.push((new AppointmentClass(transmuteSnakeToCamel(appointment))).getPublicInfo());
+			})
+			return done(null, dataArray);
+		})
+		.catch(err=>done(err))
+	},
+
+	changeAppointmentStatus: async function(input, done){
+		try{
+			let appointment = await executeQuery("SELECT * FROM " + input.type 
+				+ " AS t INNER JOIN next_to_approve AS n ON n.next_to_approve=t._id "
+				+ " WHERE n.user_id=" + input.user_id + " AND t." + input.type + "_id=" + input.appointmentId +";");
+			if(appointment!=1)
+				throw new Error("Invalid number of appointments selected");
+			appointment = appointment[0];
+			let config = await new Promise((resolve, reject)=>{
+				getConfig(input.type, appointment.service_name, (err, results)=>{
+					if(err) return reject(err);
+					return resolve(results);
+				})
+			});
+			let alphaAdmins = await executeQuery("SELECT * FROM user WHERE role='ALPHA_ADMIN';");
+
+			let query = "INSERT INTO response(user_id, " + input.type + "_id, encourages, response) VALUES ("
+				+ [input.user_id, input.appointmentId, input.encourages, input.response].join(",") + ");"
+			if(input.role == "ALPHA_ADMIN"){
+				query+="DELETE FROM next_to_approve WHERE "
+					+ input.type + "_id=" + input.appointmentId + ";";
+				await executeQuery("UPDATE " + input.type + " SET status='" 
+					+ input.encourages?"APPROVED":"DECLINED"
+					+ "' WHERE _id=" + input.appointmentId);
+			}else{
+				if(config.follow_hierarchy)
+					alphaAdmins.forEach(alpha=>{
+						query+="INSERT INTO next_to_approve(user_id," + input.type + "_id) VALUES("
+						+ alpha._id + "," + appointment._id
+						+");"
+					})
+				query+="DELETE FROM next_to_approve WHERE user_id=" + input.user_id
+				+ " AND " + input.type + "_id=" + input.appointmentId + ";";
+			}
+			await executeQuery(query);
+		}catch(err){
+			return done(err);
+		}
 	}
 }

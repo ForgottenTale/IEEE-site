@@ -35,11 +35,6 @@ module.exports = function(app){
         }
     })
 
-    app.route('/protected')
-    .get(auth.ensureAuthenticated, (req, res)=>{
-        res.sendFile(process.cwd() + '/coverage/protected.html');
-    })
-
     app.route('/book/appointment')
     .get(auth.ensureAuthenticated, (req, res)=>{
         res.sendFile(process.cwd() + '/coverage/new_appointment.html');

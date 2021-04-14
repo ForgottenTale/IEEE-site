@@ -62,9 +62,14 @@ module.exports = function(app){
         });
     })
 
-    app.route('/api/failure')
+    app.route('/failure')
     .get((req, res)=>{
         res.status(401).json({error: req.flash('error')[0]});
+    })
+
+    app.route('/unauthorized')
+    .get((req, res)=>{
+        res.sendFile(process.cwd() + '/coverage/unauthorized.html')
     })
 
     app.route('/api/logout')
