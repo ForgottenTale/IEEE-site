@@ -1,26 +1,21 @@
 
 import Content from './components/content/content';
+import Login from './components/login/login';
 import { BrowserRouter as Router} from 'react-router-dom';
 import './App.scss';
-import {useEffect} from 'react';
-import axios from 'axios';
+import {useState} from 'react';
+
 
 
 function App() {
-  useEffect(()=>{
-    axios.get("http://localhost:5000/hi").then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    })
-    },[])
+  const[user,setUser] =useState(null);
   return (
-    <Router>
-      <div className="App">
-        <Content/>
-      </div>
-    </Router>
+    // <Router>
+    //   <div className="App">
+    //     <Content/>
+    //   </div>
+    // </Router>
+    <Login setUser={setUser}/>
  
   );
 }
