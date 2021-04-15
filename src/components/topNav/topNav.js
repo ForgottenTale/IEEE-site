@@ -1,8 +1,8 @@
 import './topNav.scss';
 import user from '../../images/profile.png';
 
-export default function TopNav(){
-
+export default function TopNav({activeComponent}){
+ console.log(activeComponent)
     return(
         <div className="topNav">
                     <div className="topNav_title">
@@ -20,7 +20,7 @@ export default function TopNav(){
                             <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"></path>
                             <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
                         </svg>
-                        <h3>Dashboard</h3>
+                        <h3>{activeComponent}</h3>
                     </div>
                     <div className="topNav_icons">
                         <svg

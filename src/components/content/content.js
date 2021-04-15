@@ -12,25 +12,26 @@ import Users from '../users/users';
 export default function Content() {
 
     const [open, setOpen] = useState(true);
+    const [activeComponent, setActiveComponent] =useState("Dashboard");
 
 
     return (
         <div className="content">
-            <Menu toggle={setOpen} state={open} />
+            <Menu toggle={setOpen} state={open} setActiveComponent={setActiveComponent}/>
             <div className= {open?"content_container open":"content_container"} >
-                <TopNav />
+                <TopNav activeComponent={activeComponent} />
                 <Switch>
                     <Route exact path="/">
                         <h5 className="content_container_user">Welcome Alan Mathew !</h5>
                         <Appointments />
                     </Route>
-                    <Route path="/calender">
+                    <Route path="/calendar">
                         <Calender/>
                     </Route>
                     <Route path="/settings">
                         <Setting/>
                     </Route>
-                    <Route path="/request">
+                    <Route path="/requests">
                         <Request/>
                     </Route>
                     <Route path="/users">

@@ -29,7 +29,7 @@ export default function Request() {
             <div className="request_sub">
                 <h6 className="request_sub_title">You have 360 request</h6>
 
-                <Input2 className="request_sub_input" />
+                <Input2 className="request_sub_input" placeholder="Search for requests" />
 
             </div>
             <Table headers={header} data={data} type='request' />

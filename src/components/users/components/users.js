@@ -15,11 +15,11 @@ export default function Admin() {
     return (
         <div className="admin">
             <div className="admin_sub">
-                <Input2 className="admin_sub_input" />
+                <Input2 className="admin_sub_input" placeholder="Search for users" />
 
 
             </div>
-            <Table headers={header} data={data} type='user' />
+            <Table headers={header} data={data} type='user'  />
            
         </div>
     )

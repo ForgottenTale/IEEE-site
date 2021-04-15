@@ -10,12 +10,12 @@ import {useState} from 'react';
 function App() {
   const[user,setUser] =useState(null);
   return (
-    // <Router>
-    //   <div className="App">
-    //     <Content/>
-    //   </div>
-    // </Router>
-    <Login setUser={setUser}/>
+    <Router>
+      <div className="App">
+        <Content/>
+      </div>
+    </Router>
+    // <Login setUser={setUser}/>
  
   );
 }

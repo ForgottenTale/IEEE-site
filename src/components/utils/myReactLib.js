@@ -11,7 +11,7 @@ export function Input({ label }) {
     )
 }
 
-export function Input2({ setValue }) {
+export function Input2({ onChange, placeholder }) {
 
     return (
         <div className="inputTag2">
@@ -31,9 +31,8 @@ export function Input2({ setValue }) {
                     <circle cx="11" cy="11" r="8"></circle>
                     <path d="M21 21L16.65 16.65"></path>
                 </svg>
-                <p>Search for request</p>
             </label>
-            <input className="inputTag2_input" type="text" />
+            <input className="inputTag2_input" type="text" placeholder ={placeholder }/>
 
         </div>
     )

@@ -17,8 +17,7 @@ export default function Admin(){
     return (
         <div className="admin">
             <div className="admin_sub">
-                <Input2 className="admin_sub_input" />
-                <Input2 className="admin_sub_input" />
+                <Input2 className="admin_sub_input" placeholder="Search for admins" />
 
             </div>
             <Table headers={header} data={data} type='admin'/>
