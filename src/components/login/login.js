@@ -18,7 +18,11 @@ const handleLogin= async()=>{
     formData.append('password',details.password);
     try {
         const url = '/api/login/'
-        const res = await axios.post(url,formData)
+        const res = await axios.post(url,formData, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        })
         console.log(res);
         setUser(res);
   
