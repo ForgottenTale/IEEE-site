@@ -27,10 +27,7 @@ module.exports = {
             })
         });
 
-        passport.use(new LocalStrategy({
-            usernameField: 'email',
-            passwordField: 'password'
-        },
+        passport.use(new LocalStrategy(
             function (email, password, done) {
                 database.findUser({ email: email}, function (err, user) {
                     console.log('User ' + email + ' attempted to log in.');

@@ -53,7 +53,7 @@ module.exports = function(app){
     app.route('/api/calendar')
     .get((req, res)=>{
         if(!req.query.month || !req.query.year)
-            return respondError('query parameters missing', res);
+            return respondError(new Error('query parameters missing'), res);
         let startTime = new Date(req.query.year, req.query.month, 1);
         let endTime = new Date(req.query.year, req.query.month + 1, 1);
         database.getCalendarData({startTime, endTime, type: 'online_meeting'}, (err, result)=>{

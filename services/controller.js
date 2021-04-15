@@ -10,24 +10,24 @@ class User {
     constructor(user){
         this.required = ["name", "email", "phone", "password"];
         try{
+            this.checkRequired(user);
             this._id = user._id;
             this.role = user.role?user.role.toUpperCase():null;
             this.name = user.name.trim();
             this.email = user.email.trim();
             this.phone = (user.phone+"").trim();
             this.password = user.password.trim();
-            this.checkRequired();
             this.validate();
         }catch(err){
             throw err;
         }
     }
 
-    checkRequired(){
+    checkRequired(input){
         this.required.forEach(param=>{
-            if(!this[param])
+            if(!input[param])
                 throw (param + " is requried");
-            else if((this[param] + "").trim() < 1)
+            else if((input[param] + "").trim() < 1)
                 throw (param + " cannot be empty");
         })
     }
@@ -87,8 +87,8 @@ class NewUser extends User{
         try{
             super(input);
             this.required = ["confirmPassword"];
+            this.checkRequired(input);
             this.confirmPassword = input.confirmPassword.trim();
-            this.checkRequired();
             if(this.confirmPassword != this.password)
                 throw new Error("Passwords mismatch");
         }catch(err){
@@ -102,6 +102,7 @@ class Service{
     constructor(input){
         try{
             this.required = ["type", "serviceName", "creatorId"];
+            this.checkRequired(input);
             this._id = input._id;
             this.type = input.type.trim();
             this.serviceName = input.serviceName.trim();
@@ -110,18 +111,17 @@ class Service{
             this.comments = input.comments?input.comments.trim():null;
             this.img = input.img?input.img.trim():null;
             this.creatorId = input.creatorId;
-            this.checkRequired();
             this.convertISOToSql = convertDateToSqlDateTime;
         }catch(err){
             throw err;
         }
     }
     
-    checkRequired(){
+    checkRequired(input){
         this.required.forEach(param=>{
-            if(!this[param])
+            if(!input[param])
                 throw (param + " is requried");
-            else if((this[param] + "").trim() < 1)
+            else if((input[param] + "").trim() < 1)
                 throw (param + " cannot be empty");
         })
     }
@@ -165,13 +165,13 @@ class OnlineMeeting extends Service {
     constructor(input){
         super(input);
         this.required = ["speakerName", "speakerEmail", "startTime", "endTime"];
+        super.checkRequired(input);
         this.speakerName = input.speakerName.trim();
         this.speakerEmail = input.speakerEmail.trim();
         input.startTime = input.startTime[input.startTime.length-1]=="Z"?input.startTime:convertSqlDateTimeToDate(input.startTime);
         input.endTime = input.endTime[input.endTime.length-1]=="Z"?input.endTime:convertSqlDateTimeToDate(input.endTime);
         this.startTime = new Date(input.startTime);
         this.endTime = new Date(input.endTime);
-        super.checkRequired();
         if(typeof(input.coHosts)=="string")
             input.coHosts = JSON.parse(input.coHosts);
         this.coHosts = input.coHosts?input.coHosts.map(coHost=>{
@@ -198,9 +198,9 @@ class OnlineMeeting extends Service {
         let paddedEnd = convertDateToSqlDateTime(new Date(input.endTime.getTime() + (padding*60000)));
         return ("SELECT * FROM " + input.type 
             + " WHERE"
-            + " (start_time<='" + paddedStart + "' AND end_time>'" + paddedStart + "') OR "
-            + " (start_time<='" + paddedStart +"' AND end_time>='" + paddedEnd + "') OR "
-            + " (start_time<='" + paddedEnd +"' AND end_time>'" + paddedEnd + "');"
+            + " (start_time>'" + paddedStart + "' AND start_time<'" + paddedEnd + "') OR "
+            + " (end_time>'" + paddedStart +"' AND end_time<'" + paddedEnd + "') OR "
+            + " (start_time='" + paddedStart +"' AND end_time='" + paddedEnd + "');"
         )
     }
 
