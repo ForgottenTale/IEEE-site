@@ -10,6 +10,12 @@ module.exports = {
         res.redirect('/login');
     },
 
+    ensureAdmin: function(req, res, next){
+        if(req.user.role=="ALPHA_ADMIN" || req.user.role=="BETA_ADMIN" || req.user.role=="SUPER_ADMIN")
+            return next();
+        res.redirect('/unauthorized');
+    },
+
     setStrategies: function (app) {
         passport.serializeUser((user, done) => {
             done(null, user.email);
@@ -21,10 +27,7 @@ module.exports = {
             })
         });
 
-        passport.use(new LocalStrategy({
-            usernameField: 'email',
-            passwordField: 'password'
-        },
+        passport.use(new LocalStrategy(
             function (email, password, done) {
                 database.findUser({ email: email}, function (err, user) {
                     console.log('User ' + email + ' attempted to log in.');

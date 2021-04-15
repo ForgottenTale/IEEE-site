@@ -10,15 +10,16 @@ function respondError(err, res){
 
 module.exports = function(app){
 
-    app.route('/my-appointments')
+    app.route('/api/my-appointments')
     .get(auth.ensureAuthenticated, (req, res)=>{
-        database.getUserAppointments(req.user._id, (err, appointments)=>{
+        req.query.user_id = req.user._id;
+        database.getUserAppointments(req.query, (err, appointments)=>{
             if(err) return respondError(err, res);
             res.status(200).json(appointments);
         });
     })
     
-    app.route('/my-appointments/:type')
+    app.route('/api/my-appointments/:type')
     .post(auth.ensureAuthenticated, (req, res)=>{
         if(req.query.cancel){
             database.removeAppointment({
@@ -34,22 +35,17 @@ module.exports = function(app){
         }
     })
 
-    app.route('/protected')
-    .get(auth.ensureAuthenticated, (req, res)=>{
-        res.sendFile(process.cwd() + '/coverage/protected.html');
-    })
-
     app.route('/book/appointment')
     .get(auth.ensureAuthenticated, (req, res)=>{
         res.sendFile(process.cwd() + '/coverage/new_appointment.html');
     })
     app.route('/api/book/:type')
     .post(auth.ensureAuthenticated, (req, res)=>{
-        upload.single('poster')(req, res, (err)=>{
+        upload.single('img')(req, res, (err)=>{
             try{
                 if(err) throw err;
                 let newAppointment;
-                req.body.poster = req.file?req.file.filename:null;
+                req.body.img = req.file?req.file.filename:null;
                 req.body.creatorId = req.user._id;
                 req.body.type = req.params.type;
                 AppointmentClass= getClass(req.params.type);
