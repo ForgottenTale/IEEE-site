@@ -1,43 +1,43 @@
 import './login.scss';
 import pic from '../../images/login.jpg';
-import {useState} from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 
-export default function Login({setUser}) {
+export default function Login({ setUser }) {
 
-const[details,setDetails] =useState({
-    username:null,
-    password:null
-});
+    const [details, setDetails] = useState({
+        username: null,
+        password: null
+    });
 
 
-const handleLogin= async()=>{
-    console.log(details);
-    const formData = new FormData();
-    formData.append('username',details.username);
-    formData.append('password',details.password);
-    try {
-        const url = '/api/login/'
-        const res = await axios.post(url,formData, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
-        })
-        console.log(res);
-        setUser(res);
-  
-      } catch (err) {
-        console.log(err);
-      }
-}
+    const handleLogin = async () => {
+        console.log(details);
+        const formData = new FormData();
+        formData.append('username', details.username);
+        formData.append('password', details.password);
+        try {
+            const headers = {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              }
+              
+            const url = "/api/login/"
+            const res = await axios.post(url,formData,{headers:headers});
+            console.log(res);
+            setUser(res);
 
-const handleChange=(e)=>{
-    const values =details;
-    e.preventDefault();
-    values[e.target.name] =e.target.value;
-    setDetails(values);
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
-}
+    const handleChange = (e) => {
+        const values = details;
+        e.preventDefault();
+        values[e.target.name] = e.target.value;
+        setDetails(values);
+
+    }
     return (
         <div className="login">
 
@@ -46,9 +46,9 @@ const handleChange=(e)=>{
                     <h4 className="login_container_box_title">Login</h4>
                     <p className="login_container_box_des">Login to your account</p>
                     <label className="login_container_box_label">Email</label>
-                    <input className="login_container_box_input" name="username" type="email" onChange={(e)=>handleChange(e)}/>
+                    <input className="login_container_box_input" name="username" type="email" onChange={(e) => handleChange(e)} />
                     <label className="login_container_box_label">Password</label>
-                    <input className="login_container_box_input"  name="password"  type="Password" onChange={(e)=>handleChange(e)}/>
+                    <input className="login_container_box_input" name="password" type="Password" onChange={(e) => handleChange(e)} />
                     <div className="login_container_box_options">
 
                         <div className="login_container_box_options_checkbox">

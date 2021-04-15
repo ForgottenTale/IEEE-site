@@ -32,7 +32,7 @@ function Verify({ type, data }) {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
-      })
+      });
       console.log(res);
 
     } catch (err) {
