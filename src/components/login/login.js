@@ -13,16 +13,17 @@ export default function Login({ setUser }) {
 
     const handleLogin = async () => {
         console.log(details);
-        const formData = new FormData();
+        const formData = new URLSearchParams();
         formData.append('username', details.username);
         formData.append('password', details.password);
         try {
             const headers = {
                 'Content-Type': 'application/x-www-form-urlencoded',
               }
-              
-            const url = "/api/login/"
+          
+            const url = "http://localhost:5000/api/login/"
             const res = await axios.post(url,formData,{headers:headers});
+
             console.log(res);
             setUser(res);
 
@@ -60,7 +61,7 @@ export default function Login({ setUser }) {
                         </div>
                         <p>Forgot password ?</p>
                     </div>
-                    <button className="login_container_box_button" onClick={handleLogin}>Login</button>
+                    <button className="login_container_box_button" onClick={()=>handleLogin()}>Login</button>
                 </div>
 
             </div>
