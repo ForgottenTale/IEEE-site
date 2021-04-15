@@ -13,9 +13,12 @@ const[details,setDetails] =useState({
 
 const handleLogin= async()=>{
     console.log(details);
+    const formData = new FormData();
+    formData.append('username',details.username);
+    formData.append('password',details.password);
     try {
         const url = '/api/login/'
-        const res = await axios.post(url,details, {
+        const res = await axios.post(url,formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
