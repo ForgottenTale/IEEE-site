@@ -198,9 +198,14 @@ module.exports = {
 				appointments.forEach(appointment=>{
 					query+="SELECT name, email, phone, response FROM response INNER JOIN user on user._id=response.user_id WHERE " + constraint.type + "_id=" + appointment._id + ";";
 				})
-				let responses = await executeQuery(query);
-				if(!responses[0][0])
-					responses= [responses];
+				let responses = [];
+				if(query){
+					responses = await executeQuery(query);
+					if(responses.length<1)
+						responses = [];
+					else if(!responses[0][0])
+						responses= [responses];
+				}
 				return done(null, appointments.map((appointment,idx)=>{
 					appointment.type = constraint.type;
 					return Object.assign({}, {id: appointment._id}, (new AppointmentClass(transmuteSnakeToCamel(appointment))).getPublicInfo(), {responses: responses[idx]});
@@ -304,6 +309,8 @@ module.exports = {
 				delete appointment.response;
 				query += "SELECT name, email, phone, response FROM response INNER JOIN user ON response.user_id=user._id WHERE " + constraint.type + "_id=" + appointment._id + ";";
 			})
+			if(!query)
+				return done(null, appointments);
 			executeQuery(query)
 			.then(responses=>{
 				if(!responses[0][0])
@@ -329,8 +336,7 @@ module.exports = {
 			appointments.forEach(appointment=>{
 				appointment.type=constraint.type;
 				AppointmentClass = getClass(constraint.type);
-				dataArray.push(
-					Object.assign({}, {id: appointment._id}, (new AppointmentClass(transmuteSnakeToCamel(appointment))).getPublicInfo()));
+				dataArray.push(transmuteSnakeToCamel(appointment))
 			})
 			getConfig('online_meeting', null, (err, config)=>{
 				if(err) return done(err);
@@ -363,12 +369,20 @@ module.exports = {
 				+ [input.user._id, input.appointmentId, input.encourages, ("'" + input.response + "'")].join(",") + ");"
 			if(input.user.role == "ALPHA_ADMIN"){
 				let creator = await executeQuery("SELECT * FROM user WHERE _id=" + appointment.creator_id);
-				mail.sendFinal({type: input, emailIds: [...nextMails, creator.email]});
+				let involved = await executeQuery("SELECT * FROM next_to_approve INNER JOIN user ON next_to_approve.user_id=user._id WHERE "
+					+ input.type + "_id=" + appointment._id + ";");
+				involved.forEach(involvedUser=>{
+					if(input.user._id==involvedUser._id)
+						return ;
+					query+="INSERT INTO response(user_id, " + input.type + "_id) VALUES ("
+					+ [involvedUser._id, input.appointmentId].join(",")+");"
+				})
 				query+="DELETE FROM next_to_approve WHERE "
 					+ input.type + "_id=" + input.appointmentId + ";";
-				await executeQuery("UPDATE " + input.type + " SET status='" 
+				await executeQuery("UPDATE " + input.type + " SET status='"
 					+ (input.encourages?"APPROVED":"DECLINED")
-					+ "' WHERE _id=" + input.appointmentId);
+					+ "' WHERE _id=" + input.appointmentId)
+				mail.sendFinal({type: input, emailIds: [...nextMails, creator[0].email]});
 			}else{
 				if(config.follow_hierarchy)
 					alphaAdmins.forEach(alpha=>{
@@ -378,15 +392,15 @@ module.exports = {
 					})
 				query+="DELETE FROM next_to_approve WHERE user_id=" + input.user._id
 				+ " AND " + input.type + "_id=" + input.appointmentId + ";";
+				mail.sendResponses({
+					type: input.type,
+					user:input.user,
+					response: input.response,
+					encourages: input.encourages,
+					emailIds: nextMails
+				});
 			}
 			await executeQuery(query);
-			mail.sendResponses({
-				type: input.type,
-				user:input.user,
-				response: input.response,
-				encourages: input.encourages,
-				emailIds: nextMails
-			});
 			return done(null, "Updated Successfully");
 		}catch(err){
 			return done(err);

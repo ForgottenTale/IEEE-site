@@ -74,17 +74,21 @@ module.exports= {
             let transporter = nodemailer.createTransport(transporterData);
             
             for(let idx in input.emailIds){
-                let info = await transporter.sendMail({
-                    from: '<' + transporterData.auth.user + '>',
-                    to: input.emailIds(idx),
-                    subject: "This appointment has completed hierarchy",
-                    html: "<span>An" + input.type + " has completed hierarchy </span>"
-                })
-                .catch(err=>reject(err))   
-                console.log("Message sent: %s", info.messageId);
-                console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+                try{
+                    let info = await transporter.sendMail({
+                        from: '<' + transporterData.auth.user + '>',
+                        to: input.emailIds[idx],
+                        subject: "This appointment has completed hierarchy",
+                        html: "<span>An" + input.type + " has completed hierarchy </span>"
+                    })
+                    console.log("Email sent to: ", input.emailIds[idx]);
+                    console.log("Message sent: %s", info.messageId);
+                    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+                }catch(err){
+                    reject(err);
+                }
+                resolve("Message Send");
             }
-            resolve("Message Send");
         })
     }
 }
