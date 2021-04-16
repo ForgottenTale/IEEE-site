@@ -26,9 +26,9 @@ class User {
     checkRequired(input){
         this.required.forEach(param=>{
             if(!input[param])
-                throw (param + " is requried");
+                throw new Error(param + " is requried");
             else if((input[param] + "").trim() < 1)
-                throw (param + " cannot be empty");
+                throw new Error(param + " cannot be empty");
         })
     }
 
@@ -105,7 +105,7 @@ class Service{
             this.checkRequired(input);
             this._id = input._id;
             this.type = input.type.trim();
-            this.serviceName = input.serviceName.trim();
+            this.serviceName = input.serviceName.trim().toLowerCase();
             this.description = input.description?input.description.trim():null;
             this.status = input.status?input.status:"PENDING";
             this.comments = input.comments?input.comments.trim():null;
@@ -120,9 +120,9 @@ class Service{
     checkRequired(input){
         this.required.forEach(param=>{
             if(!input[param])
-                throw (param + " is requried");
+                throw new Error(param + " is requried");
             else if((input[param] + "").trim() < 1)
-                throw (param + " cannot be empty");
+                throw new Error(param + " cannot be empty");
         })
     }
 
@@ -181,14 +181,14 @@ class OnlineMeeting extends Service {
 
     static validateTime(input, config){
         if(input.startTime>input.endTime)
-            throw 'End Date must be greater than Start Date';
+            throw new Error('End Date must be greater than Start Date');
         if(input.startTime<(new Date()))
-            throw 'Time slot selected is past';
+            throw new Error('Time slot selected is past');
         let startOfAdvanceTime = new Date(input.startTime);
         startOfAdvanceTime.setHours(0, 0, 0);
         startOfAdvanceTime.setDate(startOfAdvanceTime.getDate() - config.advance_days);
         if(startOfAdvanceTime<=(new Date())){
-            throw 'Booking has to be done ' + config.advance_days + ' days in advance';
+            throw new Error('Booking has to be done ' + config.advance_days + ' days in advance');
         }
     }
 
@@ -242,20 +242,20 @@ class InternSupport extends Service{
     validate(input){
         for(let param in input){
             if(input[param] < 11)
-                throw "More than 11 words required";
+                throw new Error("More than 11 words required");
         }
     }
 
     static validateTime(input, config){
         if(input.startTime>input.endTime)
-            throw 'End Date must be greater than Start Date';
+            throw new Error('End Date must be greater than Start Date');
         if(input.startTime<(new Date()))
             throw 'Time slot selected is past';
         let startOfAdvanceTime = new Date(input.startTime);
         startOfAdvanceTime.setHours(0, 0, 0);
         startOfAdvanceTime.setDate(startOfAdvanceTime.getDate() - config.advance_days);
         if(startOfAdvanceTime<=(new Date())){
-            throw 'Booking has to be done ' + config.advance_days + ' days in advance';
+            throw new Error('Booking has to be done ' + config.advance_days + ' days in advance');
         }
     }
 
@@ -302,7 +302,7 @@ class ENotice extends Service{
         startOfAdvanceTime.setHours(0, 0, 0);
         startOfAdvanceTime.setDate(startOfAdvanceTime.getDate() - config.advance_days);
         if(startOfAdvanceTime<=(new Date())){
-            throw 'Booking has to be done ' + config.advance_days + ' days in advance';
+            throw new Error('Booking has to be done ' + config.advance_days + ' days in advance');
         }
     }
 
@@ -348,7 +348,7 @@ class Publicity extends Service{
         startOfAdvanceTime.setHours(0, 0, 0);
         startOfAdvanceTime.setDate(startOfAdvanceTime.getDate() - config.advance_days);
         if(startOfAdvanceTime<=(new Date())){
-            throw 'Booking has to be done ' + config.advance_days + ' days in advance';
+            throw new Error('Booking has to be done ' + config.advance_days + ' days in advance');
         }
     }
 
@@ -384,7 +384,7 @@ function getClass(type){
         case "intern_support":  return InternSupport;
         case "e_notice":        return ENotice;
         case "publicity":       return Publicity;
-        default:                throw "Class not found";
+        default:                throw new Error("Class not found");
     }
 }
 

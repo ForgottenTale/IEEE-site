@@ -150,7 +150,6 @@ module.exports = {
 					}
 				})
 			}
-			await mail.sendNeedsApproval({type: newAppointment.type, emailIds: nextMails});
 			let addAppointment = "INSERT INTO " + newAppointment.type 
 				+ "(" + names.join(',') + ") VALUES(" + values.join(',') + ");";
 			let addedAppointment = await executeQuery(addAppointment);
@@ -161,6 +160,7 @@ module.exports = {
 				)
 			}).join("");
 			await executeQuery(addNextApprovers);
+			mail.sendNeedsApproval({type: newAppointment.type, emailIds: nextMails});
 			return done(null, addedAppointment);			
 		}
 		catch(err){
@@ -189,53 +189,66 @@ module.exports = {
 		})
 	},
 
-	getUserAppointments: function(constraint, done){
-		if(constraint.type)
-			executeQuery("SELECT * FROM " + constraint.type + " WHERE creator_id=" + constraint.user_id + ";")
-			.then(data=>{
+	getUserAppointments: async function(constraint, done){
+		try{
+			if(constraint.type){
+				let appointments = await executeQuery("SELECT * FROM " + constraint.type + " WHERE creator_id=" + constraint.user_id + ";")
 				AppointmentClass = getClass(constraint.type);
-				return done(null, data.map(appointment=>{
+				let query = "";
+				appointments.forEach(appointment=>{
+					query+="SELECT name, email, phone, response FROM response INNER JOIN user on user._id=response.user_id WHERE " + constraint.type + "_id=" + appointment._id + ";";
+				})
+				let responses = await executeQuery(query);
+				if(!responses[0][0])
+					responses= [responses];
+				return done(null, appointments.map((appointment,idx)=>{
 					appointment.type = constraint.type;
-					return Object.assign({}, {id: appointment._id}, (new AppointmentClass(transmuteSnakeToCamel(appointment))).getPublicInfo());
+					return Object.assign({}, {id: appointment._id}, (new AppointmentClass(transmuteSnakeToCamel(appointment))).getPublicInfo(), {responses: responses[idx]});
 				}))
-			})
-			.catch(err=>done(err));
-		else{
-			executeQuery("SELECT DISTINCT(service) FROM service_config;")
-			.then(serviceTypes=>{
-				let query = serviceTypes.reduce((total, type)=>{
-					return (total+"SELECT * FROM " + type.service + " WHERE creator_id=" + constraint.user_id +";");
-				}, "");
-				executeQuery(query)
-				.then(data=>{
-					return done(null, data.map((elem, idx)=>{
-						elem.forEach(som=>{
-							som.start_time = convertSqlDateTimeToDate(som.start_time).toISOString();
-							som.end_time = convertSqlDateTimeToDate(som.end_time).toISOString();
-						})
-						return {
-							type: serviceTypes[idx],
-							appointments: elem
-						}
-					}))
+			}
+			else{
+				executeQuery("SELECT DISTINCT(service) FROM service_config;")
+				.then(serviceTypes=>{
+					let query = serviceTypes.reduce((total, type)=>{
+						return (total+"SELECT * FROM " + type.service + " WHERE creator_id=" + constraint.user_id +";");
+					}, "");
+					executeQuery(query)
+					.then(data=>{
+						return done(null, data.map((elem, idx)=>{
+							elem.forEach(som=>{
+								som.start_time = convertSqlDateTimeToDate(som.start_time).toISOString();
+								som.end_time = convertSqlDateTimeToDate(som.end_time).toISOString();
+							})
+							return {
+								type: serviceTypes[idx],
+								appointments: elem
+							}
+						}))
+					})
+					.catch(err=>done(err));
 				})
 				.catch(err=>done(err));
-			})
-			.catch(err=>done(err));
+			}	
+		}catch(err){
+			return done(err);
 		}
 	},
 
 	removeAppointment: function(input, done){
 		executeQuery("SELECT * FROM " + input.type + " WHERE _id=" + input.appointmentId + ";")
 		.then(data=>{
+			if(data.length < 1){
+				return done("Appointment not found")
+			}
 			if(data[0].creator_id==input.userId){
 				let query = "DELETE FROM next_to_approve WHERE " + input.type + "_id=" + input.appointmentId + ";"
+					+ "DELETE FROM response WHERE "+ input.type +"_id=" + input.appointmentId + ";"
 					+ "DELETE FROM " + input.type + " WHERE _id=" + input.appointmentId + ";"
 				executeQuery(query)
 				.then(response=>done(null, "Deleted Successfully"))
 				.catch(err=>done(err))
 			}else
-				done("Appointments can only be deleted by the creator");
+				return done("Appointments can only be deleted by the creator");
 		})
 		.catch(err=>done(err))
 	},
@@ -279,6 +292,32 @@ module.exports = {
 		.catch(err=>done(err));
 	},
 
+	findHistoryOfApprovals: function(constraint, done){
+		let query = "SELECT * FROM response"
+		+ " LEFT JOIN " + constraint.type + " ON " + constraint.type + "._id=response." + constraint.type + "_id"
+		+ " WHERE response.user_id=" + constraint.user_id;
+		executeQuery(query)
+		.then(appointments=>{
+			let query = "";
+			appointments.forEach(appointment=>{
+				appointment.myResponse = appointment.response;
+				delete appointment.response;
+				query += "SELECT name, email, phone, response FROM response INNER JOIN user ON response.user_id=user._id WHERE " + constraint.type + "_id=" + appointment._id + ";";
+			})
+			executeQuery(query)
+			.then(responses=>{
+				if(!responses[0][0])
+					responses = [responses];
+				appointments.forEach((appointment, idx)=>{
+					appointment.responses = responses[idx];
+				})
+				return done(null, appointments);
+			})
+			.catch(err=>done(err));
+		})
+		.catch(err=>done(err));
+	},
+
 	findUserApprovals: function(constraint, done){
 		let query = "SELECT * FROM next_to_approve" 
 		+ " INNER JOIN online_meeting ON online_meeting._id=next_to_approve.online_meeting_id" 
@@ -290,9 +329,13 @@ module.exports = {
 			appointments.forEach(appointment=>{
 				appointment.type=constraint.type;
 				AppointmentClass = getClass(constraint.type);
-				dataArray.push((new AppointmentClass(transmuteSnakeToCamel(appointment))).getPublicInfo());
+				dataArray.push(
+					Object.assign({}, {id: appointment._id}, (new AppointmentClass(transmuteSnakeToCamel(appointment))).getPublicInfo()));
 			})
-			return done(null, dataArray);
+			getConfig('online_meeting', null, (err, config)=>{
+				if(err) return done(err);
+				return done(null, {encourageMode: config.follow_hierarchy?false:true, data: dataArray})
+			})
 		})
 		.catch(err=>done(err))
 	},
@@ -300,10 +343,13 @@ module.exports = {
 	changeAppointmentStatus: async function(input, done){
 		try{
 			let appointment = await executeQuery("SELECT * FROM " + input.type 
-				+ " AS t INNER JOIN next_to_approve AS n ON n.next_to_approve=t._id "
-				+ " WHERE n.user_id=" + input.user._id + " AND t." + input.type + "_id=" + input.appointmentId +";");
-			if(appointment!=1)
-				throw new Error("Invalid number of appointments selected");
+				+ " AS t INNER JOIN next_to_approve AS n ON n." + input.type +"_id=t._id "
+				+ " WHERE n.user_id=" + input.user._id + " AND t._id=" + input.appointmentId +";");
+			if(appointment.length!=1)
+				if(appointment.length==0)
+					throw new Error("Appointment doesn't exist");
+				else
+					throw new Error("Invalid number of appointments selected");
 			appointment = appointment[0];
 			let config = await new Promise((resolve, reject)=>{
 				getConfig(input.type, appointment.service_name, (err, results)=>{
@@ -314,23 +360,16 @@ module.exports = {
 			let alphaAdmins = await executeQuery("SELECT * FROM user WHERE role='ALPHA_ADMIN';");
 			let nextMails = alphaAdmins.map(admin=>admin.email);
 			let query = "INSERT INTO response(user_id, " + input.type + "_id, encourages, response) VALUES ("
-				+ [input.user._id, input.appointmentId, input.encourages, input.response].join(",") + ");"
+				+ [input.user._id, input.appointmentId, input.encourages, ("'" + input.response + "'")].join(",") + ");"
 			if(input.user.role == "ALPHA_ADMIN"){
 				let creator = await executeQuery("SELECT * FROM user WHERE _id=" + appointment.creator_id);
 				mail.sendFinal({type: input, emailIds: [...nextMails, creator.email]});
 				query+="DELETE FROM next_to_approve WHERE "
 					+ input.type + "_id=" + input.appointmentId + ";";
 				await executeQuery("UPDATE " + input.type + " SET status='" 
-					+ input.encourages?"APPROVED":"DECLINED"
+					+ (input.encourages?"APPROVED":"DECLINED")
 					+ "' WHERE _id=" + input.appointmentId);
 			}else{
-				mail.sendResponses({
-					type: input.type,
-					user:input.user,
-					response: input.response,
-					encourages: input.encourages,
-					emailIds: nextMails
-				});
 				if(config.follow_hierarchy)
 					alphaAdmins.forEach(alpha=>{
 						query+="INSERT INTO next_to_approve(user_id," + input.type + "_id) VALUES("
@@ -341,6 +380,14 @@ module.exports = {
 				+ " AND " + input.type + "_id=" + input.appointmentId + ";";
 			}
 			await executeQuery(query);
+			mail.sendResponses({
+				type: input.type,
+				user:input.user,
+				response: input.response,
+				encourages: input.encourages,
+				emailIds: nextMails
+			});
+			return done(null, "Updated Successfully");
 		}catch(err){
 			return done(err);
 		}

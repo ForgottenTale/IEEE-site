@@ -22,16 +22,28 @@ module.exports = function(app){
             res.status(200).json(results);
         })
     })
-
-    app.route('/api/:type/:action')
     .post(auth.ensureAuthenticated, auth.ensureAdmin, (req, res)=>{
+        if(!req.body.id || !req.body.type || !req.body.response || !req.body.action){
+            return respondError("Requried Fields missing", res);
+        }
         database.changeAppointmentStatus({
             user: req.user,
             appointmentId: req.body.id,
-            type: req.params.type,
+            type: req.body.type,
             response: req.body.response,
-            encourages: req.params.action=="reject"?false:true
+            encourages: req.body.action=="decline"?false:true
+        }, (err, msg)=>{
+            if(err) return respondError(err, res);
+            res.status(200).json({message: msg})
         })
     })
 
+    app.route('/api/my-approvals/history')
+    .get(auth.ensureAuthenticated, auth.ensureAdmin, (req, res)=>{
+        req.query.user_id = req.user._id;
+        database.findHistoryOfApprovals(req.query, (err, results)=>{
+            if(err) return respondError(err, res);
+            res.status(200).json(results);
+        })
+    })
 }

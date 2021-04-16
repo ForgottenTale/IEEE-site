@@ -73,7 +73,7 @@ module.exports = function(app){
     })
 
     app.route('/api/logout')
-    .get((req, res)=>{
+    .post((req, res)=>{
         req.logout();
         res.redirect('/protected');
     })

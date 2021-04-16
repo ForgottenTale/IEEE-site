@@ -41,6 +41,7 @@ module.exports= {
                     html: "<span>An" + input.type + " needs your approval </span>"
                 })
                 .catch(err=>reject(err))   
+                console.log("Mail sent to:", input.emailIds[idx]);
                 console.log("Message sent: %s", info.messageId);
                 console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
             }
@@ -59,7 +60,8 @@ module.exports= {
                     subject: input.user.name + input.encourages?" en":" dis" + "courages this",
                     html: "<span>This is "+input.encourages?"en":"dis" + "couraging because " + input.response + " </span>"
                 })
-                .catch(err=>reject(err))   
+                .catch(err=>reject(err));
+                console.log("Email sent to: ", input.emailIds[idx]);
                 console.log("Message sent: %s", info.messageId);
                 console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
             }
