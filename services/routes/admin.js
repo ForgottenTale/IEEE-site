@@ -23,13 +23,12 @@ module.exports = function(app){
         })
     })
     .post(auth.ensureAuthenticated, auth.ensureAdmin, (req, res)=>{
-        if(!req.body.id || !req.body.type || !req.body.response || !req.body.action){
+        if(!req.body.id || !req.body.response || !req.body.action){
             return respondError("Requried Fields missing", res);
         }
         database.changeAppointmentStatus({
             user: req.user,
             appointmentId: req.body.id,
-            type: req.body.type,
             response: req.body.response,
             encourages: req.body.action=="decline"?false:true
         }, (err, msg)=>{

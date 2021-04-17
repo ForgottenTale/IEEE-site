@@ -33,8 +33,11 @@ function getConfig(type, serviceName, done){
 		+ "' AND (service_name='" + serviceName + "' OR service_name is null);" ;
 	connection.query(query, (err, results)=>{
 		if(err) return done(err);
-		if(results.length<1)
-			return done(new Error("Config not found"))
+		if(results.length<1){
+			err = new Error("Config not found");
+			err.sql = query;
+			return done(err);
+		}
 		if(results.length>2)
 			results.forEach(result=>{
 				if(result.service_name != null)
@@ -156,7 +159,8 @@ module.exports = {
 			let addedAppointment = await executeQuery("INSERT INTO " + newAppointment.type 
 				+ "(" + names.join(',') + ") VALUES(" + values.join(',') + ");"
 			);
-			let altAppointment = await executeQuery("INSERT INTO alt(" + newAppointment.type + "_id, creator_id) VALUES(" + addedAppointment.insertId + "," + newAppointment.creatorId + ");");
+			let altAppointment = await executeQuery("INSERT INTO alt(" + newAppointment.type + "_id, creator_id, status) VALUES("
+				+ addedAppointment.insertId + "," + newAppointment.creatorId + ",'" + newAppointment.status + "');");
 			let addNextApprovers = nextApprovers.map(userId=>{
 				return ("INSERT INTO next_to_approve(user_id, alt_id) VALUES("
 					+ userId + "," + altAppointment.insertId
@@ -195,9 +199,9 @@ module.exports = {
 
 	getUserAppointments: async function(constraint, done){
 		try{
-			let appointmentTypes = await getAppointmentTypes();
+			let types = await getAppointmentTypes();
 			let query = "";
-			appointmentTypes.forEach(appointmentType=>{
+			types.forEach(appointmentType=>{
 				query+="SELECT * FROM alt INNER JOIN " + appointmentType.type + " ON alt." + appointmentType.type + "_id=" + appointmentType.type +"._id"  
 					+ " WHERE " + appointmentType.type + "_id IS NOT NULL AND creator_id=" + constraint.userId + ";";
 			})
@@ -208,8 +212,9 @@ module.exports = {
 				for (let idx in appointmentsOfAllTypes[mainIdx]){
 					appointmentsOfAllTypes[mainIdx][idx] = transmuteSnakeToCamel(appointmentsOfAllTypes[mainIdx][idx]);
 					appointmentsOfAllTypes[mainIdx][idx].responses = await executeQuery("SELECT name, email, phone, response FROM response INNER JOIN user on user._id=response.user_id WHERE alt_id=" + appointmentsOfAllTypes[mainIdx][idx].id + ";");
+					appointmentsOfAllTypes[mainIdx][idx].type = types[mainIdx].type;
+					dataArray.push(appointmentsOfAllTypes[mainIdx][idx])
 				}
-				dataArray.push({type: appointmentTypes[mainIdx].type, data: appointmentsOfAllTypes[mainIdx]})
 			}
 			return done(null, dataArray);
 		}catch(err){
@@ -346,38 +351,47 @@ module.exports = {
 
 	changeAppointmentStatus: async function(input, done){
 		try{
-			let appointment = await executeQuery("SELECT * FROM " + input.type 
-				+ " AS t INNER JOIN next_to_approve AS n ON n." + input.type +"_id=t._id "
-				+ " WHERE n.user_id=" + input.user._id + " AND t._id=" + input.appointmentId +";");
+			let appointment = await executeQuery("SELECT * FROM alt"
+				+ " INNER JOIN next_to_approve as n ON alt._id=n.alt_id"
+				+ "  WHERE alt_id=" + input.appointmentId +" AND n.user_id=" + input.user._id);
 			if(appointment.length!=1)
 				if(appointment.length==0)
 					throw new Error("Appointment doesn't exist");
 				else
 					throw new Error("Invalid number of appointments selected");
 			appointment = appointment[0];
+			let type;
+			for(let key in appointment){
+				if(key=="user_id" || key=="_id" || key=="alt_id" || key=="creator_id")
+					continue;
+				if((/_id$/g).test(key) && appointment[key]){
+					type = key.replace("_id", "");
+					typeId = appointment[key];
+				}
+			}
+			if(!type)
+				return done(new Error("Appointment type not found"));
 			let config = await new Promise((resolve, reject)=>{
-				getConfig(input.type, appointment.service_name, (err, results)=>{
+				getConfig(type, appointment.service_name, (err, results)=>{
 					if(err) return reject(err);
 					return resolve(results);
 				})
 			});
 			let alphaAdmins = await executeQuery("SELECT * FROM user WHERE role='ALPHA_ADMIN';");
 			let nextMails = alphaAdmins.map(admin=>admin.email);
-			let query = "INSERT INTO response(user_id, " + input.type + "_id, encourages, response) VALUES ("
+			let query = "INSERT INTO response(user_id, alt_id, encourages, response) VALUES ("
 				+ [input.user._id, input.appointmentId, input.encourages, ("'" + input.response + "'")].join(",") + ");"
 			if(input.user.role == "ALPHA_ADMIN"){
 				let creator = await executeQuery("SELECT * FROM user WHERE _id=" + appointment.creator_id);
-				let involved = await executeQuery("SELECT * FROM next_to_approve INNER JOIN user ON next_to_approve.user_id=user._id WHERE "
-					+ input.type + "_id=" + appointment._id + ";");
+				let involved = await executeQuery("SELECT * FROM next_to_approve INNER JOIN user ON next_to_approve.user_id=user._id WHERE alt_id=" + appointment._id + ";");
 				involved.forEach(involvedUser=>{
 					if(input.user._id==involvedUser._id)
 						return ;
-					query+="INSERT INTO response(user_id, " + input.type + "_id) VALUES ("
+					query+="INSERT INTO response(user_id, alt_id) VALUES ("
 					+ [involvedUser._id, input.appointmentId].join(",")+");"
 				})
-				query+="DELETE FROM next_to_approve WHERE "
-					+ input.type + "_id=" + input.appointmentId + ";";
-				await executeQuery("UPDATE " + input.type + " SET status='"
+				query+="DELETE FROM next_to_approve WHERE alt_id=" + input.appointmentId + ";";
+				await executeQuery("UPDATE alt SET status='"
 					+ (input.encourages?"APPROVED":"DECLINED")
 					+ "' WHERE _id=" + input.appointmentId)
 				mail.sendFinal({type: input, emailIds: [...nextMails, creator[0].email]});
@@ -389,9 +403,9 @@ module.exports = {
 						+");"
 					})
 				query+="DELETE FROM next_to_approve WHERE user_id=" + input.user._id
-				+ " AND " + input.type + "_id=" + input.appointmentId + ";";
+				+ " AND alt_id=" + input.appointmentId + ";";
 				mail.sendResponses({
-					type: input.type,
+					type: type,
 					user:input.user,
 					response: input.response,
 					encourages: input.encourages,
