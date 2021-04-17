@@ -202,6 +202,12 @@ class OnlineMeeting extends Service {
         )
     }
 
+    static convertSqlTimesToDate(input){
+        input.start_time = convertSqlDateTimeToDate(input.start_time).toISOString();
+        input.end_time = convertSqlDateTimeToDate(input.end_time).toISOString();
+        return input;
+    }
+
     getAllNamesAndValues(){
         let namesAndValues = super.getAllNamesAndValues();
         namesAndValues.names.push('speaker_name', 'speaker_email', 'co_hosts', 'start_time', 'end_time');
