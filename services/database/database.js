@@ -19,10 +19,19 @@ function transmuteSnakeToCamel(input){
     return output;
 }
 
+function getAppointmentTypes(){
+	return new Promise((resolve, reject)=>{
+		connection.query("SELECT DISTINCT(type) FROM service_config;", (err, results)=>{
+			if(err) reject(err);
+			return resolve(results);
+		})
+	})
+}
+
 function getConfig(type, serviceName, done){
 	let query = "SELECT * FROM service_config WHERE type='" + type 
 		+ "' AND (service_name='" + serviceName + "' OR service_name is null);" ;
-	connection.query(query, (err, results, fields)=>{
+	connection.query(query, (err, results)=>{
 		if(err) return done(err);
 		if(results.length<1)
 			return done(new Error("Config not found"))
@@ -37,7 +46,7 @@ function getConfig(type, serviceName, done){
 
 function executeQuery(query){
 	return new Promise((resolve, reject)=>{
-		connection.query(query, (err, results, fields)=>{
+		connection.query(query, (err, results)=>{
 			if(err) return reject(err);
 			return resolve(results);
 		})
@@ -186,11 +195,11 @@ module.exports = {
 
 	getUserAppointments: async function(constraint, done){
 		try{
-			let appointmentTypes = await executeQuery("SELECT DISTINCT(type) FROM service_config;");
+			let appointmentTypes = await getAppointmentTypes();
 			let query = "";
 			appointmentTypes.forEach(appointmentType=>{
 				query+="SELECT * FROM alt INNER JOIN " + appointmentType.type + " ON alt." + appointmentType.type + "_id=" + appointmentType.type +"._id"  
-					+ " WHERE " + appointmentType.type + "_id IS NOT NULL AND creator_id=" + constraint.user_id + ";";
+					+ " WHERE " + appointmentType.type + "_id IS NOT NULL AND creator_id=" + constraint.userId + ";";
 			})
 			let appointmentsOfAllTypes = await executeQuery(query);
 			query = "";
@@ -209,15 +218,29 @@ module.exports = {
 	},
 
 	removeAppointment: function(input, done){
-		executeQuery("SELECT * FROM " + input.type + " WHERE _id=" + input.appointmentId + ";")
-		.then(data=>{
-			if(data.length < 1){
+		executeQuery("SELECT * FROM alt WHERE _id=" + input.appointmentId + ";")
+		.then(appointment=>{
+			let type = "";
+			let typeId;
+			if(appointment.length < 1)
 				return done("Appointment not found")
-			}
-			if(data[0].creator_id==input.userId){
-				let query = "DELETE FROM next_to_approve WHERE " + input.type + "_id=" + input.appointmentId + ";"
-					+ "DELETE FROM response WHERE "+ input.type +"_id=" + input.appointmentId + ";"
-					+ "DELETE FROM " + input.type + " WHERE _id=" + input.appointmentId + ";"
+			if(appointment[0].creator_id==input.userId){
+				//find type
+				for(let key in appointment[0]){
+					if(key=="creator_id" || key=="_id")
+						continue;
+					if((/_id$/g).test(key) && appointment[0][key]){
+						type = key.replace("_id", "");
+						typeId = appointment[0][key];
+					}
+				}
+				if(!type)
+					return done(new Error("Appointment type not found"));
+				let query = "DELETE FROM next_to_approve WHERE alt_id=" + input.appointmentId + ";"
+					+ "DELETE FROM response WHERE alt_id=" + input.appointmentId + ";"
+					+ "DELETE FROM alt WHERE _id=" + input.appointmentId + ";"
+					+ "DELETE FROM " + type + " WHERE _id=" + typeId + ";"
+					
 				executeQuery(query)
 				.then(response=>done(null, "Deleted Successfully"))
 				.catch(err=>done(err))
@@ -266,7 +289,8 @@ module.exports = {
 		.catch(err=>done(err));
 	},
 
-	findHistoryOfApprovals: function(constraint, done){
+	findHistoryOfApprovals: async function(constraint, done){
+		let types = await getAppointmentTypes();
 		let query = "SELECT * FROM response"
 		+ " LEFT JOIN " + constraint.type + " ON " + constraint.type + "._id=response." + constraint.type + "_id"
 		+ " WHERE response.user_id=" + constraint.user_id;
@@ -294,25 +318,30 @@ module.exports = {
 		.catch(err=>done(err));
 	},
 
-	findUserApprovals: function(constraint, done){
-		let query = "SELECT * FROM next_to_approve" 
-		+ " INNER JOIN online_meeting ON online_meeting._id=next_to_approve.online_meeting_id" 
-		+ " LEFT JOIN response ON response.online_meeting_id=next_to_approve.online_meeting_id"
-		+ " WHERE next_to_approve.user_id=" + constraint.user_id  + ";"
-		executeQuery(query)
-		.then(appointments=>{
+	findUserApprovals: async function(constraint, done){
+		try{
+			let types = await getAppointmentTypes();
+			let query = "";
+			types.forEach(type=>{
+				query += "SELECT * FROM alt"
+					+ " INNER JOIN " + type.type + " ON " + type.type + "_id=" + type.type + "._id"
+					+ " INNER JOIN next_to_approve as n ON n.alt_id=alt._id"
+					+ " WHERE n.user_id=" + constraint.user_id + ";";
+			})
+			let appointmentsOfAllTypes = await executeQuery(query);
 			let dataArray = [];
-			appointments.forEach(appointment=>{
-				appointment.type=constraint.type;
-				AppointmentClass = getClass(constraint.type);
-				dataArray.push(transmuteSnakeToCamel(appointment))
-			})
-			getConfig('online_meeting', null, (err, config)=>{
-				if(err) return done(err);
-				return done(null, {encourageMode: config.follow_hierarchy?false:true, data: dataArray})
-			})
-		})
-		.catch(err=>done(err))
+			for (let mainIdx in appointmentsOfAllTypes){
+				for (let idx in appointmentsOfAllTypes[mainIdx]){
+					appointmentsOfAllTypes[mainIdx][idx] = transmuteSnakeToCamel(appointmentsOfAllTypes[mainIdx][idx]);
+					appointmentsOfAllTypes[mainIdx][idx].responses = await executeQuery("SELECT name, email, phone, response FROM response INNER JOIN user on user._id=response.user_id WHERE alt_id=" + appointmentsOfAllTypes[mainIdx][idx].id + ";");
+					appointmentsOfAllTypes[mainIdx][idx].type = types[mainIdx].type;
+					dataArray.push(appointmentsOfAllTypes[mainIdx][idx])
+				}
+			}
+			return done(null, dataArray);
+		}catch(err){
+			return done(err);
+		}
 	},
 
 	changeAppointmentStatus: async function(input, done){

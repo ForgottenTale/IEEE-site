@@ -12,8 +12,7 @@ module.exports = function(app){
 
     app.route('/api/my-appointments')
     .get(auth.ensureAuthenticated, (req, res)=>{
-        req.query.user_id = req.user._id;
-        database.getUserAppointments(req.query, (err, appointments)=>{
+        database.getUserAppointments({userId: req.user._id}, (err, appointments)=>{
             if(err) return respondError(err, res);
             res.status(200).json(appointments);
         });
@@ -21,7 +20,6 @@ module.exports = function(app){
     .delete(auth.ensureAuthenticated, (req, res)=>{
         if(req.body.id){
             database.removeAppointment({
-                type: req.body.type,
                 userId: req.user._id,
                 appointmentId: req.body.id
             }, (err, msg)=>{
