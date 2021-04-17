@@ -75,31 +75,30 @@ module.exports = {
             publish_time DATETIME NOT NULL,
             FOREIGN KEY(creator_id) REFERENCES user(_id)
         );`,
-        `CREATE TABLE IF NOT EXISTS next_to_approve(
-            user_id INT NOT NULL,
+        `CREATE TABLE IF NOT EXISTS alt(
+            _id INT PRIMARY KEY AUTO_INCREMENT,
             online_meeting_id INT,
             intern_support_id INT,
             e_notice_id INT,
             publicity_id INT,
+            FOREIGN KEY(online_meeting_id) REFERENCES online_meeting(_id),
+            FOREIGN KEY(intern_support_id) REFERENCES intern_support(_id),
+            FOREIGN KEY(e_notice_id) REFERENCES e_notice(_id),
+            FOREIGN KEY(publicity_id) REFERENCES publicity(_id)
+        );`,
+        `CREATE TABLE IF NOT EXISTS next_to_approve(
+            user_id INT NOT NULL,
+            alt_id INT NOT NULL,
             FOREIGN KEY (user_id) REFERENCES user(_id),
-            FOREIGN KEY (online_meeting_id) REFERENCES online_meeting(_id),
-            FOREIGN KEY (intern_support_id) REFERENCES intern_support(_id),
-            FOREIGN KEY (e_notice_id) REFERENCES e_notice(_id),
-            FOREIGN KEY (publicity_id) REFERENCES publicity(_id)
+            FOREIGN KEY (alt_id) REFERENCES alt(_id)
         );`,
         `CREATE TABLE IF NOT EXISTS response(
             user_id INT NOT NULL,
-            online_meeting_id INT,
-            intern_support_id INT,
-            e_notice_id INT,
-            publicity_id INT,
+            alt_id INT NOT NULL,
             encourages BOOLEAN,
             response VARCHAR(100),
-            FOREIGN KEY (user_id) REFERENCES user(_id),
-            FOREIGN KEY (online_meeting_id) REFERENCES online_meeting(_id),
-            FOREIGN KEY (intern_support_id) REFERENCES intern_support(_id),
-            FOREIGN KEY (e_notice_id) REFERENCES e_notice(_id),
-            FOREIGN KEY (publicity_id) REFERENCES publicity(_id)
+            FOREIGN KEY(user_id) REFERENCES user(_id),
+            FOREIGN KEY(alt_id) REFERENCES alt(_id) 
         );`
     ]
 }
