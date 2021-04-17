@@ -51,7 +51,7 @@ module.exports = function(app){
                     if(err){
                         return respondError(err, res);
                     }
-                    return res.status(200).json(newAppointment.getPublicInfo());
+                    return res.status(200).json(doc);
                 })
             }
             catch(err){

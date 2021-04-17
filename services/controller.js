@@ -128,14 +128,13 @@ class Service{
 
     getAllNamesAndValues(){
         return({
-            names: ['service_name', 'description', 'status', 'comments', 'img', 'creator_id'],
+            names: ['service_name', 'description', 'status', 'comments', 'img'],
             values: [
                 this.serviceName?("'" + this.serviceName + "'"):"null",
                 this.description?("'" + this.description + "'"):"null",
                 this.status?("'" + this.status + "'"):"null",
                 this.comments?("'" + this.comments + "'"):"null",
                 this.img?("'" + this.img + "'"):"null",
-                this.creatorId
             ]
         })
     }

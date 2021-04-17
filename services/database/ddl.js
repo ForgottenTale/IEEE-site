@@ -16,8 +16,7 @@ module.exports = {
             follow_assignment BOOLEAN DEFAULT 1,
             advance_days INT DEFAULT 5,
             padding_between_bookings_mins INT DEFAULT 15,
-            assigned_to INT,
-            FOREIGN KEY (assigned_to) REFERENCES user(_id)
+            assigned_to INT NOT NULL
         );`,
         `CREATE TABLE IF NOT EXISTS online_meeting(
             _id INT PRIMARY KEY AUTO_INCREMENT,
@@ -25,14 +24,12 @@ module.exports = {
             description VARCHAR(200),
             img VARCHAR(50),
             status VARCHAR(10) DEFAULT "PENDING",
-            creator_id INT NOT NULL,
             comments VARCHAR(30),
             start_time DATETIME NOT NULL,
             end_time DATETIME NOT NULL,
             speaker_name VARCHAR(30) NOT NULL,
             speaker_email VARCHAR(30) NOT NULL,
-            co_hosts JSON,
-            FOREIGN KEY(creator_id) REFERENCES user(_id)
+            co_hosts JSON
         );`,
         `CREATE TABLE IF NOT EXISTS intern_support(
             _id INT PRIMARY KEY AUTO_INCREMENT,
@@ -40,7 +37,6 @@ module.exports = {
             title VARCHAR(30) NOT NULL,
             description VARCHAR(200),
             status VARCHAR(10) DEFAULT "PENDING",
-            creator_id INT NOT NULL,
             commments VARCHAR(30),
             start_time DATETIME NOT NULL,
             end_time DATETIME NOT NULL,
@@ -48,8 +44,7 @@ module.exports = {
             purpose VARCHAR(30),
             dimensions VARCHAR(20),
             url VARCHAR(100),
-            file VARCHAR(50),
-            FOREIGN KEY(creator_id) REFERENCES user(_id)
+            file VARCHAR(50)
         );`,
         `CREATE TABLE IF NOT EXISTS e_notice(
             _id INT PRIMARY KEY AUTO_INCREMENT,
@@ -57,12 +52,10 @@ module.exports = {
             description VARCHAR(200),
             img VARCHAR(50),
             status VARCHAR(10) DEFAULT "PENDING",
-            creator_id INT NOT NULL,
             comments VARCHAR(30),
             publish_time DATETIME NOT NULL,
             express BOOLEAN NOT NULL DEFAULT false,
-            reminder BOOLEAN NOT NULL DEFAULT true,
-            FOREIGN KEY(creator_id) REFERENCES user(_id)
+            reminder BOOLEAN NOT NULL DEFAULT true
         );`,
         `CREATE TABLE IF NOT EXISTS publicity(
             _id INT PRIMARY KEY AUTO_INCREMENT,
@@ -70,10 +63,8 @@ module.exports = {
             description VARCHAR(200) NOT NULL,
             img VARCHAR(50),
             status VARCHAR(10) DEFAULT "PENDING",
-            creator_id INT NOT NULL,
             comments VARCHAR(30),
-            publish_time DATETIME NOT NULL,
-            FOREIGN KEY(creator_id) REFERENCES user(_id)
+            publish_time DATETIME NOT NULL
         );`,
         `CREATE TABLE IF NOT EXISTS alt(
             _id INT PRIMARY KEY AUTO_INCREMENT,
@@ -81,10 +72,12 @@ module.exports = {
             intern_support_id INT,
             e_notice_id INT,
             publicity_id INT,
+            creator_id INT NOT NULL,
             FOREIGN KEY(online_meeting_id) REFERENCES online_meeting(_id),
             FOREIGN KEY(intern_support_id) REFERENCES intern_support(_id),
             FOREIGN KEY(e_notice_id) REFERENCES e_notice(_id),
-            FOREIGN KEY(publicity_id) REFERENCES publicity(_id)
+            FOREIGN KEY(publicity_id) REFERENCES publicity(_id),
+            FOREIGN KEY(creator_id) REFERENCES user(_id)
         );`,
         `CREATE TABLE IF NOT EXISTS next_to_approve(
             user_id INT NOT NULL,

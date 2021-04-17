@@ -114,20 +114,14 @@ module.exports = {
 			})
 			let nextApprovers = [];
 			let nextMails = [];
-			if(config.follow_service_assignment){
+			if(config.follow_assignment){
 				//find Assignees
-				[...await(executeQuery("SELECT * FROM service_config INNER JOIN user ON assigned_to = user._id WHERE type=" 
-					+ ("'" + newAppointment.type + "'") 
-					+" AND (service_name=" 
-					+ ("'" + newAppointment.serviceName + "'" )
-					+ " OR service_name IS null);"
-				))]
-				.forEach(info=>{
-					if(nextApprovers.indexOf(info.assigned_to)==-1){
-						nextApprovers.push(info.assigned_to);
-						nextMails.push(info.email);
-					}
-				});
+				let assignee = await(executeQuery("SELECT * FROM user WHERE _id=" + config.assigned_to));
+				assignee = assignee[0];
+				if(nextApprovers.indexOf(assignee._id)==-1){
+					nextApprovers.push(assignee._id);
+					nextMails.push(assignee.email)
+				}
 			}else{
 				//find Beta Admins
 				[...await(executeQuery("SELECT * FROM user WHERE role='BETA_ADMIN';"
@@ -150,18 +144,19 @@ module.exports = {
 					}
 				})
 			}
-			let addAppointment = "INSERT INTO " + newAppointment.type 
-				+ "(" + names.join(',') + ") VALUES(" + values.join(',') + ");";
-			let addedAppointment = await executeQuery(addAppointment);
+			let addedAppointment = await executeQuery("INSERT INTO " + newAppointment.type 
+				+ "(" + names.join(',') + ") VALUES(" + values.join(',') + ");"
+			);
+			let altAppointment = await executeQuery("INSERT INTO alt(" + newAppointment.type + "_id, creator_id) VALUES(" + addedAppointment.insertId + "," + newAppointment.creatorId + ");");
 			let addNextApprovers = nextApprovers.map(userId=>{
-				return ("INSERT INTO next_to_approve(user_id," +newAppointment.type + "_id) VALUES("
-					+ userId +","+addedAppointment.insertId
+				return ("INSERT INTO next_to_approve(user_id, alt_id) VALUES("
+					+ userId + "," + altAppointment.insertId
 					+ ");"
 				)
 			}).join("");
 			await executeQuery(addNextApprovers);
 			mail.sendNeedsApproval({type: newAppointment.type, emailIds: nextMails});
-			return done(null, addedAppointment);			
+			return done(null, {id: altAppointment.insertId});
 		}
 		catch(err){
 			return done(err);
@@ -191,49 +186,23 @@ module.exports = {
 
 	getUserAppointments: async function(constraint, done){
 		try{
-			if(constraint.type){
-				let appointments = await executeQuery("SELECT * FROM " + constraint.type + " WHERE creator_id=" + constraint.user_id + ";")
-				AppointmentClass = getClass(constraint.type);
-				let query = "";
-				appointments.forEach(appointment=>{
-					query+="SELECT name, email, phone, response FROM response INNER JOIN user on user._id=response.user_id WHERE " + constraint.type + "_id=" + appointment._id + ";";
-				})
-				let responses = [];
-				if(query){
-					responses = await executeQuery(query);
-					if(responses.length<1)
-						responses = [];
-					else if(!responses[0][0])
-						responses= [responses];
+			let appointmentTypes = await executeQuery("SELECT DISTINCT(type) FROM service_config;");
+			let query = "";
+			appointmentTypes.forEach(appointmentType=>{
+				query+="SELECT * FROM alt INNER JOIN " + appointmentType.type + " ON alt." + appointmentType.type + "_id=" + appointmentType.type +"._id"  
+					+ " WHERE " + appointmentType.type + "_id IS NOT NULL AND creator_id=" + constraint.user_id + ";";
+			})
+			let appointmentsOfAllTypes = await executeQuery(query);
+			query = "";
+			let dataArray = [];
+			for (let mainIdx in appointmentsOfAllTypes){
+				for (let idx in appointmentsOfAllTypes[mainIdx]){
+					appointmentsOfAllTypes[mainIdx][idx] = transmuteSnakeToCamel(appointmentsOfAllTypes[mainIdx][idx]);
+					appointmentsOfAllTypes[mainIdx][idx].responses = await executeQuery("SELECT name, email, phone, response FROM response INNER JOIN user on user._id=response.user_id WHERE alt_id=" + appointmentsOfAllTypes[mainIdx][idx].id + ";");
 				}
-				return done(null, appointments.map((appointment,idx)=>{
-					appointment.type = constraint.type;
-					return Object.assign({}, {id: appointment._id}, (new AppointmentClass(transmuteSnakeToCamel(appointment))).getPublicInfo(), {responses: responses[idx]});
-				}))
+				dataArray.push({type: appointmentTypes[mainIdx].type, data: appointmentsOfAllTypes[mainIdx]})
 			}
-			else{
-				executeQuery("SELECT DISTINCT(service) FROM service_config;")
-				.then(serviceTypes=>{
-					let query = serviceTypes.reduce((total, type)=>{
-						return (total+"SELECT * FROM " + type.service + " WHERE creator_id=" + constraint.user_id +";");
-					}, "");
-					executeQuery(query)
-					.then(data=>{
-						return done(null, data.map((elem, idx)=>{
-							elem.forEach(som=>{
-								som.start_time = convertSqlDateTimeToDate(som.start_time).toISOString();
-								som.end_time = convertSqlDateTimeToDate(som.end_time).toISOString();
-							})
-							return {
-								type: serviceTypes[idx],
-								appointments: elem
-							}
-						}))
-					})
-					.catch(err=>done(err));
-				})
-				.catch(err=>done(err));
-			}	
+			return done(null, dataArray);
 		}catch(err){
 			return done(err);
 		}
