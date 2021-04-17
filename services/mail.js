@@ -41,6 +41,7 @@ module.exports= {
                     html: "<span>An" + input.type + " needs your approval </span>"
                 })
                 .catch(err=>reject(err))   
+                console.log("Mail sent to:", input.emailIds[idx]);
                 console.log("Message sent: %s", info.messageId);
                 console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
             }
@@ -59,7 +60,8 @@ module.exports= {
                     subject: input.user.name + input.encourages?" en":" dis" + "courages this",
                     html: "<span>This is "+input.encourages?"en":"dis" + "couraging because " + input.response + " </span>"
                 })
-                .catch(err=>reject(err))   
+                .catch(err=>reject(err));
+                console.log("Email sent to: ", input.emailIds[idx]);
                 console.log("Message sent: %s", info.messageId);
                 console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
             }
@@ -72,17 +74,21 @@ module.exports= {
             let transporter = nodemailer.createTransport(transporterData);
             
             for(let idx in input.emailIds){
-                let info = await transporter.sendMail({
-                    from: '<' + transporterData.auth.user + '>',
-                    to: input.emailIds(idx),
-                    subject: "This appointment has completed hierarchy",
-                    html: "<span>An" + input.type + " has completed hierarchy </span>"
-                })
-                .catch(err=>reject(err))   
-                console.log("Message sent: %s", info.messageId);
-                console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+                try{
+                    let info = await transporter.sendMail({
+                        from: '<' + transporterData.auth.user + '>',
+                        to: input.emailIds[idx],
+                        subject: "This appointment has completed hierarchy",
+                        html: "<span>An" + input.type + " has completed hierarchy </span>"
+                    })
+                    console.log("Email sent to: ", input.emailIds[idx]);
+                    console.log("Message sent: %s", info.messageId);
+                    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+                }catch(err){
+                    reject(err);
+                }
+                resolve("Message Send");
             }
-            resolve("Message Send");
         })
     }
 }

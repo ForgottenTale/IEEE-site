@@ -54,6 +54,8 @@ module.exports = function(app){
     .get((req, res)=>{
         if(!req.query.month || !req.query.year)
             return respondError(new Error('query parameters missing'), res);
+        req.query.year = Number(req.query.year);
+        req.query.month = Number(req.query.month);
         let startTime = new Date(req.query.year, req.query.month, 1);
         let endTime = new Date(req.query.year, req.query.month + 1, 1);
         database.getCalendarData({startTime, endTime, type: 'online_meeting'}, (err, result)=>{
@@ -73,7 +75,7 @@ module.exports = function(app){
     })
 
     app.route('/api/logout')
-    .get((req, res)=>{
+    .post((req, res)=>{
         req.logout();
         res.redirect('/protected');
     })

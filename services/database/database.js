@@ -19,13 +19,25 @@ function transmuteSnakeToCamel(input){
     return output;
 }
 
+function getAppointmentTypes(){
+	return new Promise((resolve, reject)=>{
+		connection.query("SELECT DISTINCT(type) FROM service_config;", (err, results)=>{
+			if(err) reject(err);
+			return resolve(results);
+		})
+	})
+}
+
 function getConfig(type, serviceName, done){
 	let query = "SELECT * FROM service_config WHERE type='" + type 
 		+ "' AND (service_name='" + serviceName + "' OR service_name is null);" ;
-	connection.query(query, (err, results, fields)=>{
+	connection.query(query, (err, results)=>{
 		if(err) return done(err);
-		if(results.length<1)
-			return done(new Error("Config not found"))
+		if(results.length<1){
+			err = new Error("Config not found");
+			err.sql = query;
+			return done(err);
+		}
 		if(results.length>2)
 			results.forEach(result=>{
 				if(result.service_name != null)
@@ -37,7 +49,7 @@ function getConfig(type, serviceName, done){
 
 function executeQuery(query){
 	return new Promise((resolve, reject)=>{
-		connection.query(query, (err, results, fields)=>{
+		connection.query(query, (err, results)=>{
 			if(err) return reject(err);
 			return resolve(results);
 		})
@@ -114,20 +126,14 @@ module.exports = {
 			})
 			let nextApprovers = [];
 			let nextMails = [];
-			if(config.follow_service_assignment){
+			if(config.follow_assignment){
 				//find Assignees
-				[...await(executeQuery("SELECT * FROM service_config INNER JOIN user ON assigned_to = user._id WHERE type=" 
-					+ ("'" + newAppointment.type + "'") 
-					+" AND (service_name=" 
-					+ ("'" + newAppointment.serviceName + "'" )
-					+ " OR service_name IS null);"
-				))]
-				.forEach(info=>{
-					if(nextApprovers.indexOf(info.assigned_to)==-1){
-						nextApprovers.push(info.assigned_to);
-						nextMails.push(info.email);
-					}
-				});
+				let assignee = await(executeQuery("SELECT * FROM user WHERE _id=" + config.assigned_to));
+				assignee = assignee[0];
+				if(nextApprovers.indexOf(assignee._id)==-1){
+					nextApprovers.push(assignee._id);
+					nextMails.push(assignee.email)
+				}
 			}else{
 				//find Beta Admins
 				[...await(executeQuery("SELECT * FROM user WHERE role='BETA_ADMIN';"
@@ -150,18 +156,20 @@ module.exports = {
 					}
 				})
 			}
-			await mail.sendNeedsApproval({type: newAppointment.type, emailIds: nextMails});
-			let addAppointment = "INSERT INTO " + newAppointment.type 
-				+ "(" + names.join(',') + ") VALUES(" + values.join(',') + ");";
-			let addedAppointment = await executeQuery(addAppointment);
+			let addedAppointment = await executeQuery("INSERT INTO " + newAppointment.type 
+				+ "(" + names.join(',') + ") VALUES(" + values.join(',') + ");"
+			);
+			let altAppointment = await executeQuery("INSERT INTO alt(" + newAppointment.type + "_id, creator_id, status) VALUES("
+				+ addedAppointment.insertId + "," + newAppointment.creatorId + ",'" + newAppointment.status + "');");
 			let addNextApprovers = nextApprovers.map(userId=>{
-				return ("INSERT INTO next_to_approve(user_id," +newAppointment.type + "_id) VALUES("
-					+ userId +","+addedAppointment.insertId
+				return ("INSERT INTO next_to_approve(user_id, alt_id) VALUES("
+					+ userId + "," + altAppointment.insertId
 					+ ");"
 				)
 			}).join("");
 			await executeQuery(addNextApprovers);
-			return done(null, addedAppointment);			
+			mail.sendNeedsApproval({type: newAppointment.type, emailIds: nextMails});
+			return done(null, {id: altAppointment.insertId});
 		}
 		catch(err){
 			return done(err);
@@ -189,53 +197,62 @@ module.exports = {
 		})
 	},
 
-	getUserAppointments: function(constraint, done){
-		if(constraint.type)
-			executeQuery("SELECT * FROM " + constraint.type + " WHERE creator_id=" + constraint.user_id + ";")
-			.then(data=>{
-				AppointmentClass = getClass(constraint.type);
-				return done(null, data.map(appointment=>{
-					appointment.type = constraint.type;
-					return Object.assign({}, {id: appointment._id}, (new AppointmentClass(transmuteSnakeToCamel(appointment))).getPublicInfo());
-				}))
+	getUserAppointments: async function(constraint, done){
+		try{
+			let types = await getAppointmentTypes();
+			let query = "";
+			types.forEach(appointmentType=>{
+				query+="SELECT * FROM alt INNER JOIN " + appointmentType.type + " ON alt." + appointmentType.type + "_id=" + appointmentType.type +"._id"  
+					+ " WHERE " + appointmentType.type + "_id IS NOT NULL AND creator_id=" + constraint.userId + ";";
 			})
-			.catch(err=>done(err));
-		else{
-			executeQuery("SELECT DISTINCT(service) FROM service_config;")
-			.then(serviceTypes=>{
-				let query = serviceTypes.reduce((total, type)=>{
-					return (total+"SELECT * FROM " + type.service + " WHERE creator_id=" + constraint.user_id +";");
-				}, "");
-				executeQuery(query)
-				.then(data=>{
-					return done(null, data.map((elem, idx)=>{
-						elem.forEach(som=>{
-							som.start_time = convertSqlDateTimeToDate(som.start_time).toISOString();
-							som.end_time = convertSqlDateTimeToDate(som.end_time).toISOString();
-						})
-						return {
-							type: serviceTypes[idx],
-							appointments: elem
-						}
-					}))
-				})
-				.catch(err=>done(err));
-			})
-			.catch(err=>done(err));
+			let appointmentsOfAllTypes = await executeQuery(query);
+			query = "";
+			let dataArray = [];
+			for (let mainIdx in appointmentsOfAllTypes){
+				for (let idx in appointmentsOfAllTypes[mainIdx]){
+					AppointmentClass = getClass(types[mainIdx].type);
+					appointmentsOfAllTypes[mainIdx][idx] = AppointmentClass.convertSqlTimesToDate(appointmentsOfAllTypes[mainIdx][idx]);
+					appointmentsOfAllTypes[mainIdx][idx] = transmuteSnakeToCamel(appointmentsOfAllTypes[mainIdx][idx]);
+					appointmentsOfAllTypes[mainIdx][idx].responses = await executeQuery("SELECT name, email, phone, response FROM response INNER JOIN user on user._id=response.user_id WHERE alt_id=" + appointmentsOfAllTypes[mainIdx][idx].id + ";");
+					appointmentsOfAllTypes[mainIdx][idx].type = types[mainIdx].type;
+					dataArray.push(appointmentsOfAllTypes[mainIdx][idx])
+				}
+			}
+			return done(null, dataArray);
+		}catch(err){
+			return done(err);
 		}
 	},
 
 	removeAppointment: function(input, done){
-		executeQuery("SELECT * FROM " + input.type + " WHERE _id=" + input.appointmentId + ";")
-		.then(data=>{
-			if(data[0].creator_id==input.userId){
-				let query = "DELETE FROM next_to_approve WHERE " + input.type + "_id=" + input.appointmentId + ";"
-					+ "DELETE FROM " + input.type + " WHERE _id=" + input.appointmentId + ";"
+		executeQuery("SELECT * FROM alt WHERE _id=" + input.appointmentId + ";")
+		.then(appointment=>{
+			let type = "";
+			let typeId;
+			if(appointment.length < 1)
+				return done("Appointment not found")
+			if(appointment[0].creator_id==input.userId){
+				//find type
+				for(let key in appointment[0]){
+					if(key=="creator_id" || key=="_id")
+						continue;
+					if((/_id$/g).test(key) && appointment[0][key]){
+						type = key.replace("_id", "");
+						typeId = appointment[0][key];
+					}
+				}
+				if(!type)
+					return done(new Error("Appointment type not found"));
+				let query = "DELETE FROM next_to_approve WHERE alt_id=" + input.appointmentId + ";"
+					+ "DELETE FROM response WHERE alt_id=" + input.appointmentId + ";"
+					+ "DELETE FROM alt WHERE _id=" + input.appointmentId + ";"
+					+ "DELETE FROM " + type + " WHERE _id=" + typeId + ";"
+					
 				executeQuery(query)
 				.then(response=>done(null, "Deleted Successfully"))
 				.catch(err=>done(err))
 			}else
-				done("Appointments can only be deleted by the creator");
+				return done("Appointments can only be deleted by the creator");
 		})
 		.catch(err=>done(err))
 	},
@@ -263,7 +280,7 @@ module.exports = {
 							distinctDateEvents = distinctDateEvents.map(event=>{
 								event.type = constraint.type;
 								AppointmentClass = getClass(constraint.type);
-								return (new AppointmentClass(transmuteSnakeToCamel(event))).getPublicInfo();
+								return AppointmentClass.convertSqlTimesToDate(event);
 							});
 							dataArray.push({date: distinctDate, events: distinctDateEvents});	
 						})
@@ -275,62 +292,115 @@ module.exports = {
 					return done(null, dataArray);
 				})
 				.catch(err=>done(err))
+			else
+				return done(null, []);
 		})
 		.catch(err=>done(err));
 	},
 
-	findUserApprovals: function(constraint, done){
-		let query = "SELECT * FROM next_to_approve" 
-		+ " INNER JOIN online_meeting ON online_meeting._id=next_to_approve.online_meeting_id" 
-		+ " LEFT JOIN response ON response.online_meeting_id=next_to_approve.online_meeting_id"
-		+ " WHERE next_to_approve.user_id=" + constraint.user_id  + ";"
-		executeQuery(query)
-		.then(appointments=>{
-			let dataArray = [];
-			appointments.forEach(appointment=>{
-				appointment.type=constraint.type;
-				AppointmentClass = getClass(constraint.type);
-				dataArray.push((new AppointmentClass(transmuteSnakeToCamel(appointment))).getPublicInfo());
+	findHistoryOfApprovals: async function(constraint, done){
+		try{
+			let types = await getAppointmentTypes();
+			let query = "";
+			types.forEach(type=>{
+				query += "SELECT * FROM alt"
+					+ " INNER JOIN " + type.type + " ON " + type.type + "_id=" + type.type + "._id"
+					+ " INNER JOIN response as r ON r.alt_id=alt._id"
+					+ " WHERE r.user_id=" + constraint.user_id + ";";
 			})
+			let appointmentsOfAllTypes = await executeQuery(query);
+			let dataArray = [];
+			for (let mainIdx in appointmentsOfAllTypes){
+				for (let idx in appointmentsOfAllTypes[mainIdx]){
+					AppointmentClass = getClass(types[mainIdx].type);
+					appointmentsOfAllTypes[mainIdx][idx] = AppointmentClass.convertSqlTimesToDate(appointmentsOfAllTypes[mainIdx][idx]);
+					appointmentsOfAllTypes[mainIdx][idx] = transmuteSnakeToCamel(appointmentsOfAllTypes[mainIdx][idx]);
+					appointmentsOfAllTypes[mainIdx][idx].responses = await executeQuery("SELECT name, email, phone, response FROM response INNER JOIN user on user._id=response.user_id WHERE alt_id=" + appointmentsOfAllTypes[mainIdx][idx].id + " AND user_id!=" + constraint.user_id + ";");
+					appointmentsOfAllTypes[mainIdx][idx].type = types[mainIdx].type;
+					dataArray.push(appointmentsOfAllTypes[mainIdx][idx])
+				}
+			}
+			return done(null, dataArray);	
+		}catch(err){
+			return done(err);
+		}
+	},
+
+	findUserApprovals: async function(constraint, done){
+		try{
+			let types = await getAppointmentTypes();
+			let query = "";
+			types.forEach(type=>{
+				query += "SELECT * FROM alt"
+					+ " INNER JOIN " + type.type + " ON " + type.type + "_id=" + type.type + "._id"
+					+ " INNER JOIN next_to_approve as n ON n.alt_id=alt._id"
+					+ " WHERE n.user_id=" + constraint.user_id + ";";
+			})
+			let appointmentsOfAllTypes = await executeQuery(query);
+			let dataArray = [];
+			for (let mainIdx in appointmentsOfAllTypes){
+				for (let idx in appointmentsOfAllTypes[mainIdx]){
+					AppointmentClass = getClass(types[mainIdx].type);
+					appointmentsOfAllTypes[mainIdx][idx] = AppointmentClass.convertSqlTimesToDate(appointmentsOfAllTypes[mainIdx][idx]);
+					appointmentsOfAllTypes[mainIdx][idx] = transmuteSnakeToCamel(appointmentsOfAllTypes[mainIdx][idx]);
+					appointmentsOfAllTypes[mainIdx][idx].responses = await executeQuery("SELECT name, email, phone, response FROM response INNER JOIN user on user._id=response.user_id WHERE alt_id=" + appointmentsOfAllTypes[mainIdx][idx].id + ";");
+					appointmentsOfAllTypes[mainIdx][idx].type = types[mainIdx].type;
+					dataArray.push(appointmentsOfAllTypes[mainIdx][idx])
+				}
+			}
 			return done(null, dataArray);
-		})
-		.catch(err=>done(err))
+		}catch(err){
+			return done(err);
+		}
 	},
 
 	changeAppointmentStatus: async function(input, done){
 		try{
-			let appointment = await executeQuery("SELECT * FROM " + input.type 
-				+ " AS t INNER JOIN next_to_approve AS n ON n.next_to_approve=t._id "
-				+ " WHERE n.user_id=" + input.user._id + " AND t." + input.type + "_id=" + input.appointmentId +";");
-			if(appointment!=1)
-				throw new Error("Invalid number of appointments selected");
+			let appointment = await executeQuery("SELECT * FROM alt"
+				+ " INNER JOIN next_to_approve as n ON alt._id=n.alt_id"
+				+ "  WHERE alt_id=" + input.appointmentId +" AND n.user_id=" + input.user._id);
+			if(appointment.length!=1)
+				if(appointment.length==0)
+					throw new Error("Appointment doesn't exist");
+				else
+					throw new Error("Invalid number of appointments selected");
 			appointment = appointment[0];
+			let type;
+			for(let key in appointment){
+				if(key=="user_id" || key=="_id" || key=="alt_id" || key=="creator_id")
+					continue;
+				if((/_id$/g).test(key) && appointment[key]){
+					type = key.replace("_id", "");
+					typeId = appointment[key];
+				}
+			}
+			if(!type)
+				return done(new Error("Appointment type not found"));
 			let config = await new Promise((resolve, reject)=>{
-				getConfig(input.type, appointment.service_name, (err, results)=>{
+				getConfig(type, appointment.service_name, (err, results)=>{
 					if(err) return reject(err);
 					return resolve(results);
 				})
 			});
 			let alphaAdmins = await executeQuery("SELECT * FROM user WHERE role='ALPHA_ADMIN';");
 			let nextMails = alphaAdmins.map(admin=>admin.email);
-			let query = "INSERT INTO response(user_id, " + input.type + "_id, encourages, response) VALUES ("
-				+ [input.user._id, input.appointmentId, input.encourages, input.response].join(",") + ");"
+			let query = "INSERT INTO response(user_id, alt_id, encourages, response) VALUES ("
+				+ [input.user._id, input.appointmentId, input.encourages, ("'" + input.response + "'")].join(",") + ");"
 			if(input.user.role == "ALPHA_ADMIN"){
 				let creator = await executeQuery("SELECT * FROM user WHERE _id=" + appointment.creator_id);
-				mail.sendFinal({type: input, emailIds: [...nextMails, creator.email]});
-				query+="DELETE FROM next_to_approve WHERE "
-					+ input.type + "_id=" + input.appointmentId + ";";
-				await executeQuery("UPDATE " + input.type + " SET status='" 
-					+ input.encourages?"APPROVED":"DECLINED"
-					+ "' WHERE _id=" + input.appointmentId);
+				let involved = await executeQuery("SELECT * FROM next_to_approve INNER JOIN user ON next_to_approve.user_id=user._id WHERE alt_id=" + appointment._id + ";");
+				involved.forEach(involvedUser=>{
+					if(input.user._id==involvedUser._id)
+						return ;
+					query+="INSERT INTO response(user_id, alt_id) VALUES ("
+					+ [involvedUser._id, input.appointmentId].join(",")+");"
+				})
+				query+="DELETE FROM next_to_approve WHERE alt_id=" + input.appointmentId + ";";
+				await executeQuery("UPDATE alt SET status='"
+					+ (input.encourages?"APPROVED":"DECLINED")
+					+ "' WHERE _id=" + input.appointmentId)
+				mail.sendFinal({type: input, emailIds: [...nextMails, creator[0].email]});
 			}else{
-				mail.sendResponses({
-					type: input.type,
-					user:input.user,
-					response: input.response,
-					encourages: input.encourages,
-					emailIds: nextMails
-				});
 				if(config.follow_hierarchy)
 					alphaAdmins.forEach(alpha=>{
 						query+="INSERT INTO next_to_approve(user_id," + input.type + "_id) VALUES("
@@ -338,9 +408,17 @@ module.exports = {
 						+");"
 					})
 				query+="DELETE FROM next_to_approve WHERE user_id=" + input.user._id
-				+ " AND " + input.type + "_id=" + input.appointmentId + ";";
+				+ " AND alt_id=" + input.appointmentId + ";";
+				mail.sendResponses({
+					type: type,
+					user:input.user,
+					response: input.response,
+					encourages: input.encourages,
+					emailIds: nextMails
+				});
 			}
 			await executeQuery(query);
+			return done(null, "Updated Successfully");
 		}catch(err){
 			return done(err);
 		}
