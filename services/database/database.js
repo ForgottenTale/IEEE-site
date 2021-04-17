@@ -278,7 +278,7 @@ module.exports = {
 							distinctDateEvents = distinctDateEvents.map(event=>{
 								event.type = constraint.type;
 								AppointmentClass = getClass(constraint.type);
-								return (new AppointmentClass(transmuteSnakeToCamel(event))).getPublicInfo();
+								return event;
 							});
 							dataArray.push({date: distinctDate, events: distinctDateEvents});	
 						})
@@ -290,37 +290,36 @@ module.exports = {
 					return done(null, dataArray);
 				})
 				.catch(err=>done(err))
+			else
+				return done(null, []);
 		})
 		.catch(err=>done(err));
 	},
 
 	findHistoryOfApprovals: async function(constraint, done){
-		let types = await getAppointmentTypes();
-		let query = "SELECT * FROM response"
-		+ " LEFT JOIN " + constraint.type + " ON " + constraint.type + "._id=response." + constraint.type + "_id"
-		+ " WHERE response.user_id=" + constraint.user_id;
-		executeQuery(query)
-		.then(appointments=>{
+		try{
+			let types = await getAppointmentTypes();
 			let query = "";
-			appointments.forEach(appointment=>{
-				appointment.myResponse = appointment.response;
-				delete appointment.response;
-				query += "SELECT name, email, phone, response FROM response INNER JOIN user ON response.user_id=user._id WHERE " + constraint.type + "_id=" + appointment._id + ";";
+			types.forEach(type=>{
+				query += "SELECT * FROM alt"
+					+ " INNER JOIN " + type.type + " ON " + type.type + "_id=" + type.type + "._id"
+					+ " INNER JOIN response as r ON r.alt_id=alt._id"
+					+ " WHERE r.user_id=" + constraint.user_id + ";";
 			})
-			if(!query)
-				return done(null, appointments);
-			executeQuery(query)
-			.then(responses=>{
-				if(!responses[0][0])
-					responses = [responses];
-				appointments.forEach((appointment, idx)=>{
-					appointment.responses = responses[idx];
-				})
-				return done(null, appointments);
-			})
-			.catch(err=>done(err));
-		})
-		.catch(err=>done(err));
+			let appointmentsOfAllTypes = await executeQuery(query);
+			let dataArray = [];
+			for (let mainIdx in appointmentsOfAllTypes){
+				for (let idx in appointmentsOfAllTypes[mainIdx]){
+					appointmentsOfAllTypes[mainIdx][idx] = transmuteSnakeToCamel(appointmentsOfAllTypes[mainIdx][idx]);
+					appointmentsOfAllTypes[mainIdx][idx].responses = await executeQuery("SELECT name, email, phone, response FROM response INNER JOIN user on user._id=response.user_id WHERE alt_id=" + appointmentsOfAllTypes[mainIdx][idx].id + " AND user_id!=" + constraint.user_id + ";");
+					appointmentsOfAllTypes[mainIdx][idx].type = types[mainIdx].type;
+					dataArray.push(appointmentsOfAllTypes[mainIdx][idx])
+				}
+			}
+			return done(null, dataArray);	
+		}catch(err){
+			return done(err);
+		}
 	},
 
 	findUserApprovals: async function(constraint, done){
