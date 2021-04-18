@@ -192,7 +192,7 @@ module.exports = {
 				if(results.length < 1){
 					return done(null, "Available");
 				}
-				return done("Time slot unavailable");
+				return done(new Error("Time slot unavailable"));
 			})
 		})
 	},
@@ -230,7 +230,7 @@ module.exports = {
 			let type = "";
 			let typeId;
 			if(appointment.length < 1)
-				return done("Appointment not found")
+				return done(new Error("Appointment not found"))
 			if(appointment[0].creator_id==input.userId){
 				//find type
 				for(let key in appointment[0]){

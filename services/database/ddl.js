@@ -21,6 +21,7 @@ module.exports = {
         `CREATE TABLE IF NOT EXISTS online_meeting(
             _id INT PRIMARY KEY AUTO_INCREMENT,
             service_name VARCHAR(30) NOT NULL,
+            title VARCHAR(30) NOT NULL,
             description VARCHAR(200),
             img VARCHAR(50),
             comments VARCHAR(30),
@@ -35,18 +36,19 @@ module.exports = {
             service_name VARCHAR(30) NOT NULL,
             title VARCHAR(30) NOT NULL,
             description VARCHAR(200),
-            commments VARCHAR(30),
+            comments VARCHAR(30),
             start_time DATETIME NOT NULL,
             end_time DATETIME NOT NULL,
             words_count INT,
             purpose VARCHAR(30),
             dimensions VARCHAR(20),
             url VARCHAR(100),
-            file VARCHAR(50)
+            img VARCHAR(50)
         );`,
         `CREATE TABLE IF NOT EXISTS e_notice(
             _id INT PRIMARY KEY AUTO_INCREMENT,
             service_name VARCHAR(30) NOT NULL,
+            title VARCHAR(30) NOT NULL,
             description VARCHAR(200),
             img VARCHAR(50),
             comments VARCHAR(30),
@@ -57,6 +59,7 @@ module.exports = {
         `CREATE TABLE IF NOT EXISTS publicity(
             _id INT PRIMARY KEY AUTO_INCREMENT,
             service_name VARCHAR(30) NOT NULL,
+            title VARCHAR(30) NOT NULL,
             description VARCHAR(200) NOT NULL,
             img VARCHAR(50),
             comments VARCHAR(30),
