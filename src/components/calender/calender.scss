@@ -23,6 +23,7 @@
             display: flex;
             justify-content: space-between;
             &_button {
+                outline: none;
                 background-color: rgb(245, 245, 245);
                 border: none;
                 border-radius: 10%;

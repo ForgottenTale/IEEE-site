@@ -10,16 +10,6 @@ export default function Menu({ toggle, state, setActiveComponent }) {
 
     const [open, setOpen] = useState(true);
 
-    const [active, setActive] = useState({
-        dashboard: true,
-        calender: false,
-        request: false,
-        settings: false,
-        users: false
-
-    });
-
-
 
 
     return (

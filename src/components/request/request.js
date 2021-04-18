@@ -7,16 +7,16 @@ export default function Request() {
 
     const header = ['Id', "Name", "Service", "Type", "Time", "Status","Action"];
     const data = [
-        { id:1, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
-        { id:2, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
-        { id:1, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
-        { id:2, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
-        { id:1, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
-        { id:2, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
-        { id:1, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
-        { id:2, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
-        { id:1, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
-        { id:2, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"Pending"},
+        { id:1, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"pending"},
+        { id:2, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"pending"},
+        { id:1, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"pending"},
+        { id:2, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"pending"},
+        { id:1, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"pending"},
+        { id:2, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"pending"},
+        { id:1, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"pending"},
+        { id:2, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"pending"},
+        { id:1, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"pending"},
+        { id:2, name:"Sara Anan Jose",service: "Online meeting",type: "Zoom ",time: "2pm IST 05/27/2021",status:"pending"},
 
    ];
 
@@ -27,7 +27,7 @@ export default function Request() {
 
             </div>
             <div className="request_sub">
-                <h6 className="request_sub_title">You have 360 request</h6>
+                <h6 className="request_sub_title">You have {data.length} request</h6>
 
                 <Input2 className="request_sub_input" placeholder="Search for requests" />
 

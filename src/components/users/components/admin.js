@@ -9,10 +9,13 @@ export default function Admin(){
 
     const header = ['Id', "Name", "Email", "Role", "Team", ""];
     const data = [{
-        "id": 1, name: "Sara Anan Jose", email: "sarananajose@ieee.org", role: "Alpha admin ", team: "Content",
+        "id": 1, name: "Alan Mathew", email: "alanmathew@ieee.org", role: "Alpha admin ", team: "content",
     },
     {
-        "id": 2, name: "Sara Anan Jose", email: "sarananajose@ieee.org", role: "Alpha admin ", team: "Content",
+        "id": 2, name: "Alan Mathew", email: "alanmathew@ieee.org", role: "Alpha admin ", team: "web",
+    },
+    {
+        "id": 2, name: "Alan Mathew", email: "alanmathew@ieee.org", role: "Alpha admin ", team: "design",
     }]
     return (
         <div className="admin">

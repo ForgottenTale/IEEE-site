@@ -12,7 +12,7 @@ export default function Login({ setUser }) {
 
 
     const handleLogin = async () => {
-        console.log(details);
+
         const formData = new URLSearchParams();
         formData.append('username', details.username);
         formData.append('password', details.password);
@@ -65,7 +65,7 @@ export default function Login({ setUser }) {
                 </div>
 
             </div>
-            <img className="login_img" src={pic} />
+            <img className="login_img" alt='' src={pic} />
         </div>
     );
 }

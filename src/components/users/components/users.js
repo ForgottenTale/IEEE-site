@@ -5,12 +5,12 @@ import Table from '../../table/table';
 
 
 export default function Admin() {
-    const header = ['Id', "Name", "Email", "Role",];
+    const header = ['Id', "Name", "Email", "Role",""];
     const data = [{
-        "id": 1, name: "Sara Anan Jose", email: "sarananajose@ieee.org", role: "Alpha admin ", college : "College of Engineering"
+        "id": 1, name: "Alan Mathew", email: "alanmathew@ieee.org", role: "Alpha admin ", college : "College of Engineering"
     },
     {
-        "id": 2, name: "Sara Anan Jose", email: "sarananajose@ieee.org", role: "Alpha admin ", 
+        "id": 2, name: "Alan Mathew", email: "alanmathew@ieee.org", role: "Alpha admin ", 
     }]
     return (
         <div className="admin">

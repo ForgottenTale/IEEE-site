@@ -1,32 +1,120 @@
-
-.tableTag{
+.tableTag {
     margin: 0 30px;
     height: 500px;
     overflow: hidden;
     overflow-y: scroll;
-    & table{
+
+    &_user {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        &_pic {
+            width: 35px;
+            height: 35px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+    }
+
+    & table {
         width: 100%;
         border-spacing: 0;
         border-collapse: collapse;
-        
-       
+
         & tr {
-            & th{
+            border-bottom: 0.5px rgb(224, 224, 224) solid;
+            height: 60px;
+            & th {
                 text-align: left;
-                padding: 20px;
-                font-size: 14px;
+                font-size: 13px;
             }
-            & td{
-                padding: 20px;
+            & td {
+                font-size: 13px;
+                padding-right: 60px;
+
+                & .pending {
+                    font-weight: 500;
+                    font-size: 12px;
+                    color: #fca02c;
+                    height: 30px;
+                    border-radius: 10px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background-color: #fef6d4;
+                }
+                & .completed {
+                    font-weight: 500;
+                    font-size: 12px;
+                    color: #009425;
+                    height: 30px;
+                    border-radius: 10px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background-color: #c1ffe0;
+                }
+                & .team {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    &_body {
+                        display: inline-block;
+                        width: 80px;
+                        height: 15px;
+                        border-radius: 10px;
+                        padding: 5px;
+                        font-weight: 500;
+                        
+                        &.content{
+                            color: rgb(30, 83, 255);
+                            border:.5px rgb(142, 194, 255) solid;
+                        }
+                        &.web{
+                            color: rgb(0, 190, 41);
+                            border:.5px rgb(103, 255, 136) solid;
+                        }
+                        &.design{
+                            color: rgba(219, 0, 110, 0.747);
+                            border:.5px rgba(219, 0, 110, 0.747) solid;
+                        }
+
+                        &_con {
+                          height: 100%;
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                      
+                            
+                            & p {
+                                font-size: 11px;
+                               
+
+                            }
+                            &_dot {
+
+                                width: 8px;
+                                height: 8px;
+                                border-radius: 50%;
+                               
+                                &.content{
+                                    background-color: rgb(30, 83, 255);
+                                }
+                                &.web{
+                                    background-color: rgb(103, 255, 136);
+                                }
+                                &.design{
+                                    background-color: rgba(219, 0, 110, 0.747);
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            &:hover{
+            &:hover {
                 box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.02), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
             }
-            &:nth-child(even){
-                background-color: #F2F4F5;
-            }
         }
-       
     }
-   
 }
