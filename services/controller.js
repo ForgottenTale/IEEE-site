@@ -236,8 +236,6 @@ class InternSupport extends Service{
         this.required = ["wordsCount", "startTime", "endTime"];
         super.checkRequired(input);
         this.validate(input);
-        input.startTime = input.startTime[input.startTime.length-1]=="Z"?input.startTime:convertSqlDateTimeToDate(input.startTime);
-        input.endTime = input.endTime[input.endTime.length-1]=="Z"?input.endTime:convertSqlDateTimeToDate(input.endTime);
         this.startTime = new Date(input.startTime);
         this.endTime = new Date(input.endTime);
         this.wordsCount = input.wordsCount;
@@ -344,7 +342,7 @@ class Publicity extends Service{
         super(input);
         this.required = ["publishTime"];
         super.checkRequired(input);
-        this.publishTime = new Date(input.publishTime[input.publishTime.length-1]=="Z"?input.publishTime:convertSqlDateTimeToDate(input.publishTime));
+        this.publishTime = new Date(input.publishTime);
     }
 
     static validateTime(input, config){
@@ -369,7 +367,7 @@ class Publicity extends Service{
     getAllNamesAndValues(){
         let namesAndValues = super.getAllNamesAndValues();
         namesAndValues.names.push('publish_time');
-        namesAndValues.values.push(this.publishTime?("'" + super.convertISOToSql(this.dateTime) + "'"):"null");
+        namesAndValues.values.push(this.publishTime?("'" + convertDateToSqlDateTime(this.publishTime) + "'"):"null");
         return(namesAndValues);
     }
     
@@ -378,6 +376,11 @@ class Publicity extends Service{
             express: this.express,
             reminder: this.reminder
         }, super.getPublicInfo());
+    }
+    
+    static convertSqlTimesToDate(input){
+        input.publish_time = convertSqlDateTimeToDate(input.publish_time).toISOString();
+        return input;
     }
 };
 

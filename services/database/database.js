@@ -202,7 +202,7 @@ module.exports = {
 			let types = await getAppointmentTypes();
 			let query = "";
 			types.forEach(appointmentType=>{
-				query+="SELECT * FROM alt INNER JOIN " + appointmentType.type + " ON alt." + appointmentType.type + "_id=" + appointmentType.type +"._id"  
+				query+="SELECT *, alt._id as _id FROM alt INNER JOIN " + appointmentType.type + " ON alt." + appointmentType.type + "_id=" + appointmentType.type +"._id"  
 					+ " WHERE " + appointmentType.type + "_id IS NOT NULL AND creator_id=" + constraint.userId + ";";
 			})
 			let appointmentsOfAllTypes = await executeQuery(query);
@@ -213,7 +213,7 @@ module.exports = {
 					AppointmentClass = getClass(types[mainIdx].type);
 					appointmentsOfAllTypes[mainIdx][idx] = AppointmentClass.convertSqlTimesToDate(appointmentsOfAllTypes[mainIdx][idx]);
 					appointmentsOfAllTypes[mainIdx][idx] = transmuteSnakeToCamel(appointmentsOfAllTypes[mainIdx][idx]);
-					appointmentsOfAllTypes[mainIdx][idx].responses = await executeQuery("SELECT name, email, phone, response FROM response INNER JOIN user on user._id=response.user_id WHERE alt_id=" + appointmentsOfAllTypes[mainIdx][idx].id + ";");
+					appointmentsOfAllTypes[mainIdx][idx].otherResponses = await executeQuery("SELECT name, email, encourages, response FROM response INNER JOIN user on user._id=response.user_id WHERE alt_id=" + appointmentsOfAllTypes[mainIdx][idx].id + ";");
 					appointmentsOfAllTypes[mainIdx][idx].type = types[mainIdx].type;
 					dataArray.push(appointmentsOfAllTypes[mainIdx][idx])
 				}
@@ -303,7 +303,7 @@ module.exports = {
 			let types = await getAppointmentTypes();
 			let query = "";
 			types.forEach(type=>{
-				query += "SELECT * FROM alt"
+				query += "SELECT *, alt._id as _id FROM alt"
 					+ " INNER JOIN " + type.type + " ON " + type.type + "_id=" + type.type + "._id"
 					+ " INNER JOIN response as r ON r.alt_id=alt._id"
 					+ " WHERE r.user_id=" + constraint.user_id + ";";
@@ -315,7 +315,7 @@ module.exports = {
 					AppointmentClass = getClass(types[mainIdx].type);
 					appointmentsOfAllTypes[mainIdx][idx] = AppointmentClass.convertSqlTimesToDate(appointmentsOfAllTypes[mainIdx][idx]);
 					appointmentsOfAllTypes[mainIdx][idx] = transmuteSnakeToCamel(appointmentsOfAllTypes[mainIdx][idx]);
-					appointmentsOfAllTypes[mainIdx][idx].responses = await executeQuery("SELECT name, email, phone, response FROM response INNER JOIN user on user._id=response.user_id WHERE alt_id=" + appointmentsOfAllTypes[mainIdx][idx].id + " AND user_id!=" + constraint.user_id + ";");
+					appointmentsOfAllTypes[mainIdx][idx].otherResponses = await executeQuery("SELECT name, email, encourages, response FROM response INNER JOIN user on user._id=response.user_id WHERE alt_id=" + appointmentsOfAllTypes[mainIdx][idx].id + " AND user_id!=" + constraint.user_id + ";");
 					appointmentsOfAllTypes[mainIdx][idx].type = types[mainIdx].type;
 					dataArray.push(appointmentsOfAllTypes[mainIdx][idx])
 				}
@@ -331,7 +331,7 @@ module.exports = {
 			let types = await getAppointmentTypes();
 			let query = "";
 			types.forEach(type=>{
-				query += "SELECT * FROM alt"
+				query += "SELECT *, alt._id as _id FROM alt"
 					+ " INNER JOIN " + type.type + " ON " + type.type + "_id=" + type.type + "._id"
 					+ " INNER JOIN next_to_approve as n ON n.alt_id=alt._id"
 					+ " WHERE n.user_id=" + constraint.user_id + ";";
@@ -343,7 +343,7 @@ module.exports = {
 					AppointmentClass = getClass(types[mainIdx].type);
 					appointmentsOfAllTypes[mainIdx][idx] = AppointmentClass.convertSqlTimesToDate(appointmentsOfAllTypes[mainIdx][idx]);
 					appointmentsOfAllTypes[mainIdx][idx] = transmuteSnakeToCamel(appointmentsOfAllTypes[mainIdx][idx]);
-					appointmentsOfAllTypes[mainIdx][idx].responses = await executeQuery("SELECT name, email, phone, response FROM response INNER JOIN user on user._id=response.user_id WHERE alt_id=" + appointmentsOfAllTypes[mainIdx][idx].id + ";");
+					appointmentsOfAllTypes[mainIdx][idx].otherResponses = await executeQuery("SELECT name, email, encourages, response FROM response INNER JOIN user on user._id=response.user_id WHERE alt_id=" + appointmentsOfAllTypes[mainIdx][idx].id + ";");
 					appointmentsOfAllTypes[mainIdx][idx].type = types[mainIdx].type;
 					dataArray.push(appointmentsOfAllTypes[mainIdx][idx])
 				}
