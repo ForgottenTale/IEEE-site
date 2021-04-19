@@ -1,14 +1,10 @@
 import './table.scss';
-import UserView from '../userView/userView';
-import { useState } from 'react';
-import RequestView from '../requestView/requestView';
 import pic from '../../images/pic3.jpg';
 import { NavLink,useRouteMatch  } from 'react-router-dom';
 
-export default function Table({ headers, data, type,setUser }) {
+export default function Table({ headers, data, type,setUser,setRequest }) {
 
-    // const [view, setView] = useState(false);
-    const { url, path } =useRouteMatch();
+    const { path } =useRouteMatch();
     return (
         <div className="tableTag">
             <table>
@@ -36,9 +32,9 @@ export default function Table({ headers, data, type,setUser }) {
                             ] : null}
                             {type === 'admin' ? [
                                 <td className="team">
-                                    <div className={"team_body" + " " + row.team}>
+                                    <div className={"team_body "+ row.team}>
                                         <div className={"team_body_con"}>
-                                            <div className={"team_body_con_dot" + " " + row.team} ></div>
+                                            <div className={"team_body_con_dot "+ row.team} ></div>
                                             <p>&nbsp;{row.team}</p>
                                         </div>
 
@@ -56,14 +52,11 @@ export default function Table({ headers, data, type,setUser }) {
                                 </td>,
                             ] : null}
                             <td>
-                                <NavLink to={path+'/user/'+row.id} onClick={()=>setUser(row)}> View</NavLink>
-                              
-                                   
+                                {type === 'request'?
+                                <NavLink to={path+"/"+row.id} onClick={()=>setRequest(row)}>View</NavLink>
+                                :<NavLink to={path+'/user/'+row.id} onClick={()=>setUser(row)}>View</NavLink>}
                               
                             </td>
-
-                            {/* {view && (type === 'user' || type === 'admin') ? <UserView data={row} setView={setView} type={type} /> : null}
-                            {view && type === 'request' ? <RequestView data={row} setView={setView} /> : null} */}
                         </tr>
                     )
                 }

@@ -4,8 +4,6 @@ import pic from '../../images/pic3.jpg';
 
 export default function User({ user, type }) {
 
-
-    // const userDetails = ["Name","Email","Phone No","Organisation/Institute"]
     return (
         <div className="user">
 

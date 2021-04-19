@@ -11,7 +11,7 @@ export default function Users() {
 
     const [usertype, setUserType] = useState('user');
     const [user, setUser] = useState(null);
-    const { url, path } =useRouteMatch();
+    const {path } =useRouteMatch();
 
 
     return (
