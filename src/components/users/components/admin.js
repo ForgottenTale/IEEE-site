@@ -4,7 +4,7 @@ import { Input2} from '../../utils/myReactLib';
 import Table from '../../table/table';
 
 
-export default function Admin(){
+export default function Admin({setUser}){
 
 
     const header = ['Id', "Name", "Email", "Role", "Team", ""];
@@ -23,7 +23,7 @@ export default function Admin(){
                 <Input2 className="admin_sub_input" placeholder="Search for admins" />
 
             </div>
-            <Table headers={header} data={data} type='admin'/>
+            <Table headers={header} data={data} type='admin' setUser={setUser}/>
         </div>
     )
 }

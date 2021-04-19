@@ -4,7 +4,7 @@ import Table from '../../table/table';
 
 
 
-export default function Admin() {
+export default function Admin({setUser}) {
     const header = ['Id', "Name", "Email", "Role",""];
     const data = [{
         "id": 1, name: "Alan Mathew", email: "alanmathew@ieee.org", role: "Alpha admin ", college : "College of Engineering"
@@ -19,7 +19,7 @@ export default function Admin() {
 
 
             </div>
-            <Table headers={header} data={data} type='user'  />
+            <Table headers={header} data={data} type='user'setUser={setUser}  />
            
         </div>
     )
