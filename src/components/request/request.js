@@ -10,7 +10,7 @@ export default function Request() {
 
     const header = ['Id', "Name", "Service", "Type", "Time", "Status", "Action"];
     const data = [
-        { id: 1, name: "Sara Anan Jose", service: "Online meeting", type: "Zoom ", time: "2pm IST 05/27/2021", status: "pending" },
+        { id: 1, name: "Sara Anan Jose", service: "Online meeting", type: "Zoom ", time: "2pm IST 05/27/2021", status: "pending",responses:[{name:"dddafsd",e_mail:"dark@gmail.com"}] },
         { id: 2, name: "Sara Anan Jose", service: "Online meeting", type: "Zoom ", time: "2pm IST 05/27/2021", status: "pending" },
         { id: 3, name: "Sara Anan Jose", service: "Online meeting", type: "Zoom ", time: "2pm IST 05/27/2021", status: "pending" },
         { id: 4, name: "Sara Anan Jose", service: "Online meeting", type: "Zoom ", time: "2pm IST 05/27/2021", status: "pending" },

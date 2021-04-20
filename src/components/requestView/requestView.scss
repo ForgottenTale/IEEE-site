@@ -1,3 +1,32 @@
 .requestView {
   padding: 30px;
+
+  &_con {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    &_item {
+      padding: 0 0 30px 0;
+
+      & p {
+        font-weight: 600;
+        font-size: 14px;
+        color: rgb(128, 128, 128);
+      }
+
+      & input {
+        margin-top: 10px;
+        min-width: 400px;
+        min-height: 30px;
+        outline: none;
+        border: none;
+        border-radius: 10px;
+        background-color: rgb(238, 238, 238);
+        padding: 10px;
+        font-weight: 500;
+
+      
+      }
+    }
+  }
+  
 }
