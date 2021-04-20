@@ -30,37 +30,36 @@ function Services({type,data,setData}) {
 
 
   return (
-    <div className="service-container row">
-      <div className="select-service col-5">
-        <img src={serviceIcon} alt="" />
-        <h2>Select Service</h2>
-        <p>
-          Please select a service for which you want to schedule an appointment.
-        </p>
-
-        <h3>Questions?</h3>
-        <p>Call (858) 939-3746 for help.</p>
-      </div>
-
-      <div className="service-list col">
-        <h2>Service Selection</h2>
-        {items.map((item, index) => (
-          <div
-            key={index}
-            className="service-box-x"
-            onClick={() =>next(item) }
+    <div  className="ub">
+      <div className="service-container row">
+        <div className="select-service col-5">
+          <img src={serviceIcon} alt="" />
+          <h2>Select Service</h2>
+          <p>
+            Please select a service for which you want to schedule an appointment.
+          </p>
+          <h3>Questions?</h3>
+          <p>Call (858) 939-3746 for help.</p>
+        </div>
+        <div className="service-list col">
+          <h2>Service Selection</h2>
+          {items.map((item, index) => (
+            <div
+              key={index}
+              className="service-box-x"
+              onClick={() =>next(item) }
+            >
+              <p>{item}</p>
+            </div>
+          ))}
+          <button
+            type="button"
+            className="mt-5 back-btn"
+            onClick={() =>history.push("/")}
           >
-            <p>{item}</p>
-          </div>
-        ))}
-
-        <button
-          type="button"
-          className="mt-5 back-btn"
-          onClick={() =>history.push("/")}
-        >
-          Prev
-        </button>
+            Prev
+          </button>
+        </div>
       </div>
     </div>
   );
