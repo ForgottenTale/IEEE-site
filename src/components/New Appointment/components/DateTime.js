@@ -1,30 +1,23 @@
-import React, { useState } from "react"
-import { useHistory } from 'react-router-dom';
-import dateIcon from '../../../images/date.png';
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import dateIcon from "../../../images/date.png";
 
 function minDay() {
-
-
   let newday = new Date();
   newday.setDate(newday.getDate() + 5);
   let year = newday.getFullYear();
   let month = newday.getMonth() + 1;
   let day = newday.getDate();
 
-  if (month < 10)
-    month = '0' + month;
-  if (day < 10)
-    day = '0' + day;
+  if (month < 10) month = "0" + month;
+  if (day < 10) day = "0" + day;
 
   let min = year + "-" + month + "-" + day;
-
 
   return min;
 }
 
 function DateTime({ setData, data }) {
-
-
   const [date, setDate] = useState("");
   const [timeFrom, setTimeFrom] = useState("");
   const [timeTo, setTimeTo] = useState("");
@@ -43,17 +36,14 @@ function DateTime({ setData, data }) {
     console.log(timeFrom);
     console.log(timeTo);
 
-    setData(
-      {
-        ...data,
-        timeFrom: new Date(new Date(date).setHours(fromHour, fromMin, 0, 0)),
-        timeTo: new Date(new Date(date).setHours(toHour, toMin, 0, 0))
-      });
+    setData({
+      ...data,
+      timeFrom: new Date(new Date(date).setHours(fromHour, fromMin, 0, 0)),
+      timeTo: new Date(new Date(date).setHours(toHour, toMin, 0, 0)),
+    });
     history.push("/contact-info/");
     // }
-
-  }
-
+  };
 
   return (
     <div className="ub">
@@ -62,8 +52,8 @@ function DateTime({ setData, data }) {
           <img src={dateIcon} alt="" />
           <h2>Select Date & Time</h2>
           <p>
-            Click on a date to see a timeline of available slots. Click on a green
-            time slot to reserve it.
+            Click on a date to see a timeline of available slots. Click on a
+            green time slot to reserve it.
           </p>
           <h3>Questions?</h3>
           <p>Call (858) 939-3746 for help.</p>
@@ -82,23 +72,27 @@ function DateTime({ setData, data }) {
                   onChange={(e) => setDate(e.target.value)}
                 />
               </div>
-      
+
               <div className="mb-5">
                 <label className="form-label">Time</label>
                 <input
                   type="time"
                   className="form-control"
                   name="time"
-                  onChange={(e) => setTimeFrom(e.target.value)} />
+                  onChange={(e) => setTimeFrom(e.target.value)}
+                />
               </div>
-              {data.type === "online-meeting" ? <div className="mb-5">
-                <label className="form-label">Time</label>
-                <input
-                  type="time"
-                  className="form-control"
-                  name="time"
-                  onChange={(e) => setTimeTo(e.target.value)} />
-              </div> : null}
+              {data.type === "online-meeting" ? (
+                <div className="mb-5">
+                  <label className="form-label">Time</label>
+                  <input
+                    type="time"
+                    className="form-control"
+                    name="time"
+                    onChange={(e) => setTimeTo(e.target.value)}
+                  />
+                </div>
+              ) : null}
             </div>
           </div>
           <button
@@ -108,7 +102,10 @@ function DateTime({ setData, data }) {
           >
             Prev
           </button>
-          <button onClick={() => next()} className="btn btn-primary mt-5 next-btn">
+          <button
+            onClick={() => next()}
+            className="btn btn-primary mt-5 next-btn"
+          >
             Next
           </button>
         </div>
@@ -118,4 +115,3 @@ function DateTime({ setData, data }) {
 }
 
 export default DateTime;
-

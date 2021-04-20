@@ -10,20 +10,19 @@ import SupportInfo from "./components/SupportInfo";
 import Verify from "./components/Verify";
 import Confirmation from "./components/Confirmation";
 import "./ub.css";
-import './style.css';
+import "./style.css";
 
 function App() {
-
   const [data, setData] = useState({});
   const [type, setType] = useState(null);
   // const [poster, setPoster] = useState("{}");
   return (
     <Router>
       <Switch>
-        <Route path="/" exact >
+        <Route path="/" exact>
           <ServiceList setType={setType} setData={setData} data={data} />
         </Route>
-        <Route path="/services" >
+        <Route path="/services">
           <Services type={type} setData={setData} data={data} />
         </Route>
         <Route path="/date-time">
@@ -32,15 +31,17 @@ function App() {
         <Route path="/contact-info">
           <ContactInfo type={type} setData={setData} data={data} />
         </Route>
-        <Route path="/event-info" >
+        <Route path="/event-info">
           <EventInfo type={type} data={data} setData={setData} />
         </Route>
         <Route path="/other-info">
           <OtherInfo type={type} data={data} setData={setData} />
         </Route>
-        <Route path="/support-info"><SupportInfo type={type} setData={setData} data={data} /></Route>
+        <Route path="/support-info">
+          <SupportInfo type={type} setData={setData} data={data} />
+        </Route>
 
-        <Route path="/verify" component={Verify} >
+        <Route path="/verify" component={Verify}>
           <Verify type={type} data={data} />
         </Route>
         <Route path="/confirmation" component={Confirmation} />

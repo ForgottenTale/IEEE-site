@@ -79,6 +79,7 @@ function ServiceList({ setType, setData }) {
             <div className="sub-services">
               <p>2 services</p>
               <Link
+                onClick={() => clickHander("publicity")}
                 to="/services/publicity"
                 className="btn btn-outline-primary btn-sm"
               >

@@ -1,29 +1,25 @@
-
 import React, { useState } from "react";
-import { useHistory } from 'react-router-dom';
-import infoIcon from '../../../images/info.png'
+import { useHistory } from "react-router-dom";
+import infoIcon from "../../../images/info.png";
 
 function EventInfo({ type, data, setData }) {
-
   const history = useHistory();
 
   const [content, setContent] = useState({
     description: "",
     speakerName: "",
     speakerEmail: "",
-    img: ""
-
-  })
+    img: "",
+  });
 
   function next() {
-    setData(
-      {
-        ...data,
-        description: content.description,
-        speaker: content.speaker,
-        speakerEmail: content.speakerEmail,
-        img: content.img
-      });
+    setData({
+      ...data,
+      description: content.description,
+      speaker: content.speaker,
+      speakerEmail: content.speakerEmail,
+      img: content.img,
+    });
     history.push("/other-info");
   }
 
@@ -34,8 +30,8 @@ function EventInfo({ type, data, setData }) {
           <img src={infoIcon} alt="" />
           <h2>Enter Information</h2>
           <p>
-            Please provide your contact info and other details so that we can send
-            you a confirmation and other info.
+            Please provide your contact info and other details so that we can
+            send you a confirmation and other info.
           </p>
           <h3>Questions?</h3>
           <p>Call (858) 939-3746 for help.</p>
@@ -52,7 +48,9 @@ function EventInfo({ type, data, setData }) {
                 rows="3"
                 className="form-control"
                 name="eventDesc"
-                onChange={(e) => setContent({ ...content, description: e.target.value })}
+                onChange={(e) =>
+                  setContent({ ...content, description: e.target.value })
+                }
               ></textarea>
             </div>
             <div className="col">
@@ -74,7 +72,9 @@ function EventInfo({ type, data, setData }) {
                   type="text"
                   className="form-control"
                   name="speakerName"
-                  onChange={(e) => setContent({ ...content, speaker: e.target.value })}
+                  onChange={(e) =>
+                    setContent({ ...content, speaker: e.target.value })
+                  }
                 />
               </div>
               <div className="col">
@@ -83,7 +83,9 @@ function EventInfo({ type, data, setData }) {
                   type="email"
                   className="form-control"
                   name="speakerMail"
-                  onChange={(e) => setContent({ ...content, speakerEmail: e.target.value })}
+                  onChange={(e) =>
+                    setContent({ ...content, speakerEmail: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -96,7 +98,9 @@ function EventInfo({ type, data, setData }) {
                   type="file"
                   className="form-control"
                   name="poster"
-                  onChange={(e) => { setContent({ ...content, img: e.target.files[0] }) }}
+                  onChange={(e) => {
+                    setContent({ ...content, img: e.target.files[0] });
+                  }}
                 />
               </div>
             ) : (
@@ -106,7 +110,9 @@ function EventInfo({ type, data, setData }) {
                   type="file"
                   className="form-control"
                   name="poster"
-                  onChange={(e) => { setContent({ ...content, img: e.target.files[0] }) }}
+                  onChange={(e) => {
+                    setContent({ ...content, img: e.target.files[0] });
+                  }}
                 />
               </div>
             )}
@@ -118,10 +124,7 @@ function EventInfo({ type, data, setData }) {
           >
             Prev
           </button>
-          <button
-            onClick={() => next()}
-            className="btn btn-primary next-btn"
-          >
+          <button onClick={() => next()} className="btn btn-primary next-btn">
             Next
           </button>
           {/* </form> */}

@@ -1,11 +1,10 @@
 import React from "react";
-import { useHistory } from 'react-router-dom';
-import axios from 'axios';
-import confirmIcon from '../../../images/info.png'
+import { useHistory } from "react-router-dom";
+import axios from "axios";
+import confirmIcon from "../../../images/info.png";
 
 function Verify({ type, data }) {
   const history = useHistory();
-
 
   const handleSubmit = () => {
     const keys = Object.keys(data);
@@ -13,34 +12,29 @@ function Verify({ type, data }) {
     const formData = new FormData();
     const length = keys.length;
 
-    for (let i = 0; i <length; i++) {
+    for (let i = 0; i < length; i++) {
       formData.append(keys[i], values[i]);
     }
 
     handleUpload(formData);
 
-    console.log(Array.from(formData))
+    console.log(Array.from(formData));
     history.push("/confirmation");
-  }
+  };
 
   const handleUpload = async (data) => {
-
-
     try {
-      const url = '/api/book/'+type;
+      const url = "/api/book/" + type;
       const res = await axios.post(url, data, {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
+          "Content-Type": "multipart/form-data",
+        },
+      });
       console.log(res);
-
     } catch (err) {
       console.log(err);
     }
-
-  }
-
+  };
 
   return (
     <div className="ub">

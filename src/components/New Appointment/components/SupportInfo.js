@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { useHistory } from 'react-router-dom';
-
-
+import { useHistory } from "react-router-dom";
 
 function SupportInfo({ type, data, setData }) {
   const history = useHistory();
@@ -18,27 +16,22 @@ function SupportInfo({ type, data, setData }) {
     img: "",
   });
 
-
   function nextButton() {
-    setData(
-      {
-        ...data,
-        description: support.description,
-        deliveryType: support.deliveryType,
-        remainder: support.remainder,
-        comments: support.comments,
-        purpose: support.purpose,
-        dimensions: support.dimensions,
-        wordsCount: support.wordsCount,
-        url: support.url,
-        img: support.img
-      });
+    setData({
+      ...data,
+      description: support.description,
+      deliveryType: support.deliveryType,
+      remainder: support.remainder,
+      comments: support.comments,
+      purpose: support.purpose,
+      dimensions: support.dimensions,
+      wordsCount: support.wordsCount,
+      url: support.url,
+      img: support.img,
+    });
 
-    history.push("/verify")
-
-
-
-  };
+    history.push("/verify");
+  }
 
   return (
     <div className="ub">
@@ -47,8 +40,8 @@ function SupportInfo({ type, data, setData }) {
           <img src="/images/info.png" alt="" />
           <h2>Enter Information</h2>
           <p>
-            Please provide your contact info and other details so that we can send
-            you a confirmation and other info.
+            Please provide your contact info and other details so that we can
+            send you a confirmation and other info.
           </p>
           <h3>Questions?</h3>
           <p>Call (858) 939-3746 for help.</p>
@@ -67,12 +60,21 @@ function SupportInfo({ type, data, setData }) {
                       rows="3"
                       className="form-control"
                       name="supportDesc"
-                      onChange={(e) => { setSupport({ ...support, description: e.target.value }) }}
+                      onChange={(e) => {
+                        setSupport({ ...support, description: e.target.value });
+                      }}
                     ></textarea>
                   </div>
                   <div className="mb-4">
                     <label className="form-label">Purpose</label>
-                    <input type="text" className="form-control" name="purpose" onChange={(e) => { setSupport({ ...support, purpose: e.target.value }) }} />
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="purpose"
+                      onChange={(e) => {
+                        setSupport({ ...support, purpose: e.target.value });
+                      }}
+                    />
                   </div>
                   <div className="mb-5">
                     <label className="form-label">
@@ -83,7 +85,9 @@ function SupportInfo({ type, data, setData }) {
                       multiple
                       className="form-control"
                       name="relevantFiles"
-                      onChange={(e) => { setSupport({ ...support, img: e.target.files[0] }) }}
+                      onChange={(e) => {
+                        setSupport({ ...support, img: e.target.files[0] });
+                      }}
                     />
                   </div>
                 </div>
@@ -99,7 +103,7 @@ function SupportInfo({ type, data, setData }) {
                     />
                   </div>
                   {data.service === "Poster Design" ||
-                    data.service === "Content Writing" ? (
+                  data.service === "Content Writing" ? (
                     data.service === "Poster Design" ? (
                       <div className="mb-4">
                         <label className="form-label">
@@ -109,7 +113,12 @@ function SupportInfo({ type, data, setData }) {
                           type="text"
                           className="form-control"
                           name="posterDimensions"
-                          onChange={(e) => { setSupport({ ...support, dimensions: e.target.value }) }}
+                          onChange={(e) => {
+                            setSupport({
+                              ...support,
+                              dimensions: e.target.value,
+                            });
+                          }}
                         />
                       </div>
                     ) : (
@@ -121,20 +130,25 @@ function SupportInfo({ type, data, setData }) {
                           type="number"
                           className="form-control"
                           name="wordsCount"
-                          onChange={(e) => { setSupport({ ...support, wordsCount: e.target.value }) }}
+                          onChange={(e) => {
+                            setSupport({
+                              ...support,
+                              wordsCount: e.target.value,
+                            });
+                          }}
                         />
                       </div>
                     )
                   ) : (
                     <div className="mb-4">
-                      <label className="form-label">
-                        URL
-                      </label>
+                      <label className="form-label">URL</label>
                       <input
                         type="text"
                         className="form-control"
                         name="mockup"
-                        onChange={(e) => { setSupport({ ...support, url: e.target.value }) }}
+                        onChange={(e) => {
+                          setSupport({ ...support, url: e.target.value });
+                        }}
                       />
                     </div>
                   )}
@@ -144,7 +158,9 @@ function SupportInfo({ type, data, setData }) {
                       rows="3"
                       className="form-control"
                       name="comments"
-                      onChange={(e) => { setSupport({ ...support, comments: e.target.value }) }}
+                      onChange={(e) => {
+                        setSupport({ ...support, comments: e.target.value });
+                      }}
                     ></textarea>
                   </div>
                 </div>
@@ -175,12 +191,23 @@ function SupportInfo({ type, data, setData }) {
                       rows="3"
                       className="form-control"
                       name="enoticeDesc"
-                      onChange={(e) => { setSupport({ ...support, description: e.target.value }) }}
+                      onChange={(e) => {
+                        setSupport({ ...support, description: e.target.value });
+                      }}
                     ></textarea>
                   </div>
                   <div className="mb-4">
                     <label className="form-label">Delivery Type</label>
-                    <select className="form-select" name="deliveryType" onChange={(e) => { setSupport({ ...support, deliveryType: e.target.value }) }}>
+                    <select
+                      className="form-select"
+                      name="deliveryType"
+                      onChange={(e) => {
+                        setSupport({
+                          ...support,
+                          deliveryType: e.target.value,
+                        });
+                      }}
+                    >
                       <option selected disabled>
                         Select
                       </option>
@@ -194,7 +221,9 @@ function SupportInfo({ type, data, setData }) {
                       type="file"
                       className="form-control"
                       name="poster"
-                      onChange={(e) => { setSupport({ ...support, img: e.target.files[0] }) }}
+                      onChange={(e) => {
+                        setSupport({ ...support, img: e.target.files[0] });
+                      }}
                     />
                   </div>
                 </div>
@@ -210,13 +239,17 @@ function SupportInfo({ type, data, setData }) {
                     />
                   </div>
                   <div className="mb-4">
-                    <p className="remainder-enotice-label">Remainder e-notice:</p>
+                    <p className="remainder-enotice-label">
+                      Remainder e-notice:
+                    </p>
                     <div className="form-check form-check-inline">
                       <input
                         className="form-check-input"
                         type="radio"
                         name="remainderEnotice"
-                        onChange={() => { setSupport({ ...support, remainder: "yes" }) }}
+                        onChange={() => {
+                          setSupport({ ...support, remainder: "yes" });
+                        }}
                       />
                       <label className="form-check-label">Yes</label>
                     </div>
@@ -225,7 +258,9 @@ function SupportInfo({ type, data, setData }) {
                         className="form-check-input"
                         type="radio"
                         name="remainderEnotice"
-                        onChange={(e) => { setSupport({ ...support, remainder: "no" }) }}
+                        onChange={(e) => {
+                          setSupport({ ...support, remainder: "no" });
+                        }}
                       />
                       <label className="form-check-label">No</label>
                     </div>
@@ -236,7 +271,9 @@ function SupportInfo({ type, data, setData }) {
                       rows="3"
                       className="form-control"
                       name="comments"
-                      onChange={(e) => { setSupport({ ...support, comments: e.target.value }) }}
+                      onChange={(e) => {
+                        setSupport({ ...support, comments: e.target.value });
+                      }}
                     ></textarea>
                   </div>
                 </div>
