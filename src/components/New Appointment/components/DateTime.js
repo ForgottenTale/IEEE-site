@@ -26,7 +26,9 @@ function DateTime({ type, setData, data }) {
 
   let minDate = minDay();
 
-  const next = () => {
+  const next = (event) => {
+    event.preventDefault();
+
     // if (timeFrom !== "") {
     var fromHour = timeFrom.slice(0, 2);
     var fromMin = timeFrom.slice(3, 5);
@@ -52,7 +54,7 @@ function DateTime({ type, setData, data }) {
 
   return (
     <div className="ub">
-      <div className="service-container row">
+      <div className="info-container row">
         <div className="select-service col-5">
           <img src={dateIcon} alt="" />
           <h2>Select Date & Time</h2>
@@ -65,9 +67,10 @@ function DateTime({ type, setData, data }) {
         </div>
         <div className="date col">
           <h2>Select Date & Time</h2>
-          <div className="row">
-            <div className="col-6">
-              <div className="mb-4">
+
+          <form onSubmit={next}>
+            <div className="row mb-4">
+              <div className="col-5">
                 <label className="form-label">Date</label>
                 <input
                   type="date"
@@ -75,21 +78,23 @@ function DateTime({ type, setData, data }) {
                   min={minDate}
                   name="date"
                   onChange={(e) => setDate(e.target.value)}
+                  required
                 />
               </div>
-
-              <div className="mb-5">
-                <label className="form-label">Time</label>
-                <input
-                  type="time"
-                  className="form-control"
-                  name="time"
-                  onChange={(e) => setTimeFrom(e.target.value)}
-                />
-              </div>
-              {data.type === "online_meeting" ? (
-                <div className="mb-5">
-                  <label className="form-label">Time</label>
+            </div>
+            {data.type === "online_meeting" ? (
+              <div className="row mb-5">
+                <div className="col-5">
+                  <label className="form-label">From</label>
+                  <input
+                    type="time"
+                    className="form-control"
+                    name="time"
+                    onChange={(e) => setTimeFrom(e.target.value)}
+                  />
+                </div>
+                <div className="col-5">
+                  <label className="form-label">To</label>
                   <input
                     type="time"
                     className="form-control"
@@ -97,22 +102,29 @@ function DateTime({ type, setData, data }) {
                     onChange={(e) => setTimeTo(e.target.value)}
                   />
                 </div>
-              ) : null}
-            </div>
-          </div>
-          <button
-            type="button"
-            className="mt-5 back-btn"
-            onClick={() => history.push("/services/")}
-          >
-            Prev
-          </button>
-          <button
-            onClick={() => next()}
-            className="btn btn-primary mt-5 next-btn"
-          >
-            Next
-          </button>
+              </div>
+            ) : (
+              <div className="row mb-5">
+                <div className="col-5">
+                  <label className="form-label">Time</label>
+                  <input
+                    type="time"
+                    className="form-control"
+                    name="time"
+                    onChange={(e) => setTimeFrom(e.target.value)}
+                  />
+                </div>
+              </div>
+            )}
+            <button
+              type="button"
+              className="mt-5 back-btn"
+              onClick={() => history.push("/services/")}
+            >
+              Prev
+            </button>
+            <button className="btn btn-primary mt-5 next-btn">Next</button>
+          </form>
         </div>
       </div>
     </div>
