@@ -213,7 +213,7 @@ module.exports = {
 					AppointmentClass = getClass(types[mainIdx].type);
 					appointmentsOfAllTypes[mainIdx][idx] = AppointmentClass.convertSqlTimesToDate(appointmentsOfAllTypes[mainIdx][idx]);
 					appointmentsOfAllTypes[mainIdx][idx] = transmuteSnakeToCamel(appointmentsOfAllTypes[mainIdx][idx]);
-					appointmentsOfAllTypes[mainIdx][idx].otherResponses = await executeQuery("SELECT name, email, encourages, response FROM response INNER JOIN user on user._id=response.user_id WHERE alt_id=" + appointmentsOfAllTypes[mainIdx][idx].id + ";");
+					appointmentsOfAllTypes[mainIdx][idx].otherResponses = await executeQuery("SELECT name, email, encourages, response FROM response INNER JOIN user on user._id=response.user_id WHERE final=1 AND alt_id=" + appointmentsOfAllTypes[mainIdx][idx].id + ";");
 					appointmentsOfAllTypes[mainIdx][idx].type = types[mainIdx].type;
 					dataArray.push(appointmentsOfAllTypes[mainIdx][idx])
 				}
@@ -384,9 +384,10 @@ module.exports = {
 			});
 			let alphaAdmins = await executeQuery("SELECT * FROM user WHERE role='ALPHA_ADMIN';");
 			let nextMails = alphaAdmins.map(admin=>admin.email);
-			let query = "INSERT INTO response(user_id, alt_id, encourages, response) VALUES ("
-				+ [input.user._id, input.appointmentId, input.encourages, ("'" + input.response + "'")].join(",") + ");"
+			let query = "";
 			if(input.user.role == "ALPHA_ADMIN"){
+				query += "INSERT INTO response(user_id, alt_id, encourages, final, response) VALUES ("
+				+ [input.user._id, input.appointmentId, input.encourages, 1, ("'" + input.response + "'")].join(",") + ");";
 				let creator = await executeQuery("SELECT * FROM user WHERE _id=" + appointment.creator_id);
 				let involved = await executeQuery("SELECT * FROM next_to_approve INNER JOIN user ON next_to_approve.user_id=user._id WHERE alt_id=" + appointment._id + ";");
 				involved.forEach(involvedUser=>{
@@ -401,6 +402,8 @@ module.exports = {
 					+ "' WHERE _id=" + input.appointmentId)
 				mail.sendFinal({type: input, emailIds: [...nextMails, creator[0].email]});
 			}else{
+				query += "INSERT INTO response(user_id, alt_id, encourages, response) VALUES ("
+				+ [input.user._id, input.appointmentId, input.encourages, ("'" + input.response + "'")].join(",") + ");"
 				if(config.follow_hierarchy)
 					alphaAdmins.forEach(alpha=>{
 						query+="INSERT INTO next_to_approve(user_id," + input.type + "_id) VALUES("
