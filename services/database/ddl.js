@@ -90,6 +90,7 @@ module.exports = {
             alt_id INT NOT NULL,
             encourages BOOLEAN,
             response VARCHAR(100),
+            final BOOLEAN DEFAULT false NOT NULL,
             FOREIGN KEY(user_id) REFERENCES user(_id),
             FOREIGN KEY(alt_id) REFERENCES alt(_id) 
         );`
