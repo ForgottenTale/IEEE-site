@@ -1,53 +1,44 @@
 import React, { useState } from "react";
-import { useHistory } from 'react-router-dom';
-import infoIcon from '../../../images/info.png';
+import { useHistory } from "react-router-dom";
+import infoIcon from "../../../images/info.png";
 
 function CohostData(props) {
-
   return (
-    <div className="row mb-3">
-
-      <div className="col">
-        <label className="form-label">Co-host name</label>
-        <input
-
-          className="form-control"
-          name="cohostName"
-          value={props.cohost[props.id][0]}
-          onChange={e => props.handleChange(props.id, e)}
-        />
+    <div className="ub">
+      <div className="row mb-3">
+        <div className="col">
+          <label className="form-label">Co-host name</label>
+          <input
+            className="form-control"
+            name="cohostName"
+            value={props.cohost[props.id][0]}
+            onChange={(e) => props.handleChange(props.id, e)}
+          />
+        </div>
+        <div className="col">
+          <label className="form-label">Co-host email</label>
+          <input
+            className="form-control"
+            name="cohostMail"
+            value={props.cohost[props.id][1]}
+            onChange={(e) => props.handleChange(props.id, e)}
+          />
+        </div>
       </div>
-      <div className="col">
-        <label className="form-label">Co-host email</label>
-        <input
-
-          className="form-control"
-          name="cohostMail"
-          value={props.cohost[props.id][1]}
-          onChange={e => props.handleChange(props.id, e)}
-        />
-      </div>
-
-
     </div>
   );
 }
 
 function OtherInfo({ type, data, setData }) {
-
   const history = useHistory();
   let [count, setCount] = useState(1);
-  const [cohost, setCohost] = useState([
-    ["", ""]
-  ]);
+  const [cohost, setCohost] = useState([["", ""]]);
 
   function nextButton() {
-    setData(
-      {
-        
-        cohosts: JSON.stringify(cohost),
-        ...data
-      });
+    setData({
+      cohosts: JSON.stringify(cohost),
+      ...data,
+    });
 
     history.push("/verify");
   }
@@ -55,10 +46,8 @@ function OtherInfo({ type, data, setData }) {
   function addCohost() {
     if (count < 3) {
       setCohost([...cohost, ["", ""]]);
-      setCount(count+1);
+      setCount(count + 1);
     }
-
-
   }
 
   function deleteCohost(i) {
@@ -66,125 +55,117 @@ function OtherInfo({ type, data, setData }) {
       setCount(count - 1);
       const values = [...cohost];
       values.splice(i, 1);
-      setCohost(values)
+      setCohost(values);
     }
-
   }
 
-
   function handleChange(index, e) {
-
     let values = [...cohost];
     e.preventDefault();
-    if (e.target.name === 'cohostName') {
+    if (e.target.name === "cohostName") {
       values[index][0] = e.target.value;
     }
-    if (e.target.name === 'cohostMail') {
+    if (e.target.name === "cohostMail") {
       values[index][1] = e.target.value;
     }
 
     setCohost(values);
-
   }
 
   return (
-    <div className="info-container row">
-      <div className="enter-info col-4">
-        <img src={infoIcon} alt="" />
-        <h2>Enter Information</h2>
-        <p>
-          Please provide your contact info and other details so that we can send
-          you a confirmation and other info.
-        </p>
-
-        <h3>Questions?</h3>
-        <p>Call (858) 939-3746 for help.</p>
-      </div>
-
-      <div className="info col">
-        <h2>Other Details</h2>
-
-        {type === "publicity" ? (
-          <form>
-            <div className="row mb-3">
-              <div className="col-6">
-                <label className="form-label">Program schedule (if any)</label>
-                <input type="text" className="form-control" name="schedule" />
+    <div className="ub">
+      <div className="info-container row">
+        <div className="enter-info col-4">
+          <img src={infoIcon} alt="" />
+          <h2>Enter Information</h2>
+          <p>
+            Please provide your contact info and other details so that we can
+            send you a confirmation and other info.
+          </p>
+          <h3>Questions?</h3>
+          <p>Call (858) 939-3746 for help.</p>
+        </div>
+        <div className="info col">
+          <h2>Other Details</h2>
+          {type === "publicity" ? (
+            <form>
+              <div className="row mb-3">
+                <div className="col-6">
+                  <label className="form-label">
+                    Program schedule (if any)
+                  </label>
+                  <input type="text" className="form-control" name="schedule" />
+                </div>
               </div>
-            </div>
-
-            <div className="row mb-5">
-              <div className="col">
-                <label className="form-label">Comments</label>
-                <textarea
-                  rows="3"
-                  className="form-control"
-                  name="comments"
-                ></textarea>
+              <div className="row mb-5">
+                <div className="col">
+                  <label className="form-label">Comments</label>
+                  <textarea
+                    rows="3"
+                    className="form-control"
+                    name="comments"
+                  ></textarea>
+                </div>
               </div>
-            </div>
-
-            <button
-              type="button"
-              className="back-btn"
-              onClick={() => history.push("/event-info")}
-            >
-              Prev
-            </button>
-
-            <button
-              type="button"
-              onClick={() => nextButton()}
-              className="btn btn-primary next-btn"
-            >
-              Next
-            </button>
-          </form>
-        ) : (
-          /* ............................................................................................... */
-
-          <form>
-            {cohost.map((e, i) => (
-              <CohostData key={i} id={i} cohost={cohost} handleChange={handleChange} />
-            ))}
-
-            {count !== 3 && (
               <button
                 type="button"
-                onClick={addCohost}
+                className="back-btn"
+                onClick={() => history.push("/event-info")}
+              >
+                Prev
+              </button>
+              <button
+                type="button"
+                onClick={() => nextButton()}
+                className="btn btn-primary next-btn"
+              >
+                Next
+              </button>
+            </form>
+          ) : (
+            /* ............................................................................................... */
+            <form>
+              {cohost.map((e, i) => (
+                <CohostData
+                  key={i}
+                  id={i}
+                  cohost={cohost}
+                  handleChange={handleChange}
+                />
+              ))}
+              {count !== 3 && (
+                <button
+                  type="button"
+                  onClick={addCohost}
+                  className="btn btn-secondary btn-sm cohost-btn"
+                >
+                  <i className="fas fa-plus"></i>
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={deleteCohost}
                 className="btn btn-secondary btn-sm cohost-btn"
               >
-                <i className="fas fa-plus"></i>
+                <i className="fas fa-trash"></i>
               </button>
-            )}
-
-
-            <button
-              type="button"
-              onClick={deleteCohost}
-              className="btn btn-secondary btn-sm cohost-btn"
-            >
-              <i className="fas fa-trash"></i>
-            </button>
-
-
-            <button
-              type="button"
-              className="mt-5 back-btn"
-              onClick={() => history.push("/event-info")}
-            >
-              Prev
-            </button>
-
-            <button
-              type="button"
-              onClick={() => nextButton()}
-              className="btn btn-primary mt-5 next-btn"
-            >
-              Next
-            </button>
-          </form>
-        )}
+              <button
+                type="button"
+                className="mt-5 back-btn"
+                onClick={() => history.push("/event-info")}
+              >
+                Prev
+              </button>
+              <button
+                type="button"
+                onClick={() => nextButton()}
+                className="btn btn-primary mt-5 next-btn"
+              >
+                Next
+              </button>
+            </form>
+          )}
+        </div>
       </div>
     </div>
   );

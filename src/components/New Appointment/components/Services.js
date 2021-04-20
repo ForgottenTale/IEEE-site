@@ -1,19 +1,16 @@
 import React from "react";
-import {useHistory} from 'react-router-dom';
-import serviceIcon from '../../../images/select.png';
+import { useHistory } from "react-router-dom";
+import serviceIcon from "../../../images/select.png";
 
-function Services({type,data,setData}) {
-
+function Services({ type, data, setData }) {
   const history = useHistory();
-
 
   const next = (item) => {
     // if (timeFrom !== "") {
-      setData({ ...data,service:item })
+    setData({ ...data, service: item });
     // }
     history.push("/date-time/");
-
-  }
+  };
 
   let items = [];
   if (type === "online_meeting") {
@@ -27,44 +24,41 @@ function Services({type,data,setData}) {
   }
   console.log(items);
 
-
-
   return (
-    <div className="service-container row">
-      <div className="select-service col-5">
-        <img src={serviceIcon} alt="" />
-        <h2>Select Service</h2>
-        <p>
-          Please select a service for which you want to schedule an appointment.
-        </p>
-
-        <h3>Questions?</h3>
-        <p>Call (858) 939-3746 for help.</p>
-      </div>
-
-      <div className="service-list col">
-        <h2>Service Selection</h2>
-        {items.map((item, index) => (
-          <div
-            key={index}
-            className="service-box-x"
-            onClick={() =>next(item) }
+    <div className="ub">
+      <div className="service-container row">
+        <div className="select-service col-5">
+          <img src={serviceIcon} alt="" />
+          <h2>Select Service</h2>
+          <p>
+            Please select a service for which you want to schedule an
+            appointment.
+          </p>
+          <h3>Questions?</h3>
+          <p>Call (858) 939-3746 for help.</p>
+        </div>
+        <div className="service-list col">
+          <h2>Service Selection</h2>
+          {items.map((item, index) => (
+            <div
+              key={index}
+              className="service-box-x"
+              onClick={() => next(item)}
+            >
+              <p>{item}</p>
+            </div>
+          ))}
+          <button
+            type="button"
+            className="mt-5 back-btn"
+            onClick={() => history.push("/")}
           >
-            <p>{item}</p>
-          </div>
-        ))}
-
-        <button
-          type="button"
-          className="mt-5 back-btn"
-          onClick={() =>history.push("/")}
-        >
-          Prev
-        </button>
+            Prev
+          </button>
+        </div>
       </div>
     </div>
   );
 }
 
 export default Services;
-

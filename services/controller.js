@@ -26,9 +26,9 @@ class User {
     checkRequired(input){
         this.required.forEach(param=>{
             if(!input[param])
-                throw (param + " is requried");
+                throw new Error(param + " is requried");
             else if((input[param] + "").trim() < 1)
-                throw (param + " cannot be empty");
+                throw new Error(param + " cannot be empty");
         })
     }
 
@@ -101,11 +101,12 @@ class NewUser extends User{
 class Service{
     constructor(input){
         try{
-            this.required = ["type", "serviceName", "creatorId"];
+            this.required = ["type", "serviceName", "creatorId", "title"];
             this.checkRequired(input);
             this._id = input._id;
             this.type = input.type.trim();
-            this.serviceName = input.serviceName.trim();
+            this.serviceName = input.serviceName.trim().toLowerCase();
+            this.title = input.title?input.title.trim():"null";
             this.description = input.description?input.description.trim():null;
             this.status = input.status?input.status:"PENDING";
             this.comments = input.comments?input.comments.trim():null;
@@ -120,22 +121,21 @@ class Service{
     checkRequired(input){
         this.required.forEach(param=>{
             if(!input[param])
-                throw (param + " is requried");
+                throw new Error(param + " is requried");
             else if((input[param] + "").trim() < 1)
-                throw (param + " cannot be empty");
+                throw new Error(param + " cannot be empty");
         })
     }
 
     getAllNamesAndValues(){
         return({
-            names: ['service_name', 'description', 'status', 'comments', 'img', 'creator_id'],
+            names: ['service_name', 'title', 'description', 'comments', 'img'],
             values: [
                 this.serviceName?("'" + this.serviceName + "'"):"null",
+                this.title?("'" + this.title + "'"):"null",
                 this.description?("'" + this.description + "'"):"null",
-                this.status?("'" + this.status + "'"):"null",
                 this.comments?("'" + this.comments + "'"):"null",
                 this.img?("'" + this.img + "'"):"null",
-                this.creatorId
             ]
         })
     }
@@ -181,14 +181,14 @@ class OnlineMeeting extends Service {
 
     static validateTime(input, config){
         if(input.startTime>input.endTime)
-            throw 'End Date must be greater than Start Date';
+            throw new Error('End Date must be greater than Start Date');
         if(input.startTime<(new Date()))
-            throw 'Time slot selected is past';
+            throw new Error('Time slot selected is past');
         let startOfAdvanceTime = new Date(input.startTime);
         startOfAdvanceTime.setHours(0, 0, 0);
         startOfAdvanceTime.setDate(startOfAdvanceTime.getDate() - config.advance_days);
         if(startOfAdvanceTime<=(new Date())){
-            throw 'Booking has to be done ' + config.advance_days + ' days in advance';
+            throw new Error('Booking has to be done ' + config.advance_days + ' days in advance');
         }
     }
 
@@ -202,6 +202,12 @@ class OnlineMeeting extends Service {
             + " (end_time>'" + paddedStart +"' AND end_time<'" + paddedEnd + "') OR "
             + " (start_time='" + paddedStart +"' AND end_time='" + paddedEnd + "');"
         )
+    }
+
+    static convertSqlTimesToDate(input){
+        input.start_time = convertSqlDateTimeToDate(input.start_time).toISOString();
+        input.end_time = convertSqlDateTimeToDate(input.end_time).toISOString();
+        return input;
     }
 
     getAllNamesAndValues(){
@@ -229,33 +235,28 @@ class OnlineMeeting extends Service {
 class InternSupport extends Service{
     constructor(input){
         super(input);
-        this.required = ["wordsCount", "startTime", "endTime"];
+        this.required = ["startTime", "endTime"];
         super.checkRequired(input);
-        this.validate(input);
-        input.startTime = input.startTime[input.startTime.length-1]=="Z"?input.startTime:convertSqlDateTimeToDate(input.startTime);
-        input.endTime = input.endTime[input.endTime.length-1]=="Z"?input.endTime:convertSqlDateTimeToDate(input.endTime);
         this.startTime = new Date(input.startTime);
         this.endTime = new Date(input.endTime);
         this.wordsCount = input.wordsCount;
+        this.purpose = input.purpose;
+        this.dimensions = input.dimensions;
+        this.url = input.url;
+        this.img = input.img;
     }
 
-    validate(input){
-        for(let param in input){
-            if(input[param] < 11)
-                throw "More than 11 words required";
-        }
-    }
 
     static validateTime(input, config){
         if(input.startTime>input.endTime)
-            throw 'End Date must be greater than Start Date';
+            throw new Error('End Date must be greater than Start Date');
         if(input.startTime<(new Date()))
             throw 'Time slot selected is past';
         let startOfAdvanceTime = new Date(input.startTime);
         startOfAdvanceTime.setHours(0, 0, 0);
         startOfAdvanceTime.setDate(startOfAdvanceTime.getDate() - config.advance_days);
         if(startOfAdvanceTime<=(new Date())){
-            throw 'Booking has to be done ' + config.advance_days + ' days in advance';
+            throw new Error('Booking has to be done ' + config.advance_days + ' days in advance');
         }
     }
 
@@ -265,18 +266,21 @@ class InternSupport extends Service{
         let paddedEnd = convertDateToSqlDateTime(new Date(input.endTime.getTime() + (padding*60000)));
         return ("SELECT * FROM " + input.type 
             + " WHERE"
-            + " (start_time<='" + paddedStart + "' AND end_time>'" + paddedStart + "') OR "
-            + " (start_time<='" + paddedStart +"' AND end_time>='" + paddedEnd + "') OR "
-            + " (start_time<='" + paddedEnd +"' AND end_time>'" + paddedEnd + "');"
+            + " (start_time>'" + paddedStart + "' AND start_time<'" + paddedEnd + "') OR "
+            + " (end_time>'" + paddedStart +"' AND end_time<'" + paddedEnd + "') OR "
+            + " (start_time='" + paddedStart +"' AND end_time='" + paddedEnd + "');"
         )
     }
 
     getAllNamesAndValues(){
         let namesAndValues = super.getAllNamesAndValues();
-        namesAndValues.names.push('start_time', 'end_time', 'words_count');
-        namesAndValues.values.push(this.startTime?("'" + super.convertISOToSql(this.startTime) + "'"):"null");
-        namesAndValues.values.push(this.endTime?("'" + super.convertISOToSql(this.endTime) + "'"):"null");
-        namesAndValues.values.push(this.wordsCount);
+        namesAndValues.names.push('start_time', 'end_time', 'words_count', 'purpose', 'dimensions', 'url');
+        namesAndValues.values.push(this.startTime?("'" + convertDateToSqlDateTime(this.startTime) + "'"):"null");
+        namesAndValues.values.push(this.endTime?("'" + convertDateToSqlDateTime(this.endTime) + "'"):"null");
+        namesAndValues.values.push(this.wordsCount?(""+this.wordsCount+""):"null");
+        namesAndValues.values.push(this.purpose?("'"+this.purpose+"'"):"null");
+        namesAndValues.values.push(this.dimensions?("'"+this.dimensions+"'"):"null");
+        namesAndValues.values.push(this.url?("'"+this.url+"'"):"null");
         return(namesAndValues);
     }
 
@@ -284,6 +288,12 @@ class InternSupport extends Service{
         return Object.assign({
             wordsCount: this.wordsCount
         }, super.getPublicInfo());
+    }
+
+    static convertSqlTimesToDate(input){
+        input.start_time = convertSqlDateTimeToDate(input.start_time).toISOString();
+        input.end_time = convertSqlDateTimeToDate(input.end_time).toISOString();
+        return input;
     }
 }
 
@@ -294,7 +304,7 @@ class ENotice extends Service{
         super.checkRequired(input);
         this.express = input.express=="express"||(input.express+"")=="1"?true:false;
         this.reminder = input.reminder=="yes"||(input.reminder+"")=="1"?true:false;
-        this.publishTime = new Date(input.publishTime[input.publishTime.length-1]=="Z"?input.publishTime:convertSqlDateTimeToDate(input.publishTime));
+        this.publishTime = new Date(input.publishTime);
     }
 
     static validateTime(input, config){
@@ -302,7 +312,7 @@ class ENotice extends Service{
         startOfAdvanceTime.setHours(0, 0, 0);
         startOfAdvanceTime.setDate(startOfAdvanceTime.getDate() - config.advance_days);
         if(startOfAdvanceTime<=(new Date())){
-            throw 'Booking has to be done ' + config.advance_days + ' days in advance';
+            throw new Error('Booking has to be done ' + config.advance_days + ' days in advance');
         }
     }
 
@@ -311,17 +321,15 @@ class ENotice extends Service{
         let paddedStart = convertDateToSqlDateTime(new Date(input.publishTime.getTime() - (padding*60000)));
         let paddedEnd = convertDateToSqlDateTime(new Date(input.publishTime.getTime() + (padding*60000)));
         return ("SELECT * FROM " + input.type 
-            + " WHERE service_name='" + input.serviceName
-            + "' (start_time<='" + paddedStart + "' AND end_time>'" + paddedStart + "') OR "
-            + " (start_time<='" + paddedStart +"' AND end_time>='" + paddedEnd + "') OR "
-            + " (start_time<='" + paddedEnd +"' AND end_time>'" + paddedEnd + "');"
+            + " WHERE"
+            + " (publish_time>='" + paddedStart +"' AND publish_time<='" + paddedEnd + "');"
         )
     }
 
     getAllNamesAndValues(){
         let namesAndValues = super.getAllNamesAndValues();
         namesAndValues.names.push('publish_time', 'express', 'reminder');
-        namesAndValues.values.push(this.publishTime?("'" + super.convertISOToSql(this.publishTime) + "'"):"null");
+        namesAndValues.values.push(this.publishTime?("'" + convertDateToSqlDateTime(this.publishTime) + "'"):"null");
         namesAndValues.values.push(this.express);
         namesAndValues.values.push(this.reminder);
         return(namesAndValues);
@@ -333,6 +341,11 @@ class ENotice extends Service{
             reminder: this.reminder
         }, super.getPublicInfo());
     }
+
+    static convertSqlTimesToDate(input){
+        input.publish_time = convertSqlDateTimeToDate(input.publish_time).toISOString();
+        return input;
+    }
 }
 
 class Publicity extends Service{
@@ -340,7 +353,7 @@ class Publicity extends Service{
         super(input);
         this.required = ["publishTime"];
         super.checkRequired(input);
-        this.publishTime = new Date(input.publishTime[input.publishTime.length-1]=="Z"?input.publishTime:convertSqlDateTimeToDate(input.publishTime));
+        this.publishTime = new Date(input.publishTime);
     }
 
     static validateTime(input, config){
@@ -348,7 +361,7 @@ class Publicity extends Service{
         startOfAdvanceTime.setHours(0, 0, 0);
         startOfAdvanceTime.setDate(startOfAdvanceTime.getDate() - config.advance_days);
         if(startOfAdvanceTime<=(new Date())){
-            throw 'Booking has to be done ' + config.advance_days + ' days in advance';
+            throw new Error('Booking has to be done ' + config.advance_days + ' days in advance');
         }
     }
 
@@ -365,7 +378,7 @@ class Publicity extends Service{
     getAllNamesAndValues(){
         let namesAndValues = super.getAllNamesAndValues();
         namesAndValues.names.push('publish_time');
-        namesAndValues.values.push(this.publishTime?("'" + super.convertISOToSql(this.dateTime) + "'"):"null");
+        namesAndValues.values.push(this.publishTime?("'" + convertDateToSqlDateTime(this.publishTime) + "'"):"null");
         return(namesAndValues);
     }
     
@@ -374,6 +387,11 @@ class Publicity extends Service{
             express: this.express,
             reminder: this.reminder
         }, super.getPublicInfo());
+    }
+    
+    static convertSqlTimesToDate(input){
+        input.publish_time = convertSqlDateTimeToDate(input.publish_time).toISOString();
+        return input;
     }
 };
 
@@ -384,7 +402,7 @@ function getClass(type){
         case "intern_support":  return InternSupport;
         case "e_notice":        return ENotice;
         case "publicity":       return Publicity;
-        default:                throw "Class not found";
+        default:                throw new Error("Class not found");
     }
 }
 
