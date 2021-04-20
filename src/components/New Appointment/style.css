@@ -175,9 +175,9 @@
 /* ..... */
 
 .cohost-btn {
-  margin-top: 10px;
-  margin-right: 20px;
-  padding: 1px 4px;
+  margin-top: 10px !important;
+  margin-right: 20px !important;
+  padding: 1px 4px !important;
   float: left;
 }
 
@@ -214,7 +214,7 @@
 
 .submit-btn {
   float: right;
-  margin-right: 20px;
+  margin-right: 20px !important;
 }
 
 /* .......... */

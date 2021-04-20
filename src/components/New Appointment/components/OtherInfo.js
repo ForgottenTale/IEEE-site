@@ -4,26 +4,24 @@ import infoIcon from "../../../images/info.png";
 
 function CohostData(props) {
   return (
-    <div className="ub">
-      <div className="row mb-3">
-        <div className="col">
-          <label className="form-label">Co-host name</label>
-          <input
-            className="form-control"
-            name="cohostName"
-            value={props.cohost[props.id][0]}
-            onChange={(e) => props.handleChange(props.id, e)}
-          />
-        </div>
-        <div className="col">
-          <label className="form-label">Co-host email</label>
-          <input
-            className="form-control"
-            name="cohostMail"
-            value={props.cohost[props.id][1]}
-            onChange={(e) => props.handleChange(props.id, e)}
-          />
-        </div>
+    <div className="row mb-3">
+      <div className="col">
+        <label className="form-label">Co-host name</label>
+        <input
+          className="form-control"
+          name="cohostName"
+          value={props.cohost[props.id][0]}
+          onChange={(e) => props.handleChange(props.id, e)}
+        />
+      </div>
+      <div className="col">
+        <label className="form-label">Co-host email</label>
+        <input
+          className="form-control"
+          name="cohostMail"
+          value={props.cohost[props.id][1]}
+          onChange={(e) => props.handleChange(props.id, e)}
+        />
       </div>
     </div>
   );
@@ -34,7 +32,9 @@ function OtherInfo({ type, data, setData }) {
   let [count, setCount] = useState(1);
   const [cohost, setCohost] = useState([["", ""]]);
 
-  function nextButton() {
+  function nextButton(event) {
+    event.preventDefault();
+
     setData({
       cohosts: JSON.stringify(cohost),
       ...data,
@@ -88,7 +88,7 @@ function OtherInfo({ type, data, setData }) {
         <div className="info col">
           <h2>Other Details</h2>
           {type === "publicity" ? (
-            <form>
+            <form onSubmit={nextButton}>
               <div className="row mb-3">
                 <div className="col-6">
                   <label className="form-label">
@@ -114,17 +114,11 @@ function OtherInfo({ type, data, setData }) {
               >
                 Prev
               </button>
-              <button
-                type="button"
-                onClick={() => nextButton()}
-                className="btn btn-primary next-btn"
-              >
-                Next
-              </button>
+              <button className="btn btn-primary next-btn">Next</button>
             </form>
           ) : (
             /* ............................................................................................... */
-            <form>
+            <form onSubmit={nextButton}>
               {cohost.map((e, i) => (
                 <CohostData
                   key={i}
@@ -142,13 +136,15 @@ function OtherInfo({ type, data, setData }) {
                   <i className="fas fa-plus"></i>
                 </button>
               )}
-              <button
-                type="button"
-                onClick={deleteCohost}
-                className="btn btn-secondary btn-sm cohost-btn"
-              >
-                <i className="fas fa-trash"></i>
-              </button>
+              {count !== 1 && (
+                <button
+                  type="button"
+                  onClick={deleteCohost}
+                  className="btn btn-secondary btn-sm cohost-btn"
+                >
+                  <i className="fas fa-trash"></i>
+                </button>
+              )}
               <button
                 type="button"
                 className="mt-5 back-btn"
@@ -156,13 +152,7 @@ function OtherInfo({ type, data, setData }) {
               >
                 Prev
               </button>
-              <button
-                type="button"
-                onClick={() => nextButton()}
-                className="btn btn-primary mt-5 next-btn"
-              >
-                Next
-              </button>
+              <button className="btn btn-primary mt-5 next-btn">Next</button>
             </form>
           )}
         </div>

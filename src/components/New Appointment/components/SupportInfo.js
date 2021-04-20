@@ -17,7 +17,9 @@ function SupportInfo({ type, data, setData }) {
     img: "",
   });
 
-  function nextButton() {
+  function nextButton(event) {
+    event.preventDefault();
+
     setData({
       ...data,
       description: support.description,
@@ -50,7 +52,7 @@ function SupportInfo({ type, data, setData }) {
         <div className="info col">
           <h2>Support Details</h2>
           {type === "intern_support" ? (
-            <form>
+            <form onSubmit={nextButton}>
               <div className="row">
                 <div className="col">
                   <div className="mb-4">
@@ -173,17 +175,11 @@ function SupportInfo({ type, data, setData }) {
               >
                 Prev
               </button>
-              <button
-                type="button"
-                onClick={() => nextButton()}
-                className="btn btn-primary next-btn"
-              >
-                Next
-              </button>
+              <button className="btn btn-primary next-btn">Next</button>
             </form>
           ) : (
             /* ............................................................................................... */
-            <form>
+            <form onSubmit={nextButton}>
               <div className="row">
                 <div className="col">
                   <div className="mb-4">
@@ -286,13 +282,7 @@ function SupportInfo({ type, data, setData }) {
               >
                 Prev
               </button>
-              <button
-                type="button"
-                onClick={() => nextButton()}
-                className="btn btn-primary next-btn"
-              >
-                Next
-              </button>
+              <button className="btn btn-primary next-btn">Next</button>
             </form>
           )}
         </div>
