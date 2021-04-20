@@ -49,9 +49,9 @@
         color: rgb(128, 128, 128);
       }
 
-      & input {
+      & input,& textarea {
         margin-top: 10px;
-        min-width: 400px;
+        width: 400px;
         min-height: 30px;
         outline: none;
         border: none;
