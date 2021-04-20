@@ -19,28 +19,49 @@ export default function RequestView({ data }) {
             </div>
             <div className="requestView_con">
                 <div className="requestView_con_item">
-                    <p>Service</p>
-                    <input value={data.service} />
+                    <p>Phone No</p>
+                    <input value={data.number} />
                 </div>
                 <div className="requestView_con_item">
-                    <p>Service type</p>
-                    <input value={data.type} />
+                    <p>Service</p>
+                    <input value={data.service} />
                 </div>
             </div>
             <div className="requestView_con">
                 <div className="requestView_con_item">
-                    <p>Desciption</p>
+                    <p>Service type</p>
                     <input value={data.type} />
                 </div>
                 <div className="requestView_con_item">
-                    <p>Service type</p>
-                    <input value={data.type} />
+                    <p>Desciption</p>
+                    <input value={data.description} />
                 </div>
             </div>
 
             {data.service === "Online meeting" ?
                 [
-                    data.responses !== undefined ? data.responses.map((cohost, index) => 
+                    <div className="requestView_con">
+                        <div className="requestView_con_item">
+                            <p>Title</p>
+                            <input value={data.title} />
+                        </div>
+                        <div className="requestView_con_item">
+                            <p>Date</p>
+                            <input value={data.date} />
+                        </div>
+                    </div>,
+                    <div className="requestView_con">
+                        <div className="requestView_con_item">
+                            <p>Time from </p>
+                            <input value={data.timeFrom} />
+                        </div>
+                        <div className="requestView_con_item">
+                            <p>Time to</p>
+                            <input value={data.timeTo} />
+                        </div>
+                    </div>
+                    ,
+                    data.responses !== undefined ? data.responses.map((cohost, index) =>
                         <div className="requestView_con">
                             <div className="requestView_con_item">
                                 <p>Co-host {index + 1}</p>
@@ -52,20 +73,29 @@ export default function RequestView({ data }) {
                             </div>
                         </div>
                     ) : null
-                    ,
-                    <div className="requestView_con">
-                        <div className="requestView_con_item">
-                            <p>Time from </p>
-                            <input value={data.timeFrom} />
-                        </div>
-                        <div className="requestView_con_item">
-                            <p>Time to</p>
-                            <input value={data.timeTo} />
-                        </div>
-                    </div>
+
 
                 ] : null
             }
+
+            { <div className="requestView_con">
+                <div className="requestView_con_item">
+                    <p>Speaker</p>
+                    <input value={data.speakerName} />
+                </div>
+                <div className="requestView_con_item">
+                    <p>Speaker Email</p>
+                    <input value={data.speakerEmail} />
+                </div>
+            </div>}
+
+            <img src={pic} alt='image' />
+
+
+            <div className="requestView_button">
+                <button>Approve</button>
+                <button>Reject</button>
+            </div>
         </div >
 
     );
