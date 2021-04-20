@@ -82,7 +82,7 @@ function DateTime({ setData, data }) {
                   onChange={(e) => setTimeFrom(e.target.value)}
                 />
               </div>
-              {data.type === "online-meeting" ? (
+              {data.type === "online_meeting" ? (
                 <div className="mb-5">
                   <label className="form-label">Time</label>
                   <input

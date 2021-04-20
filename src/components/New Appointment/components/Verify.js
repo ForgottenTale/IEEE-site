@@ -89,7 +89,7 @@ function Verify({ type, data }) {
               </div>
             </div>
           </div>
-          {type === "online-meeting" || type === "publicity" ? (
+          {type === "online_meeting" || type === "publicity" ? (
             <button
               type="button"
               className="back-btn"
@@ -98,7 +98,7 @@ function Verify({ type, data }) {
               Prev
             </button>
           ) : null}
-          {type === "intern-support" || type === "enotice" ? (
+          {type === "intern_support" || type === "e_notice" ? (
             <button
               type="button"
               className="back-btn"

@@ -20,9 +20,9 @@ function ContactInfo({ type, setData, data }) {
       phone: userInfo.phone,
     });
 
-    if (type === "online-meeting" || type === "publicity") {
+    if (type === "online_meeting" || type === "publicity") {
       history.push("/event-info");
-    } else if (type === "intern-support" || type === "enotice") {
+    } else if (type === "intern_support" || type === "e_notice") {
       history.push("/support-info");
     }
   }

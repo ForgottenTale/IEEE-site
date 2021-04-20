@@ -183,7 +183,7 @@
 
 .remainder-enotice-label {
   font-size: 14px;
-  margin-bottom: 5px;
+  margin-bottom: 5px !important;
   padding-top: 14px;
 }
 

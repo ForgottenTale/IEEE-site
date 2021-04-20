@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import infoIcon from "../../../images/info.png";
 
 function SupportInfo({ type, data, setData }) {
   const history = useHistory();
@@ -37,7 +38,7 @@ function SupportInfo({ type, data, setData }) {
     <div className="ub">
       <div className="info-container row">
         <div className="enter-info col-4">
-          <img src="/images/info.png" alt="" />
+          <img src={infoIcon} alt="" />
           <h2>Enter Information</h2>
           <p>
             Please provide your contact info and other details so that we can
@@ -48,7 +49,7 @@ function SupportInfo({ type, data, setData }) {
         </div>
         <div className="info col">
           <h2>Support Details</h2>
-          {type === "intern-support" ? (
+          {type === "intern_support" ? (
             <form>
               <div className="row">
                 <div className="col">

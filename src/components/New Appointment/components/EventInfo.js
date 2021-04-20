@@ -64,7 +64,7 @@ function EventInfo({ type, data, setData }) {
               />
             </div>
           </div>
-          {type === "online-meeting" ? (
+          {type === "online_meeting" ? (
             <div className="row mb-3">
               <div className="col">
                 <label className="form-label">Speaker name</label>
@@ -91,7 +91,7 @@ function EventInfo({ type, data, setData }) {
             </div>
           ) : null}
           <div className="row mb-5">
-            {type === "online-meeting" ? (
+            {type === "online_meeting" ? (
               <div className="col-6">
                 <label className="form-label">Poster (if any)</label>
                 <input
