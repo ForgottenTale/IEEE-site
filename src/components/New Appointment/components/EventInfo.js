@@ -120,7 +120,7 @@ function EventInfo({ type, data, setData }) {
           <button
             type="button"
             className="back-btn"
-            onClick={() => history.push("/contact-info")}
+            onClick={() => history.push("/date-time")}
           >
             Prev
           </button>

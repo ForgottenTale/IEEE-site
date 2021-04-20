@@ -17,7 +17,7 @@ function minDay() {
   return min;
 }
 
-function DateTime({ setData, data }) {
+function DateTime({ type, setData, data }) {
   const [date, setDate] = useState("");
   const [timeFrom, setTimeFrom] = useState("");
   const [timeTo, setTimeTo] = useState("");
@@ -41,7 +41,12 @@ function DateTime({ setData, data }) {
       timeFrom: new Date(new Date(date).setHours(fromHour, fromMin, 0, 0)),
       timeTo: new Date(new Date(date).setHours(toHour, toMin, 0, 0)),
     });
-    history.push("/contact-info/");
+
+    if (type === "online_meeting" || type === "publicity") {
+      history.push("/event-info");
+    } else if (type === "intern_support" || type === "e_notice") {
+      history.push("/support-info");
+    }
     // }
   };
 
