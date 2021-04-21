@@ -370,7 +370,11 @@ module.exports = {
 				query += "SELECT *, alt._id as _id FROM alt"
 					+ " INNER JOIN " + type.type + " ON " + type.type + "_id=" + type.type + "._id"
 					+ " INNER JOIN next_to_approve as n ON n.alt_id=alt._id"
-					+ " WHERE n.user_id=" + constraint.user_id + ";";
+					+ " WHERE n.user_id=" + constraint.user_id;
+				if(constraint.id)
+					query += " AND alt._id=" + constraint.id + ";"
+				else
+					query += ";";
 			})
 			let appointmentsOfAllTypes = await executeQuery(query);
 			let dataArray = [];
@@ -496,6 +500,19 @@ module.exports = {
 			}
 			await executeQuery(query);
 			return done(null, "Updated Successfully");
+		}catch(err){
+			return done(err);
+		}
+	},
+
+	getActivity: async function(done){
+		let returnData = {};
+		try{
+			let data = await executeQuery("SELECT status, count(*) FROM alt GROUP BY status");
+			data.forEach(statusType=>{
+				returnData[statusType.status.toLowerCase()] = statusType["count(*)"];
+			})
+			return done(null, returnData);
 		}catch(err){
 			return done(err);
 		}

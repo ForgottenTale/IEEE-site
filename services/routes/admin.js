@@ -14,6 +14,13 @@ module.exports = function(app){
         res.sendFile(process.cwd() + '/coverage/protected.html');
     })
 
+    app.route('/api/activity')
+    .get(auth.ensureAuthenticated, auth.ensureAdmin, (req, res)=>{
+        database.getActivity((err, results)=>{
+            if(err) return respondError(err, res);
+            res.status(200).json(results);
+        })
+    })
     app.route('/api/my-approvals')
     .get(auth.ensureAuthenticated, auth.ensureAdmin, (req, res)=>{
         req.query.user_id = req.user._id;

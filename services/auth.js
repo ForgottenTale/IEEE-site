@@ -16,6 +16,12 @@ module.exports = {
         res.redirect('/unauthorized');
     },
 
+    ensureSuperAdmin: function(req, res, next){
+        if(req.user.role=="SUPER_ADMIN")
+            return next();
+        res.redirect('/unauthorized');
+    },
+
     setStrategies: function (app) {
         passport.serializeUser((user, done) => {
             done(null, user.email);
