@@ -124,6 +124,9 @@
 }
 
 .back-btn {
+  position: absolute;
+  bottom: 100px;
+  right: 400px;
   -webkit-border-radius: 5;
   -moz-border-radius: 5;
   border-radius: 5px !important;
@@ -143,6 +146,21 @@
 
 .back-btn:focus {
   outline: none;
+}
+
+/* .......... */
+
+.date h2 {
+  margin-top: 10px;
+  margin-bottom: 40px;
+  font-size: 20px;
+  color: blue;
+}
+
+.date .next-btn {
+  position: absolute;
+  bottom: 100px;
+  right: 50px;
 }
 
 /* .......... */
@@ -168,16 +186,24 @@
   font-size: 14px !important;
 }
 
-.info .next-btn {
-  float: right;
+.info-container .back-btn {
+  position: absolute;
+  bottom: 60px;
+  left: 275px;
+}
+
+.info-container .next-btn {
+  position: absolute;
+  bottom: 60px;
+  right: 23px;
 }
 
 /* ..... */
 
 .cohost-btn {
-  margin-top: 10px;
-  margin-right: 20px;
-  padding: 1px 4px;
+  margin-top: 10px !important;
+  margin-right: 20px !important;
+  padding: 1px 4px !important;
   float: left;
 }
 
@@ -212,23 +238,16 @@
   color: gray;
 }
 
+.verify .back-btn {
+  position: absolute;
+  bottom: 60px;
+  left: 340px;
+}
+
 .submit-btn {
-  float: right;
-  margin-right: 20px;
-}
-
-/* .......... */
-
-.date h2 {
-  margin-top: 10px;
-  margin-bottom: 40px;
-  font-size: 20px;
-  color: blue;
-}
-
-.date .next-btn {
-  margin-right: 20px;
-  float: right;
+  position: absolute;
+  bottom: 60px;
+  right: 23px;
 }
 
 /* .......... */

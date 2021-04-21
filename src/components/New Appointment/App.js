@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import ServiceList from "./components/ServiceList";
 import Services from "./components/Services";
 import DateTime from "./components/DateTime";
-import ContactInfo from "./components/ContactInfo";
 import EventInfo from "./components/EventInfo";
 import OtherInfo from "./components/OtherInfo";
 import SupportInfo from "./components/SupportInfo";
@@ -26,10 +25,7 @@ function App() {
           <Services type={type} setData={setData} data={data} />
         </Route>
         <Route path="/date-time">
-          <DateTime setData={setData} data={data} />
-        </Route>
-        <Route path="/contact-info">
-          <ContactInfo type={type} setData={setData} data={data} />
+          <DateTime type={type} setData={setData} data={data} />
         </Route>
         <Route path="/event-info">
           <EventInfo type={type} data={data} setData={setData} />
@@ -40,7 +36,6 @@ function App() {
         <Route path="/support-info">
           <SupportInfo type={type} setData={setData} data={data} />
         </Route>
-
         <Route path="/verify" component={Verify}>
           <Verify type={type} data={data} />
         </Route>

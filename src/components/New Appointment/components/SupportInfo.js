@@ -17,7 +17,9 @@ function SupportInfo({ type, data, setData }) {
     img: "",
   });
 
-  function nextButton() {
+  function nextButton(event) {
+    event.preventDefault();
+
     setData({
       ...data,
       description: support.description,
@@ -40,17 +42,14 @@ function SupportInfo({ type, data, setData }) {
         <div className="enter-info col-4">
           <img src={infoIcon} alt="" />
           <h2>Enter Information</h2>
-          <p>
-            Please provide your contact info and other details so that we can
-            send you a confirmation and other info.
-          </p>
+          <p>Please provide the event/support details for your appointment.</p>
           <h3>Questions?</h3>
           <p>Call (858) 939-3746 for help.</p>
         </div>
         <div className="info col">
           <h2>Support Details</h2>
           {type === "intern_support" ? (
-            <form>
+            <form onSubmit={nextButton}>
               <div className="row">
                 <div className="col">
                   <div className="mb-4">
@@ -169,21 +168,15 @@ function SupportInfo({ type, data, setData }) {
               <button
                 type="button"
                 className="back-btn"
-                onClick={() => history.push("/contact-info")}
+                onClick={() => history.push("/date-time")}
               >
                 Prev
               </button>
-              <button
-                type="button"
-                onClick={() => nextButton()}
-                className="btn btn-primary next-btn"
-              >
-                Next
-              </button>
+              <button className="btn btn-primary next-btn">Next</button>
             </form>
           ) : (
             /* ............................................................................................... */
-            <form>
+            <form onSubmit={nextButton}>
               <div className="row">
                 <div className="col">
                   <div className="mb-4">
@@ -282,17 +275,11 @@ function SupportInfo({ type, data, setData }) {
               <button
                 type="button"
                 className="back-btn"
-                onClick={() => history.push("/contact-info")}
+                onClick={() => history.push("/date-time")}
               >
                 Prev
               </button>
-              <button
-                type="button"
-                onClick={() => nextButton()}
-                className="btn btn-primary next-btn"
-              >
-                Next
-              </button>
+              <button className="btn btn-primary next-btn">Next</button>
             </form>
           )}
         </div>
