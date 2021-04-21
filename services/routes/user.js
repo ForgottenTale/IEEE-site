@@ -20,7 +20,7 @@ module.exports = function(app){
     .delete(auth.ensureAuthenticated, (req, res)=>{
         if(req.body.id){
             database.removeAppointment({
-                userId: req.user._id,
+                user: req.user,
                 appointmentId: req.body.id
             }, (err, msg)=>{
                 if(err) return respondError(err, res);

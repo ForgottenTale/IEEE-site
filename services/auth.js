@@ -16,6 +16,12 @@ module.exports = {
         res.redirect('/unauthorized');
     },
 
+    ensureSuperAdmin: function(req, res, next){
+        if(req.user.role=="SUPER_ADMIN")
+            return next();
+        res.redirect('/unauthorized');
+    },
+
     setStrategies: function (app) {
         passport.serializeUser((user, done) => {
             done(null, user.email);
@@ -33,7 +39,7 @@ module.exports = {
                     console.log('User ' + email + ' attempted to log in.');
                     if (err) { return done(err); }
                     if (!user) { return done(null, false, {message: 'User does not exist'}); }
-                    if (process.env.NODE_ENV=="development"){
+                    if (process.env.NODE_ENV=="development" || process.env.NODE_ENV=="testing"){
                         if(password == user.password){
                             return done(null, user);
                         }

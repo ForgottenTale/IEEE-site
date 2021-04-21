@@ -1,6 +1,6 @@
 const mysql = require('mysql');
 const { schema } = require('./ddl.js');
-const { User, convertSqlDateTimeToDate, convertDateToSqlDateTime, getClass } = require('../controller.js');
+const { User, convertDateToSqlDateTime, getClass } = require('../controller.js');
 const mail = require('../mail.js');
 
 let connection;
@@ -53,6 +53,28 @@ function executeQuery(query){
 			if(err) return reject(err);
 			return resolve(results);
 		})
+	})
+}
+
+function findMailsOfInvolved(input){
+	return new Promise((resolve, reject)=>{
+		Promise.all([
+			executeQuery("SELECT * FROM next_to_approve INNER JOIN user ON user._id=user_id WHERE alt_id=" + input.id),
+			executeQuery("SELECT * FROM response INNER JOIN user ON user._id=user_id WHERE alt_id=" + input.id)
+		])
+		.then(data=>{
+			let emailIds = [];
+			data[0].forEach(user=>{
+				if(emailIds.indexOf(user.email)==-1)
+					emailIds.push(user.email);
+			})
+			data[1].forEach(user=>{
+				if(emailIds.indexOf(user.email)==-1)
+					emailIds.push(user.email);
+			})
+			resolve(emailIds);
+		})
+		.catch(err=>reject(err));
 	})
 }
 
@@ -168,7 +190,8 @@ module.exports = {
 				)
 			}).join("");
 			await executeQuery(addNextApprovers);
-			mail.sendNeedsApproval({type: newAppointment.type, emailIds: nextMails});
+			let creator = await executeQuery("SELECT * FROM user WHERE _id=" + newAppointment.creatorId);
+			mail.newAppointment({id: altAppointment.insertId, type: newAppointment.type, emailIds: nextMails});
 			return done(null, {id: altAppointment.insertId});
 		}
 		catch(err){
@@ -231,7 +254,7 @@ module.exports = {
 			let typeId;
 			if(appointment.length < 1)
 				return done(new Error("Appointment not found"))
-			if(appointment[0].creator_id==input.userId){
+			if(appointment[0].creator_id==input.user._id){
 				//find type
 				for(let key in appointment[0]){
 					if(key=="creator_id" || key=="_id")
@@ -243,14 +266,27 @@ module.exports = {
 				}
 				if(!type)
 					return done(new Error("Appointment type not found"));
-				let query = "DELETE FROM next_to_approve WHERE alt_id=" + input.appointmentId + ";"
-					+ "DELETE FROM response WHERE alt_id=" + input.appointmentId + ";"
-					+ "DELETE FROM alt WHERE _id=" + input.appointmentId + ";"
-					+ "DELETE FROM " + type + " WHERE _id=" + typeId + ";"
-					
-				executeQuery(query)
-				.then(response=>done(null, "Deleted Successfully"))
-				.catch(err=>done(err))
+				executeQuery("SELECT * FROM next_to_approve INNER JOIN user ON user._id=user_id WHERE alt_id=" + input.appointmentId)
+				.then(nextToApprove=>{
+					let emailIds = [];
+					findMailsOfInvolved({id: input.appointmentId})
+					.then(involved=>{
+						emailIds.push(...involved);
+						emailIds.push(input.user.email);
+						let query = "DELETE FROM next_to_approve WHERE alt_id=" + input.appointmentId + ";"
+						+ "DELETE FROM response WHERE alt_id=" + input.appointmentId + ";"
+						+ "DELETE FROM alt WHERE _id=" + input.appointmentId + ";"
+						+ "DELETE FROM " + type + " WHERE _id=" + typeId + ";"
+						
+						executeQuery(query)
+						.then(response=>{
+							mail.deleted({id: input.appointmentId, emailIds})
+							return done(null, "Deleted Successfully")
+						})
+						.catch(err=>done(err))
+						})
+					})
+					.catch(err=>done(err));
 			}else
 				return done("Appointments can only be deleted by the creator");
 		})
@@ -334,7 +370,11 @@ module.exports = {
 				query += "SELECT *, alt._id as _id FROM alt"
 					+ " INNER JOIN " + type.type + " ON " + type.type + "_id=" + type.type + "._id"
 					+ " INNER JOIN next_to_approve as n ON n.alt_id=alt._id"
-					+ " WHERE n.user_id=" + constraint.user_id + ";";
+					+ " WHERE n.user_id=" + constraint.user_id;
+				if(constraint.id)
+					query += " AND alt._id=" + constraint.id + ";"
+				else
+					query += ";";
 			})
 			let appointmentsOfAllTypes = await executeQuery(query);
 			let dataArray = [];
@@ -382,8 +422,6 @@ module.exports = {
 					return resolve(results);
 				})
 			});
-			let alphaAdmins = await executeQuery("SELECT * FROM user WHERE role='ALPHA_ADMIN';");
-			let nextMails = alphaAdmins.map(admin=>admin.email);
 			let query = "";
 			if(input.user.role == "ALPHA_ADMIN"){
 				query += "INSERT INTO response(user_id, alt_id, encourages, final, response) VALUES ("
@@ -399,29 +437,82 @@ module.exports = {
 				query+="DELETE FROM next_to_approve WHERE alt_id=" + input.appointmentId + ";";
 				await executeQuery("UPDATE alt SET status='"
 					+ (input.encourages?"APPROVED":"DECLINED")
-					+ "' WHERE _id=" + input.appointmentId)
-				mail.sendFinal({type: input, emailIds: [...nextMails, creator[0].email]});
-			}else{
-				query += "INSERT INTO response(user_id, alt_id, encourages, response) VALUES ("
-				+ [input.user._id, input.appointmentId, input.encourages, ("'" + input.response + "'")].join(",") + ");"
-				if(config.follow_hierarchy)
-					alphaAdmins.forEach(alpha=>{
-						query+="INSERT INTO next_to_approve(user_id," + input.type + "_id) VALUES("
-						+ alpha._id + "," + appointment._id
-						+");"
-					})
-				query+="DELETE FROM next_to_approve WHERE user_id=" + input.user._id
-				+ " AND alt_id=" + input.appointmentId + ";";
-				mail.sendResponses({
+					+ "' WHERE _id=" + input.appointmentId);
+				let nextMails = await findMailsOfInvolved({id: input.appointmentId});
+				mail.sendFinal({id: input.appointmentId,
 					type: type,
 					user:input.user,
 					response: input.response,
 					encourages: input.encourages,
-					emailIds: nextMails
-				});
+					emailIds: [...nextMails, creator[0].email]});
+			}else{
+				let nextMails = [];
+				let alphaAdmins = await executeQuery("SELECT * FROM user WHERE role='ALPHA_ADMIN';");
+				if(config.follow_hierarchy){
+					if(input.encourages){
+						query += "INSERT INTO response(user_id, alt_id, encourages, response) VALUES ("
+							+ [input.user._id, input.appointmentId, input.encourages, ("'" + input.response + "'")].join(",") + ");"
+						alphaAdmins.forEach(alpha=>{
+							query+="INSERT INTO next_to_approve(user_id,alt_id) VALUES("
+							+ alpha._id + "," + appointment._id
+							+");"
+							nextMails.push(alpha.email);
+						});
+						let involved = await findMailsOfInvolved({id: input.appointmentId});
+						mail.changed({
+							id: input.appointmentId,
+							type: type,
+							user:input.user,
+							response: input.response,
+							encourages: input.encourages,
+							emailIds: [...nextMails, ...involved]
+						});
+					}else{
+						let nextMails = await findMailsOfInvolved({id: input.appointmentId});
+						let creator = await executeQuery("SELECT * FROM user WHERE _id=" + appointment.creator_id);
+						query += "INSERT INTO response(user_id, alt_id, encourages, final, response) VALUES ("
+							+ [input.user._id, input.appointmentId, input.encourages, 1, ("'" + input.response + "'")].join(",") + ");"
+						mail.sendFinal({
+							id: input.appointmentId,
+							type: type,
+							user:input.user,
+							response: input.response,
+							encourages: input.encourages,
+							emailIds: [...nextMails, creator[0].email]
+						})
+					}
+				}else{
+					let involved = await findMailsOfInvolved({id: input.appointmentId});
+					mail.changed({
+						id: input.appointmentId,
+						type: type,
+						user:input.user,
+						response: input.response,
+						encourages: input.encourages,
+						emailIds: involved
+					})
+				}
+				query+="DELETE FROM next_to_approve WHERE user_id=" + input.user._id
+				+ " AND alt_id=" + input.appointmentId + ";";
+				await executeQuery("UPDATE alt SET status='"
+					+ (input.encourages?"APPROVED":"DECLINED")
+					+ "' WHERE _id=" + input.appointmentId);
 			}
 			await executeQuery(query);
 			return done(null, "Updated Successfully");
+		}catch(err){
+			return done(err);
+		}
+	},
+
+	getActivity: async function(done){
+		let returnData = {};
+		try{
+			let data = await executeQuery("SELECT status, count(*) FROM alt GROUP BY status");
+			data.forEach(statusType=>{
+				returnData[statusType.status.toLowerCase()] = statusType["count(*)"];
+			})
+			return done(null, returnData);
 		}catch(err){
 			return done(err);
 		}
