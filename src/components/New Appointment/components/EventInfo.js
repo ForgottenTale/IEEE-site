@@ -31,10 +31,7 @@ function EventInfo({ type, data, setData }) {
         <div className="enter-info col-4">
           <img src={infoIcon} alt="" />
           <h2>Enter Information</h2>
-          <p>
-            Please provide your contact info and other details so that we can
-            send you a confirmation and other info.
-          </p>
+          <p>Please provide the event/support details for your appointment.</p>
           <h3>Questions?</h3>
           <p>Call (858) 939-3746 for help.</p>
         </div>

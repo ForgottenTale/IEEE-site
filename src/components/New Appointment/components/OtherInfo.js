@@ -78,10 +78,7 @@ function OtherInfo({ type, data, setData }) {
         <div className="enter-info col-4">
           <img src={infoIcon} alt="" />
           <h2>Enter Information</h2>
-          <p>
-            Please provide your contact info and other details so that we can
-            send you a confirmation and other info.
-          </p>
+          <p>Please provide the event/support details for your appointment.</p>
           <h3>Questions?</h3>
           <p>Call (858) 939-3746 for help.</p>
         </div>
@@ -90,7 +87,7 @@ function OtherInfo({ type, data, setData }) {
           {type === "publicity" ? (
             <form onSubmit={nextButton}>
               <div className="row mb-3">
-                <div className="col-6">
+                <div className="col-8">
                   <label className="form-label">
                     Program schedule (if any)
                   </label>
@@ -98,7 +95,7 @@ function OtherInfo({ type, data, setData }) {
                 </div>
               </div>
               <div className="row mb-5">
-                <div className="col">
+                <div className="col-8">
                   <label className="form-label">Comments</label>
                   <textarea
                     rows="3"

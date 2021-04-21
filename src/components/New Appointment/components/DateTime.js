@@ -54,14 +54,11 @@ function DateTime({ type, setData, data }) {
 
   return (
     <div className="ub">
-      <div className="info-container row">
+      <div className="service-container row">
         <div className="select-service col-5">
           <img src={dateIcon} alt="" />
           <h2>Select Date & Time</h2>
-          <p>
-            Click on a date to see a timeline of available slots. Click on a
-            green time slot to reserve it.
-          </p>
+          <p>Please select the date and time for your appointment.</p>
           <h3>Questions?</h3>
           <p>Call (858) 939-3746 for help.</p>
         </div>
