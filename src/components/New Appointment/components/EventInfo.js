@@ -93,8 +93,19 @@ function EventInfo({ type, data, setData }) {
                 </div>
               </div>
             ) : null}
-            <div className="row mb-5">
-              {type === "online_meeting" ? (
+            {type === "online_meeting" ? (
+              <div className="row mb-5">
+                <div className="col-6">
+                  <label className="form-label">Title</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="title"
+                    onChange={(e) => {
+                      setContent({ ...content, title: e.target.value });
+                    }}
+                  />
+                </div>
                 <div className="col-6">
                   <label className="form-label">Poster (if any)</label>
                   <input
@@ -106,7 +117,20 @@ function EventInfo({ type, data, setData }) {
                     }}
                   />
                 </div>
-              ) : (
+              </div>
+            ) : (
+              <div className="row mb-5">
+                <div className="col-6">
+                  <label className="form-label">Title</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="title"
+                    onChange={(e) => {
+                      setContent({ ...content, title: e.target.value });
+                    }}
+                  />
+                </div>
                 <div className="col-6">
                   <label className="form-label">Poster</label>
                   <input
@@ -118,8 +142,8 @@ function EventInfo({ type, data, setData }) {
                     }}
                   />
                 </div>
-              )}
-            </div>
+              </div>
+            )}
             <button
               type="button"
               className="back-btn"
