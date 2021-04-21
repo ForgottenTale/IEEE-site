@@ -24,7 +24,7 @@ function Verify({ type, data }) {
 
   const handleUpload = async (data) => {
     try {
-      const url = "/api/book/" + type;
+      const url = "http://localhost:5000/api/book/";
       const res = await axios.post(url, data, {
         headers: {
 
