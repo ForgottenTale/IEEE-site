@@ -1,24 +1,17 @@
 import './requestView.scss';
 import pic from '../../images/pic3.jpg';
+import axios from 'axios';
 
 import { useEffect } from 'react';
 
 export default function RequestView({ data }) {
     useEffect(() => {
-        try {
             const url = "http://localhost:5000/api/my-approvals";
-            const res = await axios.post(url, data, {
-                headers: {
-
-                    'Content-Type': 'multipart/form-data'
-                }
-
-            });
-            console.log(res);
-        } catch (err) {
-            console.log(err);
-        }
-
+            axios.get(url)
+            .then((data)=>{
+                console.log(data);
+            })
+            .catch(err=>console.error(err));
     }, [])
 
     return (
