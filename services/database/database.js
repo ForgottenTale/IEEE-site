@@ -454,13 +454,14 @@ module.exports = {
 							+");"
 							nextMails.push(alpha.email);
 						});
+						let involved = await findMailsOfInvolved({id: input.appointmentId});
 						mail.changed({
 							id: input.appointmentId,
 							type: type,
 							user:input.user,
 							response: input.response,
 							encourages: input.encourages,
-							emailIds: nextMails
+							emailIds: [...nextMails, ...involved]
 						});
 					}else{
 						let nextMails = await findMailsOfInvolved({id: input.appointmentId});
