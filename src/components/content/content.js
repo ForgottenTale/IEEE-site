@@ -8,6 +8,7 @@ import Calender from '../calender/calender';
 import Setting from '../settings/settings';
 import Request from '../request/request';
 import Users from '../users/users';
+import AdminDashboard from '../adminDashboard/adminDashboard';
 
 export default function Content() {
 
@@ -23,7 +24,8 @@ export default function Content() {
                 <Switch>
                     <Route exact path="/">
                         <h5 className="content_container_user">Welcome Alan Mathew !</h5>
-                        <Appointments />
+                        {/* <Appointments /> */}
+                        <AdminDashboard />
                     </Route>
                     <Route path="/calendar">
                         <Calender/>
