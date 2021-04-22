@@ -522,7 +522,14 @@ module.exports = {
 
 	getUsers: function(constraint, done){
 		let query = "SELECT _id, name, email, phone, role FROM user ";
-			query+= constraint.role?("WHERE role='"+constraint.role.toUpperCase() + "'"):";";
+		if(constraint.role == "admin")
+			query+="WHERE role='ALPHA_ADMIN' OR role='BETA_ADMIN'";
+		else if(constraint.role == "regular")
+			query+="WHERE role='REGULAR'";
+		else if(!constraint.role)
+			query+=";";
+		else
+			query+="WHERE role is null;";
 		executeQuery(query)
 		.then(results=>{
 			results = results.map(result=>{
