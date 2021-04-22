@@ -17,7 +17,7 @@ export default function RequestView({ data }) {
               }
           
             const url = "http://localhost:5000/api/my-approvals/"
-            const res = await axios.post(url,formData,{headers:headers});
+            const res = await axios.post(url,formData,{headers:headers,withCredentials: true});
 
             console.log(res);
 
@@ -40,23 +40,23 @@ export default function RequestView({ data }) {
 
                 <div className="requestView_con_item">
                     <p>Phone No</p>
-                    <input value={data.number} />
+                    <input value={data.phone} />
                 </div>
                 <div className="requestView_con_item">
                     <p>Service</p>
-                    <input value={data.service} />
+                    <input value={data.type.replace('_',' ')} />
                 </div>
 
                 <div className="requestView_con_item">
                     <p>Service type</p>
-                    <input value={data.type} />
+                    <input value={data.serviceName} />
                 </div>
                 <div className="requestView_con_item">
                     <p>Desciption</p>
                     <textarea >{data.description}</textarea>
                 </div>
 
-                {data.service === "Online meeting" ?
+                {data.type === "online_meeting" ?
                     [
 
                         <div className="requestView_con_item">
@@ -65,26 +65,26 @@ export default function RequestView({ data }) {
                         </div>,
                         <div className="requestView_con_item">
                             <p>Date</p>
-                            <input value={data.date} />
+                            <input value={new Date(data.startTime).toDateString()} />
                         </div>,
 
                         <div className="requestView_con_item">
                             <p>Time from </p>
-                            <input value={data.timeFrom} />
+                            <input value={new Date(data.startTime).toLocaleTimeString()} />
                         </div>,
                         <div className="requestView_con_item">
                             <p>Time to</p>
-                            <input value={data.timeTo} />
+                            <input value={new Date(data.endTime).toLocaleTimeString()} />
                         </div>,
-                        data.cohost !== undefined ? data.cohost.map((cohost, index) =>
+                        data.coHosts !== [] ?JSON.parse(data.coHosts).map((cohost, index) =>
 
                             [<div className="requestView_con_item">
                                 <p>Co-host {index + 1}</p>
-                                <input value={cohost.name} />
+                                <input value={cohost[0]} />
                             </div>,
                             <div className="requestView_con_item">
                                 <p>Co-host {index + 1} email</p>
-                                <input value={cohost.e_mail} />
+                                <input value={cohost[1]} />
                             </div>
                             ]
                         ) : null,
@@ -185,7 +185,8 @@ export default function RequestView({ data }) {
 
 
             </div>
-            <img src={pic} alt='poster' />
+            {data.img!==null?<img src={data.img} alt='poster' />:null}
+            
 
 
             <div className="requestView_button">

@@ -15,7 +15,7 @@ export default function Table({ headers, data, type,setUser,setRequest }) {
 
                 {
                     data.map((row) =>
-                        <tr>
+                        <tr key={row.id}>
                             <td>{row.id}</td>
                             <td >
                                 <div className="tableTag_user">
@@ -42,11 +42,11 @@ export default function Table({ headers, data, type,setUser,setRequest }) {
                                 </td>,
                             ] : null}
                             {type === 'request' ? [
-                                <td>{row.service}</td>,
                                 <td>{row.type}</td>,
-                                <td>{row.time}</td>,
+                                <td>{row.serviceName}</td>,
+                                <td>{new Date(row.startTime).toDateString()}</td>,
                                 <td>
-                                    <p className={row.status}>
+                                    <p className={row.status.toLowerCase()}>
                                         {row.status}
                                     </p>
                                 </td>,
