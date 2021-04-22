@@ -518,5 +518,20 @@ module.exports = {
 		}catch(err){
 			return done(err);
 		}
+	},
+
+	getUsers: function(constraint, done){
+		let query = "SELECT _id, name, email, phone, role FROM user ";
+			query+= constraint.role?("WHERE role='"+constraint.role.toUpperCase() + "'"):";";
+		executeQuery(query)
+		.then(results=>{
+			results = results.map(result=>{
+				result.id = result._id;
+				delete result._id;
+				return result;
+			})
+			return done(null, results);
+		})
+		.catch(err=>done(err));
 	}
 }
