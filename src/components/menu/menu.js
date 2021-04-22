@@ -1,7 +1,7 @@
 import './menu.scss';
 import logo from '../../images/logo.png';
 import { useState, useRef } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useRouteMatch } from 'react-router-dom';
 
 
 export default function Menu({ toggle, state, setActiveComponent }) {
@@ -11,13 +11,13 @@ export default function Menu({ toggle, state, setActiveComponent }) {
     const [open, setOpen] = useState(true);
 
 
-
+    const { path } = useRouteMatch();
     return (
         <div className={open ? "menu open" : "menu"} ref={ref}>
             <div className="menu_item">
                 <img src={logo} alt="logo" />
             </div>
-            <NavLink to="/" className="menu_item" activeClassName="active" onClick={() => setActiveComponent("Dashboard")} exact >
+            <NavLink to={path} className="menu_item" activeClassName="active" onClick={() => setActiveComponent("Dashboard")} exact >
                 <div className="menu_item_deo"></div>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -36,7 +36,7 @@ export default function Menu({ toggle, state, setActiveComponent }) {
                 <p className={open ? "menu_item_name open" : "menu_item_name"}>Dashboard</p>
             </NavLink>
 
-            <NavLink to="/calendar" className="menu_item" activeClassName="active" onClick={() => setActiveComponent("Calendar")}>
+            <NavLink to={"/calendar"} className="menu_item" activeClassName="active" onClick={() => setActiveComponent("Calendar")}>
                 <div className="menu_item_deo"></div>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

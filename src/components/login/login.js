@@ -3,7 +3,7 @@ import pic from '../../images/login.jpg';
 import { useState } from 'react';
 import axios from 'axios';
 
-export default function Login({ setUser }) {
+export default function Login() {
 
     const [details, setDetails] = useState({
         username: null,
@@ -25,7 +25,6 @@ export default function Login({ setUser }) {
             const res = await axios.post(url,formData,{headers:headers});
 
             console.log(res);
-            setUser(res);
 
         } catch (err) {
             console.log(err);
