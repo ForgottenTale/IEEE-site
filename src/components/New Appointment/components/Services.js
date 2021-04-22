@@ -1,16 +1,15 @@
 import React from "react";
-import { useHistory,useRouteMatch } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import serviceIcon from "../../../images/select.png";
 
 function Services({ type, data, setData }) {
-  const { path } = useRouteMatch();
   const history = useHistory();
 
   const next = (item) => {
     // if (timeFrom !== "") {
     setData({ ...data, service: item });
     // }
-    history.push(path+"/date-time/");
+    history.push("/date-time/");
   };
 
   let items = [];
@@ -26,7 +25,7 @@ function Services({ type, data, setData }) {
   console.log(items);
 
   return (
-    <div className="ub">
+  
       <div className="service-container row">
         <div className="select-service col-5">
           <img src={serviceIcon} alt="" />
@@ -52,12 +51,12 @@ function Services({ type, data, setData }) {
           <button
             type="button"
             className="mt-5 back-btn"
-            onClick={() => history.push(path)}
+            onClick={() => history.push("/")}
           >
             Prev
           </button>
         </div>
-      </div>
+  
     </div>
   );
 }
