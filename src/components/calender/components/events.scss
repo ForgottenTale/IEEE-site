@@ -42,10 +42,16 @@
                 }
             }
             &_text {
-                fill: #87d4a4;
+                fill: #444444;
                 text-anchor: start;
                 font-size: 12px;
                 font-weight: 600;
+            }
+            &_agent {
+                fill: #444444;
+                text-anchor: start;
+                font-size: 12px;
+                font-weight: 400;
             }
             &_rectDes {
                 width: 4px;

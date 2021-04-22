@@ -27,25 +27,20 @@ export default function User({ user, type }) {
                 <div className="user_details_con" >
                     <div className="user_details_con_item">
                         <p className="user_details_con_item_title">Phone</p>
-                        <p className="user_details_con_item_value">{user.name}</p>
+                        <p className="user_details_con_item_value">{user.phone}</p>
                     </div>
-                    <div className="user_details_con_item">
-                        <p className="user_details_con_item_title">Organisation/Institute</p>
-                        <p className="user_details_con_item_value">{user.email}</p>
-                    </div>
-                </div>
-                {type === 'admin' ? <div className="user_details_con" >
+
                     <div className="user_details_con_item">
                         <p className="user_details_con_item_title">Role</p>
-                        <p className="user_details_con_item_value">{user.role}</p>
+                        <p className="user_details_con_item_value">{user.role.replace('_'," ").toLowerCase()}</p>
                     </div>
-                    <div className="user_details_con_item">
-                        <p className="user_details_con_item_title">Team</p>
-                        <p className="user_details_con_item_value">{user.team}</p>
-                    </div>
+
+
+
+
+
                 </div>
 
-                    : null}
             </div>
         </div>
     );

@@ -9,7 +9,7 @@ import Setting from '../settings/settings';
 import Request from '../request/request';
 import Users from '../users/users';
 import Login from '../login/login';
-// import AdminDashboard from '../adminDashboard/adminDashboard';
+import AdminDashboard from '../adminDashboard/adminDashboard';
 
 
 function All() {
@@ -27,8 +27,8 @@ function All() {
                 <Switch>
                     <Route path="/dashboard" >
                         <h5 className="content_container_user">Welcome Alan Mathew !</h5>
-                        <Appointments />
-                        {/* <AdminDashboard /> */}
+                        {/* <Appointments /> */}
+                        <AdminDashboard />
                     </Route>
                     <Route path="/calendar" >
                         <Calender />

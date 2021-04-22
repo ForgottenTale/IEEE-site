@@ -40,14 +40,14 @@ export default function Events({ day }) {
 
         if (day.events !== null) {
             dates = [
-                ...day.events.map(d => new Date(d.timeFrom)),
-                ...day.events.map(d => new Date(d.timeTo))
+                ...day.events.map(d => new Date(d.startTime)),
+                ...day.events.map(d => new Date(d.endTime))
             ];
         }
         else {
             dates.push(new Date());
         }
-
+        console.log(dates)
         var minTime = new Date(dates[0]);
         minTime.setHours(0, 0, 0, 0);
 
@@ -84,10 +84,10 @@ export default function Events({ day }) {
             barGroups
                 .append('rect')
                 .attr('x', margin.left)
-                .attr('y', d => yScale(new Date(d.timeFrom)) + barStyle.startPadding)
+                .attr('y', d => yScale(new Date(d.startTime)) + barStyle.startPadding)
                 .attr('height', d => {
-                    const startPoint = yScale(new Date(d.timeFrom));
-                    const endPoint = yScale(new Date(d.timeTo));
+                    const startPoint = yScale(new Date(d.startTime));
+                    const endPoint = yScale(new Date(d.endTime));
                     return (
                         endPoint - startPoint - barStyle.endPadding - barStyle.startPadding
                     );
@@ -98,17 +98,24 @@ export default function Events({ day }) {
             barGroups
                 .append('text')
                 .attr('x', margin.left + 10)
-                .attr('y', d => yScale(new Date(d.timeFrom)) + 20)
+                .attr('y', d => yScale(new Date(d.startTime)) + 20)
                 .text(d => d.title)
                 .attr('class', 'svg_barGroup_text');
 
             barGroups
+                .append('text')
+                .attr('x', margin.left + 10)
+                .attr('y', d => yScale(new Date(d.startTime)) + 40)
+                .text(d => d.speakerName)
+                .attr('class', 'svg_barGroup_agent');
+
+            barGroups
                 .append('rect')
                 .attr('x', margin.left)
-                .attr('y', d => yScale(new Date(d.timeFrom)) + barStyle.startPadding)
+                .attr('y', d => yScale(new Date(d.startTime)) + barStyle.startPadding)
                 .attr('height', d => {
-                    const startPoint = yScale(new Date(d.timeFrom));
-                    const endPoint = yScale(new Date(d.timeTo));
+                    const startPoint = yScale(new Date(d.startTime));
+                    const endPoint = yScale(new Date(d.endTime));
                     return (
                         endPoint - startPoint - barStyle.endPadding - barStyle.startPadding
                     );
@@ -123,8 +130,8 @@ export default function Events({ day }) {
 
     return (
         <div className="events">
-            {prevDay ? <div className={active ? "events_date_active" : "events_date"}>{day.format("DD")}</div>:
-            <div className="events_date prevDay">{day.format("DD")}</div>}
+            {prevDay ? <div className={active ? "events_date_active" : "events_date"}>{day.format("DD")}</div> :
+                <div className="events_date prevDay">{day.format("DD")}</div>}
             {/* <div className={active ? "events_date_active" : "events_date"}>{day.format("DD")}</div> */}
             {prevDay ? <svg className="svg" ref={ref} /> : <svg className="svg prevDay" ref={ref} />}
         </div>

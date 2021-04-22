@@ -12,7 +12,6 @@ export default function Request() {
 
 
     const [data, setData] = useState(null);
-
     const header = ['Id', "Name", "Service", "Type", "Time", "Status", "Action"];
     const { path } = useRouteMatch();
     const [request, setRequest] = useState(null);
@@ -54,7 +53,7 @@ export default function Request() {
                 </div>
             </Route>
             <Route path={path + '/:id'}>
-                <RequestView data={request} setRefresh={setRefresh} refresh={refresh} />
+                <RequestView req={request} setRefresh={setRefresh} refresh={refresh} showButton={true} />
             </Route>
         </Switch>
 

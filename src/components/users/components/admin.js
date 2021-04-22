@@ -3,20 +3,23 @@ import { Input2 } from '../../utils/myReactLib';
 import { useState, useEffect } from 'react';
 import Table from '../../table/table';
 
-
+import axios from 'axios';
 export default function Admin({ setUser }) {
     const [searchTerm, setSearchTerm] = useState("");
 
-    const header = ['Id', "Name", "Email", "Role", "Team", ""];
-    const data = [{
-        "id": 1, name: "Alan Mathew", email: "alanmathew@ieee.org", role: "Alpha admin ", team: "content",
-    },
-    {
-        "id": 2, name: "Alan Mathew", email: "alanmathew@ieee.org", role: "Alpha admin ", team: "web",
-    },
-    {
-        "id": 2, name: "Alan Mathew", email: "alanmathew@ieee.org", role: "Alpha admin ", team: "design",
-    }]
+    const header = ['Id', "Name", "Email", "Role", ""];
+    const [data,setData] = useState(null);
+    useEffect(() => {
+        const url = "http://localhost:5000/api/users?role=admin";
+        axios.get(url, { withCredentials: true })
+            .then((d) => {
+                console.log(d)
+                setData(d.data);
+            })
+            .catch(err => console.error(err));
+
+
+    }, [])
     return (
         <div className="admin">
             <div className="admin_sub">

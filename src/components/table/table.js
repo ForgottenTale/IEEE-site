@@ -42,20 +42,10 @@ export default function Table({ headers, data, type, setUser, setRequest, search
                                 </td>
                                 {type === 'admin' || type === 'user' ? [
                                     <td>{row.email}</td>,
-                                    <td>{row.role}</td>,
+                                    <td>{row.role.replace('_'," ").toLowerCase()}</td>,
 
                                 ] : null}
-                                {type === 'admin' ? [
-                                    <td className="team">
-                                        <div className={"team_body " + row.team}>
-                                            <div className={"team_body_con"}>
-                                                <div className={"team_body_con_dot " + row.team} ></div>
-                                                <p>&nbsp;{row.team}</p>
-                                            </div>
-
-                                        </div>
-                                    </td>,
-                                ] : null}
+                            
                                 {type === 'request' ? [
                                     <td>{row.type.replace('_', ' ')}</td>,
                                     <td>{row.serviceName}</td>,

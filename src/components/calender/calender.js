@@ -18,48 +18,24 @@ function Calender() {
     const [week, setWeek] = useState([]);
     const [day, setDay] = useState({});
     const [value, setValue] = useState(moment());
-
-
+    const [daylist, setDayList] = useState([]);
+    const [data,setData] = useState([]);
 
     useEffect(() => {
-
-        var data = [];
-
         const url = "http://localhost:5000/api/calendar?month=" + (value.clone().format('M') - 1) + "&year=" + value.clone().format('Y');
         axios.get(url, { withCredentials: true })
-            .then((data) => {
-                console.log(data);
-                data = data;
+            .then((d) => {
+                console.log(d)
+                setData(d.data);
             })
             .catch(err => console.error(err));
 
-        console.log(value.clone().format('M'))
+
+    }, [])
+
+    useEffect(() => {
 
 
-        // const data = [
-
-        //     {
-        //         "date": "2021-03-30T18:30:00.000Z",
-        //         "events": [
-        //             {
-        //                 "title": "Webinar on CyptoCurrency",
-        //                 "time": "9 pm - 10 pm IST",
-        //                 "timeFrom": "2021-03-30T19:30:00.000Z",
-        //                 "timeTo": "2021-03-30T22:30:00.000Z",
-        //                 "background": '#616161'
-        //             },
-        //             {
-        //                 "title": "Webinar on CyptoCurrency",
-        //                 "time": "9 pm - 10 pm IST",
-        //                 "timeFrom": "2021-03-30T22:30:00.000Z",
-        //                 "timeTo": "2021-03-31T00:30:00.000Z",
-        //                 "background": '#616161'
-        //             },
-        //         ]
-        //     },
-
-
-        // ]
         const startDay = value.clone().startOf("month").startOf("week");
         const endDay = value.clone().endOf("month").endOf("week");
         const weekStart = value.clone().startOf('isoweek');
@@ -67,9 +43,14 @@ function Calender() {
         const day = startDay.clone().subtract(1, "day");
         const a = [];
         const weekDays = [];
+        var temp = [];
+        for (i = 1; i <= value.clone().daysInMonth(); i++) {
+            temp.push(i);
+        }
+        setDayList(temp)
 
-        // for(i=1;i<=value.clone();i++)
         if (monthView) {
+       
             while (day.isBefore(endDay, "day")) {
                 a.push(
                     Array(7).fill(0).map(() => {
@@ -79,6 +60,7 @@ function Calender() {
                     })
                 );
             }
+
             setCalendar(a);
 
         }
@@ -118,7 +100,7 @@ function Calender() {
         }
 
 
-    }, [value, weekView, monthView, dayView])
+    }, [value, weekView, monthView, dayView,data])
 
 
     const nextMonth = () => {
@@ -170,16 +152,12 @@ function Calender() {
         setWeekView(true);
     }
 
-   const dayList = {}
     return (
         <div className="calender">
             <div className="calender_menu">
                 <h2 className="calender_menu_today">
                     <select>
-                        <option value="volvo">Volvo</option>
-                        <option value="saab" selected>Saab</option>
-                        <option value="mercedes">Mercedes</option>
-                        <option value="audi">Audi</option>
+                        {daylist.map((val, key) => { return <option value={val} key={key}>{val}</option> })}
                     </select>
                     {value.format("MMMM")} {value.format("YYYY")}
                 </h2>
