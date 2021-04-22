@@ -1,12 +1,22 @@
 
 import './request.scss';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import Table from '../table/table';
 import { Input2 } from '../utils/myReactLib';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import RequestView from '../requestView/requestView';
+import axios from 'axios';
+
 
 export default function Request() {
+    useEffect(() => {
+        const url = "http://localhost:5000/api/my-approvals";
+        axios.get(url,{withCredentials: true})
+        .then((data)=>{
+            console.log(data);
+        })
+        .catch(err=>console.error(err));
+}, [])
 
     const header = ['Id', "Name", "Service", "Type", "Time", "Status", "Action"];
     const data = [

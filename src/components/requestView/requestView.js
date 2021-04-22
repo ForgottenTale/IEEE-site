@@ -1,19 +1,30 @@
 import './requestView.scss';
 import pic from '../../images/pic3.jpg';
 import axios from 'axios';
-
 import { useEffect } from 'react';
 
 export default function RequestView({ data }) {
-    useEffect(() => {
-            const url = "http://localhost:5000/api/my-approvals";
-            axios.get(url)
-            .then((data)=>{
-                console.log(data);
-            })
-            .catch(err=>console.error(err));
-    }, [])
+   
+    const handleLogin = async (action) => {
 
+        const formData = new URLSearchParams();
+        formData.append('id', data.id);
+        formData.append('action', action);
+        formData.append('response',"This is just a test dffhasdifhpadohfpoasjdfoiasdhfio");
+        try {
+            const headers = {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              }
+          
+            const url = "http://localhost:5000/api/my-approvals/"
+            const res = await axios.post(url,formData,{headers:headers});
+
+            console.log(res);
+
+        } catch (err) {
+            console.log(err);
+        }
+    }
     return (
         <div className="requestView">
             <div className="requestView_con">
@@ -178,8 +189,8 @@ export default function RequestView({ data }) {
 
 
             <div className="requestView_button">
-                <button>Approve</button>
-                <button>Reject</button>
+                <button onClick={()=>handleLogin('approve')}>Approve</button>
+                <button onClick={()=>handleLogin('decline')}>Reject</button>
             </div>
         </div >
 
