@@ -51,7 +51,7 @@ export default function Appointments() {
             {pop?<ServiceSelection/>:null}
             <div className="appointments_header">
                 <h6 className="appointments_header_title">My Appointments</h6>
-                <button className="appointments_header_button" onClick={()=>{setPop(!pop)}}>+ New Appointment</button>
+                <button className="appointments_header_button" onClick={()=>{setPop(true)}}>+ New Appointment</button>
             </div>
             <div className="appointments_items">
                 {data.map((data) => <Appointment data={data} key={data.time} />)}

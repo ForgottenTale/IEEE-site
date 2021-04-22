@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route,useRouteMatch } from "react-router-dom";
 import ServiceList from "./components/ServiceList";
 import Services from "./components/Services";
 import DateTime from "./components/DateTime";
@@ -14,29 +14,30 @@ import "./style.css";
 function App() {
   const [data, setData] = useState({});
   const [type, setType] = useState(null);
+  const { path } = useRouteMatch();
   // const [poster, setPoster] = useState("{}");
   return (
     <Router>
       <Switch>
-        <Route path="/" exact>
+        <Route path={path}>
           <ServiceList setType={setType} setData={setData} data={data} />
         </Route>
-        <Route path="/services">
+        <Route path={path+"/services"}>
           <Services type={type} setData={setData} data={data} />
         </Route>
-        <Route path="/date-time">
+        <Route path={path+"/date-time"}>
           <DateTime type={type} setData={setData} data={data} />
         </Route>
-        <Route path="/event-info">
+        <Route path={path+"/event-info"}>
           <EventInfo type={type} data={data} setData={setData} />
         </Route>
-        <Route path="/other-info">
+        <Route path={path+"/other-info"}>
           <OtherInfo type={type} data={data} setData={setData} />
         </Route>
-        <Route path="/support-info">
+        <Route path={path+"/support-info"}>
           <SupportInfo type={type} setData={setData} data={data} />
         </Route>
-        <Route path="/verify" component={Verify}>
+        <Route path={path+"/verify"} component={Verify}>
           <Verify type={type} data={data} />
         </Route>
         <Route path="/confirmation" component={Confirmation} />
