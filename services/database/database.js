@@ -386,6 +386,7 @@ module.exports = {
 					appointmentsOfAllTypes[mainIdx][idx] = transmuteSnakeToCamel(appointmentsOfAllTypes[mainIdx][idx]);
 					appointmentsOfAllTypes[mainIdx][idx].otherResponses = await executeQuery("SELECT name, email, encourages, response FROM response INNER JOIN user on user._id=response.user_id WHERE alt_id=" + appointmentsOfAllTypes[mainIdx][idx].id + ";");
 					appointmentsOfAllTypes[mainIdx][idx].type = types[mainIdx].type;
+					delete(appointmentsOfAllTypes[mainIdx][idx].password);
 					dataArray.push(appointmentsOfAllTypes[mainIdx][idx])
 				}
 			}
