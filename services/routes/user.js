@@ -1,5 +1,5 @@
 const auth = require('../auth.js');
-const {getClass} = require('../controller.js');
+const {getClass, User} = require('../controller.js');
 const database = require('../database/database.js');
 const upload = require('../upload.js');
 
@@ -68,5 +68,11 @@ module.exports = function(app){
             if(err) return respondError(err, res);
             res.status(200).json({message: msg});
         });
+    })
+
+    app.route('/api/credentials')
+    .get(auth.ensureAuthenticated, (req, res)=>{
+        let user = new User(req.user);
+        res.status(200).json(Object.assign({}, {id: req.user._id}, user.getPublicInfo()));
     })
 }
