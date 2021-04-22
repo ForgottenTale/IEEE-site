@@ -31,26 +31,28 @@ export default function Table({ headers, data, type, setUser, setRequest, search
                             }
                         }).map((row, key) =>
                             <tr key={key}>
-                                <td>{row.id}</td>
-                                <td >
+                                <td data-label="id">{row.id}</td>
+                                <td data-label="Name">
                                     <div className="tableTag_user">
                                         <img src={pic} alt='profile-pic' className="tableTag_user_pic" />
-                                &nbsp; &nbsp;
-                                {row.name}
+                              <p>
+                              {row.name}
+                              </p>
+                              
                                     </div>
 
                                 </td>
                                 {type === 'admin' || type === 'user' ? [
-                                    <td>{row.email}</td>,
-                                    <td>{row.role.replace('_'," ").toLowerCase()}</td>,
+                                    <td data-label="Email">{row.email}</td>,
+                                    <td data-label="Role">{row.role.replace('_'," ").toLowerCase()}</td>,
 
                                 ] : null}
                             
                                 {type === 'request' ? [
-                                    <td>{row.type.replace('_', ' ')}</td>,
-                                    <td>{row.serviceName}</td>,
-                                    <td>{new Date(row.startTime).toDateString()}</td>,
-                                    <td>
+                                    <td data-label="Service">{row.type.replace('_', ' ')}</td>,
+                                    <td data-label="Type">{row.serviceName}</td>,
+                                    <td data-label="Time">{new Date(row.startTime).toDateString()}</td>,
+                                    <td data-label="Status">
                                         <p className={row.status.toLowerCase()}>
                                             {row.status.toLowerCase()}
                                         </p>
