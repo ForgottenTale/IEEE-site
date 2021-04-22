@@ -314,7 +314,7 @@ module.exports = {
 						datesAndEvents.forEach(distinctDateEvents=>{
 							distinctDateEvents[0].start_time = distinctDateEvents[0].start_time.split(" ");
 							distinctDateEvents[0].start_time.pop();
-							distinctDateEvents[0].start_time.push("00:00:00");
+							distinctDateEvents[0].start_time.push("18:30:00");
 							distinctDateEvents[0].start_time = distinctDateEvents[0].start_time.join(" ");
 							distinctDate = new Date(convertSqlDateTimeToDate(distinctDateEvents[0].start_time));
 							distinctDateEvents = distinctDateEvents.map(event=>{
@@ -330,7 +330,7 @@ module.exports = {
 						datesAndEvents.forEach(distinctDateEvents=>{
 							distinctDateEvents.start_time = distinctDateEvents.start_time.split(" ");
 							distinctDateEvents.start_time.pop();
-							distinctDateEvents.start_time.push("00:00:00");
+							distinctDateEvents.start_time.push("18:30:00");
 							distinctDateEvents.start_time = distinctDateEvents.start_time.join(" ");
 							distinctDate = new Date(convertSqlDateTimeToDate(distinctDateEvents.start_time));
 							distinctDateEvents.type = constraint.type;
