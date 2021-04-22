@@ -370,6 +370,7 @@ module.exports = {
 				query += "SELECT *, alt._id as _id FROM alt"
 					+ " INNER JOIN " + type.type + " ON " + type.type + "_id=" + type.type + "._id"
 					+ " INNER JOIN next_to_approve as n ON n.alt_id=alt._id"
+					+ " INNER JOIN user ON creator_id=user._id"
 					+ " WHERE n.user_id=" + constraint.user_id;
 				if(constraint.id)
 					query += " AND alt._id=" + constraint.id + ";"
