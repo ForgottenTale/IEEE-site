@@ -17,9 +17,10 @@ export default function Request() {
     const { path } = useRouteMatch();
     const [request, setRequest] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
+    const [refresh,setRefresh] =useState(true);
 
     useEffect(() => {
-        setTimeout(() => {
+    
             const url = "http://localhost:5000/api/my-approvals";
             axios.get(url, { withCredentials: true })
                 .then((data) => {
@@ -27,9 +28,11 @@ export default function Request() {
                     setData(data.data);
                 })
                 .catch(err => console.error(err));
-        }, 5000)
+       
 
-    }, [])
+    }, [refresh])
+
+    console.log(refresh);
     return (
         <Switch>
             <Route exact path={path}>
@@ -51,7 +54,7 @@ export default function Request() {
                 </div>
             </Route>
             <Route path={path + '/:id'}>
-                <RequestView data={request} />
+                <RequestView data={request} setRefresh={setRefresh} refresh={refresh} />
             </Route>
         </Switch>
 

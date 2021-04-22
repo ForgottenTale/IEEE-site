@@ -1,12 +1,18 @@
 import './requestView.scss';
 import pic from '../../images/pic3.jpg';
 import axios from 'axios';
-import { useEffect } from 'react';
+import { useEffect,useState } from 'react';
+import Spinner from '../spinner/spinner';
+import { useHistory } from "react-router-dom";
 
-export default function RequestView({ data }) {
-   
+export default function RequestView({ data,setRefresh,refresh }) {
+
+    const [spinner,setSpinner] = useState(false);
+    const history = useHistory();
     const handleLogin = async (action) => {
 
+        setSpinner(true);
+         
         const formData = new URLSearchParams();
         formData.append('id', data.id);
         formData.append('action', action);
@@ -18,15 +24,20 @@ export default function RequestView({ data }) {
           
             const url = "http://localhost:5000/api/my-approvals/"
             const res = await axios.post(url,formData,{headers:headers,withCredentials: true});
-
+            setRefresh(!refresh);
             console.log(res);
+            setSpinner(false);
+            history.push("/requests")
+
 
         } catch (err) {
             console.log(err);
+            setSpinner(false);
         }
     }
     return (
         <div className="requestView">
+          {spinner? <Spinner/>:null}
             <div className="requestView_con">
                 <div className="requestView_con_item">
                     <p>Name</p>

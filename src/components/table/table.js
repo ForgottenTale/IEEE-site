@@ -5,7 +5,7 @@ import SkeletonRowRequest from '../skeleton/skeletonRowRequest';
 import SkeletonRowUser from '../skeleton/skeletonRowUser';
 
 
-export default function Table({ headers, data, type, setUser, setRequest, searchTerm }) {
+export default function Table({ headers, data, type, setUser, setRequest, searchTerm}) {
 
 
     const { path } = useRouteMatch();
