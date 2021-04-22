@@ -11,37 +11,62 @@ import Confirmation from "./components/Confirmation";
 import "./ub.css";
 import "./style.css";
 
-function App() {
+function App(props) {
   const [data, setData] = useState({});
   const [type, setType] = useState(null);
   // const [poster, setPoster] = useState("{}");
   return (
-    <Router>
-      <Switch>
-        <Route path="/" exact>
-          <ServiceList setType={setType} setData={setData} data={data} />
-        </Route>
-        <Route path="/services">
-          <Services type={type} setData={setData} data={data} />
-        </Route>
-        <Route path="/date-time">
-          <DateTime type={type} setData={setData} data={data} />
-        </Route>
-        <Route path="/event-info">
-          <EventInfo type={type} data={data} setData={setData} />
-        </Route>
-        <Route path="/other-info">
-          <OtherInfo type={type} data={data} setData={setData} />
-        </Route>
-        <Route path="/support-info">
-          <SupportInfo type={type} setData={setData} data={data} />
-        </Route>
-        <Route path="/verify" component={Verify}>
-          <Verify type={type} data={data} />
-        </Route>
-        <Route path="/confirmation" component={Confirmation} />
-      </Switch>
-    </Router>
+    <div className="ub">
+      <div className="overlay" onClick={()=>{props.setPop(!props.pop)}}></div>
+      <Route path="/" exact>
+        <ServiceList setType={setType} setData={setData} data={data} />
+      </Route>
+      <Route path="/services">
+        <Services type={type} setData={setData} data={data} />
+      </Route>
+      <Route path="/date-time">
+        <DateTime type={type} setData={setData} data={data} />
+      </Route>
+      <Route path="/event-info">
+        <EventInfo type={type} data={data} setData={setData} />
+      </Route>
+      <Route path="/other-info">
+        <OtherInfo type={type} data={data} setData={setData} />
+      </Route>
+      <Route path="/support-info">
+        <SupportInfo type={type} setData={setData} data={data} />
+      </Route>
+      <Route path="/verify" component={Verify}>
+        <Verify type={type} data={data} />
+      </Route>
+      <Route path="/confirmation" component={Confirmation} />
+      <Router>
+        <Switch>
+          <Route path="/" exact>
+            <ServiceList setType={setType} setData={setData} data={data} />
+          </Route>
+          <Route path="/services">
+            <Services type={type} setData={setData} data={data} />
+          </Route>
+          <Route path="/date-time">
+            <DateTime type={type} setData={setData} data={data} />
+          </Route>
+          <Route path="/event-info">
+            <EventInfo type={type} data={data} setData={setData} />
+          </Route>
+          <Route path="/other-info">
+            <OtherInfo type={type} data={data} setData={setData} />
+          </Route>
+          <Route path="/support-info">
+            <SupportInfo type={type} setData={setData} data={data} />
+          </Route>
+          <Route path="/verify" component={Verify}>
+            <Verify type={type} data={data} />
+          </Route>
+          <Route path="/confirmation" component={Confirmation} />
+        </Switch>
+      </Router>
+    </div >
   );
 }
 

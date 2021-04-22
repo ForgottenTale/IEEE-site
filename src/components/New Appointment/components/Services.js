@@ -25,37 +25,35 @@ function Services({ type, data, setData }) {
   console.log(items);
 
   return (
-    <div className="ub">
-      <div className="service-container row">
-        <div className="select-service col-5">
-          <img src={serviceIcon} alt="" />
-          <h2>Select Service</h2>
-          <p>
-            Please select a service for which you want to schedule an
-            appointment.
+    <div className="service-container row">
+      <div className="select-service col-5">
+        <img src={serviceIcon} alt="" />
+        <h2>Select Service</h2>
+        <p>
+          Please select a service for which you want to schedule an
+          appointment.
           </p>
-          <h3>Questions?</h3>
-          <p>Call (858) 939-3746 for help.</p>
-        </div>
-        <div className="service-list col">
-          <h2>Service Selection</h2>
-          {items.map((item, index) => (
-            <div
-              key={index}
-              className="service-box-x"
-              onClick={() => next(item)}
-            >
-              <p>{item}</p>
-            </div>
-          ))}
-          <button
-            type="button"
-            className="mt-5 back-btn"
-            onClick={() => history.push("/")}
+        <h3>Questions?</h3>
+        <p>Call (858) 939-3746 for help.</p>
+      </div>
+      <div className="service-list col">
+        <h2>Service Selection</h2>
+        {items.map((item, index) => (
+          <div
+            key={index}
+            className="service-box-x"
+            onClick={() => next(item)}
           >
-            Prev
+            <p>{item}</p>
+          </div>
+        ))}
+        <button
+          type="button"
+          className="mt-5 back-btn"
+          onClick={() => history.push("/")}
+        >
+          Prev
           </button>
-        </div>
       </div>
     </div>
   );

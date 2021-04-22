@@ -23,7 +23,7 @@ module.exports = function(app){
     
     app.route('/login')
     .get((req, res)=>{
-        res.sendFile(process.cwd() + '/coverage/login.html');
+        res.sendFile(process.cwd() + '/build/index.html');
     })
     
     app.route('/api/login')

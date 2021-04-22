@@ -4,7 +4,6 @@ import confirmIcon from "../../../images/info.png";
 
 function Confirmation() {
   return (
-    <div className="ub">
       <div className="service-container row">
         <div className="select-service col-5">
           <img src={confirmIcon} alt="" />
@@ -29,7 +28,6 @@ function Confirmation() {
           </Link>
         </div>
       </div>
-    </div>
   );
 }
 

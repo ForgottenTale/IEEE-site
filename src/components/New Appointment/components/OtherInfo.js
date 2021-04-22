@@ -73,7 +73,6 @@ function OtherInfo({ type, data, setData }) {
   }
 
   return (
-    <div className="ub">
       <div className="info-container row">
         <div className="enter-info col-4">
           <img src={infoIcon} alt="" />
@@ -154,7 +153,6 @@ function OtherInfo({ type, data, setData }) {
           )}
         </div>
       </div>
-    </div>
   );
 }
 

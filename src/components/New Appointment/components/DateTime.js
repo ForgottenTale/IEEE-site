@@ -53,76 +53,74 @@ function DateTime({ type, setData, data }) {
   };
 
   return (
-    <div className="ub">
-      <div className="service-container row">
-        <div className="select-service col-5">
-          <img src={dateIcon} alt="" />
-          <h2>Select Date & Time</h2>
-          <p>Please select the date and time for your appointment.</p>
-          <h3>Questions?</h3>
-          <p>Call (858) 939-3746 for help.</p>
-        </div>
-        <div className="date col">
-          <h2>Select Date & Time</h2>
+    <div className="service-container row">
+      <div className="select-service col-5">
+        <img src={dateIcon} alt="" />
+        <h2>Select Date & Time</h2>
+        <p>Please select the date and time for your appointment.</p>
+        <h3>Questions?</h3>
+        <p>Call (858) 939-3746 for help.</p>
+      </div>
+      <div className="date col">
+        <h2>Select Date & Time</h2>
 
-          <form onSubmit={next}>
-            <div className="row mb-4">
+        <form onSubmit={next}>
+          <div className="row mb-4">
+            <div className="col-5">
+              <label className="form-label">Date</label>
+              <input
+                type="date"
+                className="form-control"
+                min={minDate}
+                name="date"
+                onChange={(e) => setDate(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+          {data.type === "online_meeting" ? (
+            <div className="row mb-5">
               <div className="col-5">
-                <label className="form-label">Date</label>
+                <label className="form-label">From</label>
                 <input
-                  type="date"
+                  type="time"
                   className="form-control"
-                  min={minDate}
-                  name="date"
-                  onChange={(e) => setDate(e.target.value)}
-                  required
+                  name="time"
+                  onChange={(e) => setTimeFrom(e.target.value)}
+                />
+              </div>
+              <div className="col-5">
+                <label className="form-label">To</label>
+                <input
+                  type="time"
+                  className="form-control"
+                  name="time"
+                  onChange={(e) => setTimeTo(e.target.value)}
                 />
               </div>
             </div>
-            {data.type === "online_meeting" ? (
-              <div className="row mb-5">
-                <div className="col-5">
-                  <label className="form-label">From</label>
-                  <input
-                    type="time"
-                    className="form-control"
-                    name="time"
-                    onChange={(e) => setTimeFrom(e.target.value)}
-                  />
-                </div>
-                <div className="col-5">
-                  <label className="form-label">To</label>
-                  <input
-                    type="time"
-                    className="form-control"
-                    name="time"
-                    onChange={(e) => setTimeTo(e.target.value)}
-                  />
-                </div>
+          ) : (
+            <div className="row mb-5">
+              <div className="col-5">
+                <label className="form-label">Time</label>
+                <input
+                  type="time"
+                  className="form-control"
+                  name="time"
+                  onChange={(e) => setTimeFrom(e.target.value)}
+                />
               </div>
-            ) : (
-              <div className="row mb-5">
-                <div className="col-5">
-                  <label className="form-label">Time</label>
-                  <input
-                    type="time"
-                    className="form-control"
-                    name="time"
-                    onChange={(e) => setTimeFrom(e.target.value)}
-                  />
-                </div>
-              </div>
-            )}
-            <button
-              type="button"
-              className="mt-5 back-btn"
-              onClick={() => history.push("/services/")}
-            >
-              Prev
+            </div>
+          )}
+          <button
+            type="button"
+            className="mt-5 back-btn"
+            onClick={() => history.push("/services/")}
+          >
+            Prev
             </button>
-            <button className="btn btn-primary mt-5 next-btn">Next</button>
-          </form>
-        </div>
+          <button className="btn btn-primary mt-5 next-btn">Next</button>
+        </form>
       </div>
     </div>
   );

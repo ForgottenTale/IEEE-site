@@ -39,84 +39,82 @@ function Verify({ type, data }) {
   };
 
   return (
-    <div className="ub">
-      <div className="service-container row">
-        <div className="select-service col-5">
-          <img src={confirmIcon} alt="" />
-          <h2>Verify Order Details</h2>
-          <p>
-            Double check your reservation details and click submit button if
-            everything is correct.
+    <div className="service-container row">
+      <div className="select-service col-5">
+        <img src={confirmIcon} alt="" />
+        <h2>Verify Order Details</h2>
+        <p>
+          Double check your reservation details and click submit button if
+          everything is correct.
           </p>
-          <h3>Questions?</h3>
-          <p>Call (858) 939-3746 for help.</p>
+        <h3>Questions?</h3>
+        <p>Call (858) 939-3746 for help.</p>
+      </div>
+      <div className="verify col">
+        <h2>Verify Booking Details</h2>
+        <h3>Appointment Info</h3>
+        <div className="row">
+          <div className="col">
+            <div className="mb-2">
+              <p className="label">Date:</p>
+              <p>{data.timeFrom.toISOString().slice(0, 10)}</p>
+            </div>
+            <div className="mb-4">
+              <p className="label">Service:</p>
+              <p>{data.type}</p>
+            </div>
+          </div>
+          <div className="col">
+            <div className="mb-2">
+              <p className="label">Time:</p>
+              <p>05:00 - 06:00</p>
+            </div>
+          </div>
         </div>
-        <div className="verify col">
-          <h2>Verify Booking Details</h2>
-          <h3>Appointment Info</h3>
-          <div className="row">
-            <div className="col">
-              <div className="mb-2">
-                <p className="label">Date:</p>
-                <p>{data.timeFrom.toISOString().slice(0, 10)}</p>
-              </div>
-              <div className="mb-4">
-                <p className="label">Service:</p>
-                <p>{data.type}</p>
-              </div>
+        <h3>Customer Info</h3>
+        <div className="row mb-3">
+          <div className="col">
+            <div className="mb-2">
+              <p className="label">Name:</p>
+              <p>Alan Mathew</p>
             </div>
-            <div className="col">
-              <div className="mb-2">
-                <p className="label">Time:</p>
-                <p>05:00 - 06:00</p>
-              </div>
+            <div className="mb-4">
+              <p className="label">Email:</p>
+              <p>alanmathew@ieee.org</p>
             </div>
           </div>
-          <h3>Customer Info</h3>
-          <div className="row mb-3">
-            <div className="col">
-              <div className="mb-2">
-                <p className="label">Name:</p>
-                <p>Alan Mathew</p>
-              </div>
-              <div className="mb-4">
-                <p className="label">Email:</p>
-                <p>alanmathew@ieee.org</p>
-              </div>
-            </div>
-            <div className="col">
-              <div className="mb-2">
-                <p className="label">Phone:</p>
-                <p>0123456789</p>
-              </div>
+          <div className="col">
+            <div className="mb-2">
+              <p className="label">Phone:</p>
+              <p>0123456789</p>
             </div>
           </div>
-          {type === "online_meeting" || type === "publicity" ? (
-            <button
-              type="button"
-              className="back-btn"
-              onClick={() => history.push("/other-info")}
-            >
-              Prev
-            </button>
-          ) : null}
-          {type === "intern_support" || type === "e_notice" ? (
-            <button
-              type="button"
-              className="back-btn"
-              onClick={() => history.push("/support-info")}
-            >
-              Prev
-            </button>
-          ) : null}
+        </div>
+        {type === "online_meeting" || type === "publicity" ? (
           <button
             type="button"
-            className="btn btn-primary submit-btn"
-            onClick={() => handleSubmit()}
+            className="back-btn"
+            onClick={() => history.push("/other-info")}
           >
-            Submit
+            Prev
           </button>
-        </div>
+        ) : null}
+        {type === "intern_support" || type === "e_notice" ? (
+          <button
+            type="button"
+            className="back-btn"
+            onClick={() => history.push("/support-info")}
+          >
+            Prev
+          </button>
+        ) : null}
+        <button
+          type="button"
+          className="btn btn-primary submit-btn"
+          onClick={() => handleSubmit()}
+        >
+          Submit
+          </button>
       </div>
     </div>
   );

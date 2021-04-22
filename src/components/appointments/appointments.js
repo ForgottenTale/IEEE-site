@@ -48,7 +48,7 @@ export default function Appointments() {
 
     return (
         <div className="appointments">
-            {pop?<ServiceSelection/>:null}
+            {pop?<ServiceSelection setPop={setPop} pop={pop}/>:null}
             <div className="appointments_header">
                 <h6 className="appointments_header_title">My Appointments</h6>
                 <button className="appointments_header_button" onClick={()=>{setPop(!pop)}}>+ New Appointment</button>
