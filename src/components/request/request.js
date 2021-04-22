@@ -16,16 +16,19 @@ export default function Request() {
     const header = ['Id', "Name", "Service", "Type", "Time", "Status", "Action"];
     const { path } = useRouteMatch();
     const [request, setRequest] = useState(null);
-    const [searchTerm,setSearchTerm] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
-        const url = "http://localhost:5000/api/my-approvals";
-        axios.get(url, { withCredentials: true })
-            .then((data) => {
-                console.log(data);
-                setData(data.data);
-            })
-            .catch(err => console.error(err));
+        setTimeout(() => {
+            const url = "http://localhost:5000/api/my-approvals";
+            axios.get(url, { withCredentials: true })
+                .then((data) => {
+                    console.log(data);
+                    setData(data.data);
+                })
+                .catch(err => console.error(err));
+        }, 5000)
+
     }, [])
     return (
         <Switch>
@@ -38,12 +41,12 @@ export default function Request() {
                     <div className="request_sub">
                         <h6 className="request_sub_title">You have {data !== null && data !== undefined ? data.length : 0} request</h6>
 
-                        <Input2 className="request_sub_input" placeholder="Search for requests" onChange={(e)=>setSearchTerm(e.target.value)}/>
+                        <Input2 className="request_sub_input" placeholder="Search for requests" onChange={(e) => setSearchTerm(e.target.value)} />
 
                     </div>
-                    {data !== null && data !== undefined ? 
-                    <Table headers={header} data={data} type='request' searchTerm={searchTerm} /> 
-                    : "No data"}
+
+                    <Table headers={header} data={data} type='request' setRequest={setRequest} searchTerm={searchTerm} />
+
 
                 </div>
             </Route>
