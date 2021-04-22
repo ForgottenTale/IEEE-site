@@ -22,21 +22,25 @@
         width: 100%;
         border-spacing: 0;
         border-collapse: collapse;
+        
  
 
         & tr {
             border-bottom: 0.5px rgb(224, 224, 224) solid;
             height: 60px;
+            text-transform: capitalize;
             
 
 
             & th {
                 text-align: left;
                 font-size: 13px;
+             
             }
             & td {
                 font-size: 13px;
                 padding-right: 60px;
+       
 
                 & .pending {
                     font-weight: 500;
@@ -48,6 +52,8 @@
                     justify-content: center;
                     align-items: center;
                     background-color: #fef6d4;
+                   
+            
                 }
                 & .completed {
                     font-weight: 500;

@@ -2,7 +2,8 @@ import './table.scss';
 import pic from '../../images/pic3.jpg';
 import { NavLink,useRouteMatch  } from 'react-router-dom';
 
-export default function Table({ headers, data, type,setUser,setRequest }) {
+export default function Table({ headers, data, type,setUser,setRequest,searchTerm }) {
+    console.log(data);
 
     const { path } =useRouteMatch();
     return (
@@ -14,8 +15,20 @@ export default function Table({ headers, data, type,setUser,setRequest }) {
 
 
                 {
-                    data.map((row) =>
-                        <tr key={row.id}>
+                    data.filter((val)=>{
+                        if(searchTerm===""){
+                            return val;
+                        }
+                        else if(
+                          val.name.toLowerCase().includes(searchTerm.toLowerCase())
+                        ||val.type.toLowerCase().includes(searchTerm.toLowerCase())
+                        ||new Date(val.startTime).toDateString().toLowerCase().includes(searchTerm.toLowerCase())
+                        ||val.serviceName.toLowerCase().includes(searchTerm.toLowerCase())
+                        ){
+                            return val;
+                        }
+                    }).map((row,key) =>
+                        <tr key={key}>
                             <td>{row.id}</td>
                             <td >
                                 <div className="tableTag_user">
@@ -42,12 +55,12 @@ export default function Table({ headers, data, type,setUser,setRequest }) {
                                 </td>,
                             ] : null}
                             {type === 'request' ? [
-                                <td>{row.type}</td>,
+                                <td>{row.type.replace('_',' ')}</td>,
                                 <td>{row.serviceName}</td>,
                                 <td>{new Date(row.startTime).toDateString()}</td>,
                                 <td>
                                     <p className={row.status.toLowerCase()}>
-                                        {row.status}
+                                        {row.status.toLowerCase()}
                                     </p>
                                 </td>,
                             ] : null}

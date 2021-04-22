@@ -16,6 +16,7 @@ export default function Request() {
     const header = ['Id', "Name", "Service", "Type", "Time", "Status", "Action"];
     const { path } = useRouteMatch();
     const [request, setRequest] = useState(null);
+    const [searchTerm,setSearchTerm] = useState("");
 
     useEffect(() => {
         const url = "http://localhost:5000/api/my-approvals";
@@ -37,10 +38,12 @@ export default function Request() {
                     <div className="request_sub">
                         <h6 className="request_sub_title">You have {data !== null && data !== undefined ? data.length : 0} request</h6>
 
-                        <Input2 className="request_sub_input" placeholder="Search for requests" />
+                        <Input2 className="request_sub_input" placeholder="Search for requests" onChange={(e)=>setSearchTerm(e.target.value)}/>
 
                     </div>
-                    {data !== null && data !== undefined ? <Table headers={header} data={data} type='request' setRequest={setRequest} /> : "No data"}
+                    {data !== null && data !== undefined ? 
+                    <Table headers={header} data={data} type='request' searchTerm={searchTerm} /> 
+                    : "No data"}
 
                 </div>
             </Route>

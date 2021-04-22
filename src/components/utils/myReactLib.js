@@ -32,7 +32,7 @@ export function Input2({ onChange, placeholder }) {
                     <path d="M21 21L16.65 16.65"></path>
                 </svg>
             </label>
-            <input className="inputTag2_input" type="text" placeholder ={placeholder }/>
+            <input className="inputTag2_input" type="text" placeholder ={placeholder} onChange={onChange}/>
 
         </div>
     )

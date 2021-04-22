@@ -1,11 +1,11 @@
 import './admin.scss';
-import { Input2} from '../../utils/myReactLib';
-
+import { Input2 } from '../../utils/myReactLib';
+import { useState, useEffect } from 'react';
 import Table from '../../table/table';
 
 
-export default function Admin({setUser}){
-
+export default function Admin({ setUser }) {
+    const [searchTerm, setSearchTerm] = useState("");
 
     const header = ['Id', "Name", "Email", "Role", "Team", ""];
     const data = [{
@@ -20,10 +20,10 @@ export default function Admin({setUser}){
     return (
         <div className="admin">
             <div className="admin_sub">
-                <Input2 className="admin_sub_input" placeholder="Search for admins" />
+                <Input2 className="admin_sub_input" placeholder="Search for admins" onChange={(e) => setSearchTerm(e.target.value)} />
 
             </div>
-            <Table headers={header} data={data} type='admin' setUser={setUser}/>
+            <Table headers={header} data={data} type='admin' setUser={setUser} searchTerm={searchTerm} />
         </div>
     )
 }
