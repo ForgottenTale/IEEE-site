@@ -25,21 +25,21 @@ function All() {
                 <TopNav activeComponent={activeComponent} />
 
                 <Switch>
-                    <Route path={path}>
+                    <Route path="/dashboard" exact>
                         <h5 className="content_container_user">Welcome Alan Mathew !</h5>
                         <Appointments />
                         {/* <AdminDashboard /> */}
                     </Route>
-                    <Route path="/calendar">
+                    <Route path="/calendar" exact>
                         <Calender />
                     </Route>
-                    <Route path={'/:id'}>
+                    <Route path={'/settings'} exact>
                         <Setting />
                     </Route>
-                    <Route path={'/:id'}>
+                    <Route path={'/requests'} exact>
                         <Request />
                     </Route>
-                    <Route path={'/:id'}>
+                    <Route path={'/users'}>
                         <Users />
                     </Route>
                 </Switch>
@@ -62,7 +62,7 @@ export default function Content() {
                 <Route path='/login'>
                     <Login />
                 </Route>
-                <Route path="/" exact>
+                <Route path="/*" exact>
                     <All />
                 </Route>
 

@@ -17,7 +17,7 @@ export default function Menu({ toggle, state, setActiveComponent }) {
             <div className="menu_item">
                 <img src={logo} alt="logo" />
             </div>
-            <NavLink to={path} className="menu_item" activeClassName="active" onClick={() => setActiveComponent("Dashboard")} exact >
+            <NavLink to="/dashboard" className="menu_item" activeClassName="active" onClick={() => setActiveComponent("Dashboard")} exact >
                 <div className="menu_item_deo"></div>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
