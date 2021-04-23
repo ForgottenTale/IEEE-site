@@ -27,7 +27,7 @@ function CohostData(props) {
   );
 }
 
-function OtherInfo({ type, data, setData }) {
+function OtherInfo({ path, type, data, setData }) {
   const history = useHistory();
   let [count, setCount] = useState(1);
   const [cohost, setCohost] = useState([["", ""]]);
@@ -40,7 +40,7 @@ function OtherInfo({ type, data, setData }) {
       ...data,
     });
 
-    history.push("/verify");
+    history.push(path + "/verify");
   }
 
   function addCohost() {
@@ -107,7 +107,7 @@ function OtherInfo({ type, data, setData }) {
               <button
                 type="button"
                 className="back-btn"
-                onClick={() => history.push("/event-info")}
+                onClick={() => history.push(path + "/event-info")}
               >
                 Prev
               </button>
@@ -145,7 +145,7 @@ function OtherInfo({ type, data, setData }) {
               <button
                 type="button"
                 className="mt-5 back-btn"
-                onClick={() => history.push("/event-info")}
+                onClick={() => history.push(path + "/event-info")}
               >
                 Prev
               </button>

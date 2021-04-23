@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import infoIcon from "../../../images/info.png";
 
-function SupportInfo({ type, data, setData }) {
+function SupportInfo({ path, type, data, setData }) {
   const history = useHistory();
 
   const [support, setSupport] = useState({
@@ -33,7 +33,7 @@ function SupportInfo({ type, data, setData }) {
       img: support.img,
     });
 
-    history.push("/verify");
+    history.push(path + "/verify");
   }
 
   return (
@@ -168,7 +168,7 @@ function SupportInfo({ type, data, setData }) {
               <button
                 type="button"
                 className="back-btn"
-                onClick={() => history.push("/date-time")}
+                onClick={() => history.push(path + "/date-time")}
               >
                 Prev
               </button>
@@ -275,7 +275,7 @@ function SupportInfo({ type, data, setData }) {
               <button
                 type="button"
                 className="back-btn"
-                onClick={() => history.push("/date-time")}
+                onClick={() => history.push(path + "/date-time")}
               >
                 Prev
               </button>

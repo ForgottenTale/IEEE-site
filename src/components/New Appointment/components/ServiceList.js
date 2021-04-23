@@ -6,7 +6,7 @@ import enoticeIcon from "../../../images/enotice.png";
 import serviceIcon from "../../../images/select.png";
 import publicity from "../../../images/publicity.png";
 
-function ServiceList({ setType, setData }) {
+function ServiceList({ path, setType, setData }) {
   const clickHander = (type) => {
     setType(type);
     setData({ type: type });
@@ -32,7 +32,7 @@ function ServiceList({ setType, setData }) {
               <p>2 services</p>
               <Link
                 onClick={() => clickHander("online_meeting")}
-                to="/services/online-meeting"
+                to={path + "/services"}
                 className="btn btn-outline-primary btn-sm"
               >
                 <i className="fas fa-plus"></i>
@@ -48,7 +48,7 @@ function ServiceList({ setType, setData }) {
               <p>2 services</p>
               <Link
                 onClick={() => clickHander("intern_support")}
-                to="/services/intern-support"
+                to={path + "/services"}
                 className="btn btn-outline-primary btn-sm"
               >
                 <i className="fas fa-plus"></i>
@@ -64,7 +64,7 @@ function ServiceList({ setType, setData }) {
               <p>1 service</p>
               <Link
                 onClick={() => clickHander("e_notice")}
-                to="/services/enotice"
+                to={path + "/services"}
                 className="btn btn-outline-primary btn-sm"
               >
                 <i className="fas fa-plus"></i>
@@ -80,7 +80,7 @@ function ServiceList({ setType, setData }) {
               <p>2 services</p>
               <Link
                 onClick={() => clickHander("publicity")}
-                to="/services/publicity"
+                to={path + "/services"}
                 className="btn btn-outline-primary btn-sm"
               >
                 <i className="fas fa-plus"></i>

@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useRouteMatch,
+} from "react-router-dom";
 import ServiceList from "./components/ServiceList";
 import Services from "./components/Services";
 import DateTime from "./components/DateTime";
@@ -15,31 +20,41 @@ function App() {
   const [data, setData] = useState({});
   const [type, setType] = useState(null);
   // const [poster, setPoster] = useState("{}");
+
+  const { path } = useRouteMatch();
+
   return (
     <Router>
       <Switch>
-        <Route path="/" exact>
-          <ServiceList setType={setType} setData={setData} data={data} />
+        <Route path={path} exact>
+          <ServiceList
+            path={path}
+            setType={setType}
+            data={data}
+            setData={setData}
+          />
         </Route>
-        <Route path="/services">
-          <Services type={type} setData={setData} data={data} />
+        <Route path={path + "/services"}>
+          <Services path={path} type={type} data={data} setData={setData} />
         </Route>
-        <Route path="/date-time">
-          <DateTime type={type} setData={setData} data={data} />
+        <Route path={path + "/date-time"}>
+          <DateTime path={path} type={type} data={data} setData={setData} />
         </Route>
-        <Route path="/event-info">
-          <EventInfo type={type} data={data} setData={setData} />
+        <Route path={path + "/event-info"}>
+          <EventInfo path={path} type={type} data={data} setData={setData} />
         </Route>
-        <Route path="/other-info">
-          <OtherInfo type={type} data={data} setData={setData} />
+        <Route path={path + "/other-info"}>
+          <OtherInfo path={path} type={type} data={data} setData={setData} />
         </Route>
-        <Route path="/support-info">
-          <SupportInfo type={type} setData={setData} data={data} />
+        <Route path={path + "/support-info"}>
+          <SupportInfo path={path} type={type} data={data} setData={setData} />
         </Route>
-        <Route path="/verify" component={Verify}>
-          <Verify type={type} data={data} />
+        <Route path={path + "/verify"}>
+          <Verify path={path} type={type} data={data} />
         </Route>
-        <Route path="/confirmation" component={Confirmation} />
+        <Route path={path + "/confirmation"}>
+          <Confirmation path={path} type={type} data={data} />
+        </Route>
       </Switch>
     </Router>
   );
