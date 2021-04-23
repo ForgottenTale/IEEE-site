@@ -16,6 +16,7 @@ function EventInfo({ path, type, data, setData }) {
     event.preventDefault();
     setData({
       ...data,
+      title: content.title,
       description: content.description,
       speakerName: content.speaker,
       speakerEmail: content.speakerEmail,
@@ -58,7 +59,7 @@ function EventInfo({ path, type, data, setData }) {
                 type="text"
                 className="form-control"
                 name="serviceName"
-                value={data.service}
+                value={data.serviceName}
                 readOnly
               />
             </div>

@@ -97,13 +97,13 @@ function SupportInfo({ path, type, data, setData }) {
                     type="text"
                     className="form-control"
                     name="serviceName"
-                    value={data.service}
+                    value={data.serviceName}
                     readOnly
                   />
                 </div>
-                {data.service === "Poster Design" ||
-                  data.service === "Content Writing" ? (
-                  data.service === "Poster Design" ? (
+                {data.serviceName === "Poster Design" ||
+                  data.serviceName === "Content Writing" ? (
+                  data.serviceName === "Poster Design" ? (
                     <div className="mb-4">
                       <label className="form-label">
                         Poster dimensions (if any)
@@ -229,7 +229,7 @@ function SupportInfo({ path, type, data, setData }) {
                     type="text"
                     className="form-control"
                     name="serviceName"
-                    value={data.service}
+                    value={data.serviceName}
                     readOnly
                   />
                 </div>

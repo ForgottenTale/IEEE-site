@@ -19,8 +19,8 @@ function minDay() {
 
 function DateTime({ path, type, setData, data }) {
   const [date, setDate] = useState("");
-  const [timeFrom, setTimeFrom] = useState("");
-  const [timeTo, setTimeTo] = useState("");
+  const [startTime, setTimeFrom] = useState("");
+  const [endTime, setTimeTo] = useState("");
 
   const history = useHistory();
 
@@ -30,18 +30,18 @@ function DateTime({ path, type, setData, data }) {
     event.preventDefault();
 
     // if (timeFrom !== "") {
-    var fromHour = timeFrom.slice(0, 2);
-    var fromMin = timeFrom.slice(3, 5);
-    var toHour = timeTo.slice(0, 2);
-    var toMin = timeTo.slice(3, 5);
-
-    console.log(timeFrom);
-    console.log(timeTo);
-
+    var fromHour = startTime.slice(0, 2);
+    var fromMin = startTime.slice(3, 5);
+    var toHour = endTime.slice(0, 2);
+    var toMin = endTime.slice(3, 5);
+    let tempStartTime = new Date(date);
+    tempStartTime.setHours(fromHour, fromMin, 0, 0)
+    let tempEndtime = new Date(date);
+    tempEndtime.setHours(toHour, toMin, 0, 0);
     setData({
       ...data,
-      timeFrom: new Date(new Date(date).setHours(fromHour, fromMin, 0, 0)),
-      timeTo: new Date(new Date(date).setHours(toHour, toMin, 0, 0)),
+      startTime: tempStartTime.toISOString(),
+      endTime: tempEndtime.toISOString()
     });
 
     if (type === "online_meeting" || type === "publicity") {
@@ -87,6 +87,7 @@ function DateTime({ path, type, setData, data }) {
                   className="form-control"
                   name="time"
                   onChange={(e) => setTimeFrom(e.target.value)}
+                  required
                 />
               </div>
               <div className="col-5">
@@ -96,6 +97,7 @@ function DateTime({ path, type, setData, data }) {
                   className="form-control"
                   name="time"
                   onChange={(e) => setTimeTo(e.target.value)}
+                  required
                 />
               </div>
             </div>
@@ -108,6 +110,7 @@ function DateTime({ path, type, setData, data }) {
                   className="form-control"
                   name="time"
                   onChange={(e) => setTimeFrom(e.target.value)}
+                  required
                 />
               </div>
 
