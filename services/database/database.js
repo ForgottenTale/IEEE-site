@@ -226,6 +226,7 @@ module.exports = {
 			let query = "";
 			types.forEach(appointmentType=>{
 				query+="SELECT *, alt._id as _id FROM alt INNER JOIN " + appointmentType.type + " ON alt." + appointmentType.type + "_id=" + appointmentType.type +"._id"  
+					+ " INNER JOIN user ON user._id=creator_id"
 					+ " WHERE " + appointmentType.type + "_id IS NOT NULL AND creator_id=" + constraint.userId + ";";
 			})
 			let appointmentsOfAllTypes = await executeQuery(query);
