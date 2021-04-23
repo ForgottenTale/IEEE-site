@@ -555,5 +555,13 @@ module.exports = {
 			return done(null, results);
 		})
 		.catch(err=>done(err));
+	},
+
+	updateUser: function(input, done){
+		executeQuery("UPDATE user SET " + User.getValues(input).join(",") + " WHERE _id=" + input.id + ";")
+		.then(data=>{
+			return done(null, "Updated Successfully");
+		})
+		.catch(err=>done(err));
 	}
 }

@@ -75,7 +75,9 @@ class User {
                 case 'password':values.push("password='" + params.password + "'");
                                 break;
                 case 'phone':   values.push("phone='" + params.phone + "'");
-                default     :   throw new Error("Undefined parameter provided");
+                                break;
+                case 'id'   :   break;
+                default     :   console.error(new Error("Undefined parameter provided " + key));
             }
         }
         return values;
