@@ -13,9 +13,15 @@ export default function AdminDashboard() {
     const [request, setRequest] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [refresh, setRefresh] = useState(true);
+    const [values, setValues] = useState({
+        approved: 0,
+        denied: 0,
+        pending: 0,
+        total: 0
+    })
     useEffect(() => {
 
-        const url = "http://localhost:5000/api/my-approvals/history";
+        var url = "http://localhost:5000/api/my-approvals/history";
         axios.get(url, { withCredentials: true })
             .then((data) => {
                 console.log(data);
@@ -23,9 +29,21 @@ export default function AdminDashboard() {
                     setData(data.data);
             })
             .catch(err => console.error(err));
+        url = "http://localhost:5000/api/activity";
+        axios.get(url, { withCredentials: true })
+            .then((data) => {
+                console.log(data);
+                setValues({
+                    approved: data.data.approved,
+                    denied: data.data.declined,
+                    pending: data.data.pending,
+                    total: data.data.approved + data.data.pending + data.data.pending
+                });
+            })
+            .catch(err => console.error(err));
 
+    }, [refresh]);
 
-    }, [refresh])
     return (
         <Switch>
             <Route exact path={path}>
@@ -34,19 +52,19 @@ export default function AdminDashboard() {
                         <div className="adminDashboard_con">
                             <div className="adminDashboard_con_box">
                                 <h5>Approved request</h5>
-                                <p>6</p>
+                                <p>{values.approved}</p>
                             </div>
                             <div className="adminDashboard_con_box">
                                 <h5>Pending request</h5>
-                                <p>6</p>
+                                <p>{values.pending}</p>
                             </div>
                             <div className="adminDashboard_con_box">
                                 <h5>Declined request</h5>
-                                <p>6</p>
+                                <p>{values.denied}</p>
                             </div>
                             <div className="adminDashboard_con_box">
                                 <h5>Total request</h5>
-                                <p>6</p>
+                                <p>{values.total}</p>
                             </div>
                         </div>
                     </div>
