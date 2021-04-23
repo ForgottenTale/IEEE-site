@@ -54,7 +54,7 @@ export default function Table({ headers, data, type, setUser, setRequest, search
                                     <td data-label="Type">{row.serviceName}</td>,
                                     <td data-label="Time">{new Date(row.startTime).toDateString()}</td>,
                                     <td data-label="Status">
-                                        <p className={row.status.toLowerCase()}>
+                                        <p >
                                             {row.status.toLowerCase()}
                                         </p>
                                     </td>,

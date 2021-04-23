@@ -10,7 +10,7 @@ import Request from '../request/request';
 import Users from '../users/users';
 import Login from '../login/login';
 import AdminDashboard from '../adminDashboard/adminDashboard';
-import PageNotFound from '../404/pageNotFound';
+// import PageNotFound from '../404/pageNotFound';
 
 
 function All(props) {
@@ -20,7 +20,7 @@ function All(props) {
     console.log(path)
     return (
         <div className="content">
-            <Menu toggle={setOpen} state={open} setActiveComponent={setActiveComponent} />
+            <Menu toggle={setOpen} state={open} setActiveComponent={setActiveComponent} role={props.role}/>
             <div className={open ? "content_container open" : "content_container"} >
                 <TopNav activeComponent={activeComponent} />
 
@@ -28,9 +28,9 @@ function All(props) {
                     <Route path="/dashboard" >
                         {console.log("props", props)}
                         <h5 className="content_container_user">Welcome {props.name} !</h5>
-                        <Appointments />
+                         {/* <Appointments />  */}
                         {console.log("admingProps", props)}
-                        {/* <AdminDashboard role={props.role}/> */}
+                        <AdminDashboard role={props.role}/>
                     </Route>
                     <Route path="/calendar" >
                         <Calender />
