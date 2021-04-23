@@ -87,6 +87,7 @@ function DateTime({ path, type, setData, data }) {
                   className="form-control"
                   name="time"
                   onChange={(e) => setTimeFrom(e.target.value)}
+                  required
                 />
               </div>
               <div className="col-5">
@@ -96,6 +97,7 @@ function DateTime({ path, type, setData, data }) {
                   className="form-control"
                   name="time"
                   onChange={(e) => setTimeTo(e.target.value)}
+                  required
                 />
               </div>
             </div>
@@ -108,6 +110,7 @@ function DateTime({ path, type, setData, data }) {
                   className="form-control"
                   name="time"
                   onChange={(e) => setTimeFrom(e.target.value)}
+                  required
                 />
               </div>
 

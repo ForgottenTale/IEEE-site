@@ -44,7 +44,7 @@ function Verify({ path, type, data }) {
         <p>
           Double check your reservation details and click submit button if
           everything is correct.
-          </p>
+        </p>
         <h3>Questions?</h3>
         <p>Call (858) 939-3746 for help.</p>
       </div>
@@ -69,27 +69,6 @@ function Verify({ path, type, data }) {
             </div>
           </div>
         </div>
-        <h3>Customer Info</h3>
-        <div className="row mb-3">
-          <div className="col">
-            <div className="mb-2">
-              <p className="label">Name:</p>
-              <p>Alan Mathew</p>
-            </div>
-            <div className="mb-4">
-              <p className="label">Email:</p>
-              <p>alanmathew@ieee.org</p>
-            </div>
-          </div>
-          <div className="col">
-            <div className="mb-2">
-              <p className="label">Phone:</p>
-              <p>0123456789</p>
-            </div>
-          </div>
-
-        </div>
-
 
         {type === "online_meeting" || type === "publicity" ? (
           <button
@@ -116,7 +95,7 @@ function Verify({ path, type, data }) {
           onClick={() => handleSubmit()}
         >
           Submit
-          </button>
+        </button>
       </div>
     </div>
   );

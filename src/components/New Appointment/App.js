@@ -17,8 +17,6 @@ function App(props) {
   const { path } = useRouteMatch();
   // const [poster, setPoster] = useState("{}");
 
-  const { path } = useRouteMatch();
-
   return (
     <div className="ub">
       <div className="overlay" onClick={() => { props.setPop(!props.pop) }}></div>
