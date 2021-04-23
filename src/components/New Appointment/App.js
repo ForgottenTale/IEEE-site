@@ -17,7 +17,6 @@ function App(props) {
   const { path } = useRouteMatch();
   // const [poster, setPoster] = useState("{}");
 
-  const { path } = useRouteMatch();
 
   return (
     <div className="ub">
