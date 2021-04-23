@@ -84,4 +84,12 @@ module.exports = function(app){
         let user = new User(req.user);
         res.status(200).json(Object.assign({}, {id: req.user._id}, user.getPublicInfo()));
     })
+
+    app.route('/api/activity')
+    .get(auth.ensureAuthenticated, (req, res)=>{
+        database.getActivity((err, results)=>{
+            if(err) return respondError(err, res);
+            res.status(200).json(results);
+        })
+    })
 }
