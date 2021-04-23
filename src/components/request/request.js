@@ -24,7 +24,6 @@ export default function Request({ role }) {
         const url = "http://localhost:5000/api/my-approvals";
         axios.get(url, { withCredentials: true })
             .then((data) => {
-                console.log(data);
                 setData(data.data);
             })
             .catch(err => console.error(err));
@@ -32,7 +31,6 @@ export default function Request({ role }) {
 
     }, [refresh])
 
-    console.log(refresh);
     return (
         <Switch>
             <Route exact path={path}>

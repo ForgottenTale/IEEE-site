@@ -1,7 +1,6 @@
 .calender {
     margin: 30px;
 
-   
     &_today {
         color: white;
         font-family: "Inter";
@@ -14,6 +13,22 @@
             color: white;
             font-family: "Inter";
             color: grey;
+
+            & select {
+                padding: 10px;
+                outline: none;
+                background-color: whitesmoke;
+                border: none;
+                border-radius: 10%;
+                color: grey;
+                padding: 10px;
+                font-family: "Inter";
+                font-weight: 600;
+
+                &:nth-child(even){
+                    margin: 0 10px;
+                }
+            }
         }
         display: flex;
         justify-content: space-between;
@@ -41,10 +56,9 @@
     }
 }
 @media only screen and (max-width: 768px) {
-    .calender{
+    .calender {
         margin-top: 120px;
         &_menu {
-
         }
     }
 }

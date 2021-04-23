@@ -8,17 +8,37 @@ import axios from 'axios';
 export default function Admin({ setUser }) {
     const header = ['Id', "Name", "Email", "Role", ""];
     const [searchTerm, setSearchTerm] = useState("");
-    const [data,setData] = useState(null);
+    const [data, setData] = useState(null);
 
     useEffect(() => {
+        const source = axios.CancelToken.source();
         const url = "http://localhost:5000/api/users?role=regular";
-        axios.get(url, { withCredentials: true })
-            .then((d) => {
-                console.log(d)
-                setData(d.data);
-            })
-            .catch(err => console.error(err));
 
+        const loadData = async () => {
+            try {
+                const res = await axios.get(url, {
+                    withCredentials: true,
+                    cancelToken: source.token
+                })
+                if (res.status === 200) {
+                    setData(res.data);
+                }
+
+
+
+            } catch (error) {
+                if (axios.isCancel(error)) {
+                    console.log("Cancelled")
+                }
+                console.log(error)
+            };
+        }
+        loadData();
+
+
+        return () => {
+            source.cancel();
+        };
 
     }, [])
     return (

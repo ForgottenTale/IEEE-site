@@ -13,7 +13,6 @@ export default function Admin({ setUser }) {
         const url = "http://localhost:5000/api/users?role=admin";
         axios.get(url, { withCredentials: true })
             .then((d) => {
-                console.log(d)
                 setData(d.data);
             })
             .catch(err => console.error(err));

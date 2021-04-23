@@ -2,7 +2,7 @@ import './topNav.scss';
 import user from '../../images/profile.png';
 
 export default function TopNav({activeComponent}){
- console.log(activeComponent)
+
     return(
         <div className="topNav">
                     <div className="topNav_title">

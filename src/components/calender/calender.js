@@ -18,8 +18,8 @@ function Calender() {
     const [week, setWeek] = useState([]);
     const [day, setDay] = useState({});
     const [value, setValue] = useState(moment());
-    const [daylist, setDayList] = useState([]);
-    const [data,setData] = useState([]);
+    const [dayList, setDayList] = useState([]);
+    const [data, setData] = useState([]);
 
     useEffect(() => {
         const url = "http://localhost:5000/api/calendar?month=" + (value.clone().format('M') - 1) + "&year=" + value.clone().format('Y');
@@ -29,7 +29,6 @@ function Calender() {
                 setData(d.data);
             })
             .catch(err => console.error(err));
-
 
     }, [value])
 
@@ -45,12 +44,12 @@ function Calender() {
         const weekDays = [];
         var temp = [];
         for (let i = 1; i <= value.clone().daysInMonth(); i++) {
-            temp.push(i);
+            temp.push(i.toString());
         }
         setDayList(temp)
 
         if (monthView) {
-       
+
             while (day.isBefore(endDay, "day")) {
                 a.push(
                     Array(7).fill(0).map(() => {
@@ -100,7 +99,7 @@ function Calender() {
         }
 
 
-    }, [value, weekView, monthView, dayView,data])
+    }, [value, weekView, monthView, dayView, data])
 
 
     const nextMonth = () => {
@@ -152,14 +151,36 @@ function Calender() {
         setWeekView(true);
     }
 
+
+    const monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "Novemeber", "December"];
+    const yearList = ["2021", "2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030", "2031"];
+    
+    const handleSelectChange =(e)=>{
+        console.log(e.target.value)
+        console.log(value.clone().set(e.target.value,"MMMM"));
+        setValue(value.clone().set(e.target.value,"MMMM"))
+    }
+    
     return (
         <div className="calender">
             <div className="calender_menu">
                 <h2 className="calender_menu_today">
-                    <select>
-                        {daylist.map((val, key) => { return <option value={val} key={key}>{val}</option> })}
+       
+                    <select value={value.clone().format('D')} >
+                        {dayList.map((val, key) =>
+                            <option value={val} key={key}>{val}</option>
+                        )}
                     </select>
-                    {value.format("MMMM")} {value.format("YYYY")}
+                    <select defaultValue={value.clone().format('MMMM')} onChange={(e)=>handleSelectChange(e)}>
+                        {monthList.map((val, key) =>
+                            <option value={val} key={key} >{val}</option>
+                        )}
+                    </select>
+                    <select value={value.clone().format('YYYY')}>
+                        {yearList.map((val, key) =>
+                            <option value={val} key={key}>{val}</option>
+                        )}
+                    </select>
                 </h2>
                 <div className="calender_menu_buttons">
                     <button className="calender_menu_buttons_button" onClick={() => setValue(prevMonth())}>&#60;</button>

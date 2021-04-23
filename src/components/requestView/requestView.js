@@ -11,7 +11,7 @@ export default function RequestView({ req, setRefresh, refresh, showButton }) {
     const [data, setData] = useState({})
 
     useEffect(() => {
-        console.log(req);
+
         if (req !== undefined&&req!==null) {
             setData(req);
         }
@@ -19,7 +19,6 @@ export default function RequestView({ req, setRefresh, refresh, showButton }) {
             const url = "http://localhost:5000/api/my-approvals";
             axios.get(url, { withCredentials: true })
                 .then((d) => {
-                    console.log(d.data[0]);
                     setData(d.data[0]);
                 })
                 .catch(err => console.error(err));
@@ -43,9 +42,8 @@ export default function RequestView({ req, setRefresh, refresh, showButton }) {
             }
 
             const url = "http://localhost:5000/api/my-approvals/"
-            const res = await axios.post(url, formData, { headers: headers, withCredentials: true });
+            await axios.post(url, formData, { headers: headers, withCredentials: true });
             setRefresh(!refresh);
-            console.log(res);
             setSpinner(false);
             history.push("/requests")
 
