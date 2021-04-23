@@ -397,7 +397,13 @@ module.exports = {
 			for (let mainIdx in appointmentsOfAllTypes){
 				for (let idx in appointmentsOfAllTypes[mainIdx]){
 					AppointmentClass = getClass(types[mainIdx].type);
-					let config = await getConfig(types[mainIdx].type, appointmentsOfAllTypes[mainIdx][idx].service_name);
+					let config = await new Promise((resolve, reject)=>{
+						getConfig(types[mainIdx].type, appointmentsOfAllTypes[mainIdx][idx].service_name, (err, result)=>{
+							if(err) return reject(err);
+							return resolve(result);
+						});
+					});
+					appointmentsOfAllTypes[mainIdx][idx].encourageMode = !config.follow_hierarchy;
 					appointmentsOfAllTypes[mainIdx][idx] = AppointmentClass.convertSqlTimesToDate(appointmentsOfAllTypes[mainIdx][idx]);
 					appointmentsOfAllTypes[mainIdx][idx] = transmuteSnakeToCamel(appointmentsOfAllTypes[mainIdx][idx]);
 					appointmentsOfAllTypes[mainIdx][idx].otherResponses = await executeQuery("SELECT name, email, encourages, response FROM response INNER JOIN user on user._id=response.user_id WHERE alt_id=" + appointmentsOfAllTypes[mainIdx][idx].id + ";");
