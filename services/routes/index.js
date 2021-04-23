@@ -9,8 +9,13 @@ module.exports = function(app){
     protected(app);
     superAdmin(app);
     admin(app);
+    app.route('/')
+    .get(auth.ensureAuthenticated, (req, res)=>{
+        res.redirect("/dashboard")
+    })
     app.route('*')
     .get(auth.ensureAuthenticated, (req, res)=>{
         res.sendFile(process.cwd() + '/build/index.html');
     })
+    
 }

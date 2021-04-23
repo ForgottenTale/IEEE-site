@@ -16,7 +16,8 @@ export default function Table({ headers, data, type, setUser, setRequest, search
                     {headers.map((header) => <th>{header}</th>)}
                 </tr>
                 {
-                    data !== null ?
+                    console.log(data),
+                    (data !== null && data.length>0) ?
                         data.filter((val) => {
                             if (searchTerm === "") {
                                 return val;

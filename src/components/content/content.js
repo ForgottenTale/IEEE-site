@@ -12,8 +12,7 @@ import Login from '../login/login';
 import AdminDashboard from '../adminDashboard/adminDashboard';
 
 
-function All() {
-
+function All(props) {
     const [open, setOpen] = useState(true);
     const [activeComponent, setActiveComponent] = useState("Dashboard");
     const { path } = useRouteMatch();
@@ -26,7 +25,8 @@ function All() {
 
                 <Switch>
                     <Route path="/dashboard" >
-                        <h5 className="content_container_user">Welcome Alan Mathew !</h5>
+                        {console.log("props", props)}
+                        <h5 className="content_container_user">Welcome {props.name} !</h5>
                         {/* <Appointments /> */}
                         <AdminDashboard />
                     </Route>
@@ -52,7 +52,7 @@ function All() {
     )
 }
 
-export default function Content() {
+export default function Content(props) {
 
 
 
@@ -60,10 +60,10 @@ export default function Content() {
         <Router>
             <Switch>
                 <Route path='/login'>
-                    <Login />
+                    <Login {...props} />
                 </Route>
                 <Route path="/*">
-                    <All />
+                    <All {...props}/>
                 </Route>
 
             </Switch>

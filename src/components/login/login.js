@@ -3,8 +3,8 @@ import pic from '../../images/login.jpg';
 import { useState } from 'react';
 import axios from 'axios';
 
-export default function Login() {
-
+export default function Login(props) {
+    const [user, setUser] = useState(props);
     const [details, setDetails] = useState({
         username: null,
         password: null
@@ -23,8 +23,15 @@ export default function Login() {
           
             const url = "http://localhost:5000/api/login/"
             const res = await axios.post(url,formData,{headers:headers});
-
-            console.log(res);
+            if(res.status==200){
+                setUser({
+                    id: res.data.id,
+                    name: res.data.name,
+                    role: res.data.role,
+                    email: res.data.email
+                  })
+                  window.location.replace("/dashboard");
+            }
 
         } catch (err) {
             console.log(err);

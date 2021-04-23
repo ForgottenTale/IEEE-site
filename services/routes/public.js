@@ -23,7 +23,7 @@ module.exports = function(app){
     
     app.route('/login')
     .get((req, res)=>{
-        res.sendFile(process.cwd() + '/build/index.html');
+        res.status(400).sendFile(process.cwd() + '/build/index.html');
     })
     
     app.route('/api/login')
@@ -52,12 +52,12 @@ module.exports = function(app){
 
     app.route('/unauthorized')
     .get((req, res)=>{
-        res.sendFile(process.cwd() + '/coverage/unauthorized.html')
+        res.status(400).sendFile(process.cwd() + '/coverage/unauthorized.html')
     })
 
     app.route('/api/logout')
     .post((req, res)=>{
         req.logout();
-        res.redirect('/protected');
+        res.redirect('/login');
     })
 }

@@ -3,29 +3,41 @@ import Content from './components/content/content';
 import { useEffect } from 'react'
 import axios from 'axios';
 import './App.scss';
-
+import {useState} from 'react';
+import { Redirect } from 'react-router';
 
 
 
 function App() {
-
+  const [user, setUser] = useState({id: null, name: null, role: null, email: null});
   useEffect(() => {
-    const formData = new URLSearchParams();
     const headers = {
       'Content-Type': 'application/x-www-form-urlencoded',
     }
-    formData.append('username', "Alan.mathew@ieee.org");
-    formData.append('password', "something");
-    const url = "http://localhost:5000/api/login/"
-    axios.post(url, formData, { headers: headers, withCredentials: true }).then((data) => {
-      console.log(data);
+    const url = "http://localhost:5000/api/credentials/"
+    axios.get(url, { headers: headers, withCredentials: true }).then((data) => {
+      if(data.status == 200)
+        return data.data
+      else
+        throw "error"
     })
-      .catch(err => console.error(err));
+    .then(userInfo=>{
+      setUser({
+        id: userInfo.id,
+        name: userInfo.name,
+        role: userInfo.role,
+        email: userInfo.email
+      })
+    })
+    .catch(err => {
+      if(!(/\/login$/).test(window.location))
+      window.location.replace('/login')
+    });
   }, [])
 
   return (
     <div className="App">
-      <Content />
+        <Content {...user}/>
     </div>
   );
 }

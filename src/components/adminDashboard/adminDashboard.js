@@ -19,7 +19,8 @@ export default function AdminDashboard() {
         axios.get(url, { withCredentials: true })
             .then((data) => {
                 console.log(data);
-                setData(data.data);
+                if(data.status==200)
+                    setData(data.data);
             })
             .catch(err => console.error(err));
 
