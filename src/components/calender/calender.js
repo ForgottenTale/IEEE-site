@@ -31,7 +31,7 @@ function Calender() {
             .catch(err => console.error(err));
 
 
-    }, [])
+    }, [value])
 
     useEffect(() => {
 
