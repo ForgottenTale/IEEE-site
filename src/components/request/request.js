@@ -8,7 +8,7 @@ import RequestView from '../requestView/requestView';
 import axios from 'axios';
 
 
-export default function Request() {
+export default function Request({ role }) {
 
 
     const [data, setData] = useState(null);
@@ -16,18 +16,18 @@ export default function Request() {
     const { path } = useRouteMatch();
     const [request, setRequest] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
-    const [refresh,setRefresh] =useState(true);
-
+    const [refresh, setRefresh] = useState(true);
+    const [pop,setPop] =useState(false);
     useEffect(() => {
-    
-            const url = "http://localhost:5000/api/my-approvals";
-            axios.get(url, { withCredentials: true })
-                .then((data) => {
-                    console.log(data);
-                    setData(data.data);
-                })
-                .catch(err => console.error(err));
-       
+
+        const url = "http://localhost:5000/api/my-approvals";
+        axios.get(url, { withCredentials: true })
+            .then((data) => {
+                console.log(data);
+                setData(data.data);
+            })
+            .catch(err => console.error(err));
+
 
     }, [refresh])
 
@@ -37,8 +37,8 @@ export default function Request() {
             <Route exact path={path}>
                 <div className="request">
                     <div className="request_header">
-                        <h6 className="request_header_title">All requests</h6>
 
+                        {role !== "user" ? <h6 className="request_header_title">All requests</h6> : <button className="appointments_header_button" onClick={() => { setPop(true) }}>+ New Appointment</button>}
                     </div>
                     <div className="request_sub">
                         <h6 className="request_sub_title">You have {data !== null && data !== undefined ? data.length : 0} request</h6>

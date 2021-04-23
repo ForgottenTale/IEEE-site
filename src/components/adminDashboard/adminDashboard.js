@@ -5,6 +5,7 @@ import { Input2 } from '../utils/myReactLib';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import RequestView from '../requestView/requestView';
 import axios from 'axios';
+import ServiceSelection from '../New Appointment/App';
 
 export default function AdminDashboard({role}) {
     const [data, setData] = useState(null);
@@ -13,6 +14,7 @@ export default function AdminDashboard({role}) {
     const [request, setRequest] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [refresh, setRefresh] = useState(true);
+    const [pop,setPop] =useState(false);
     const [values, setValues] = useState({
         approved: 0,
         denied: 0,
@@ -30,7 +32,18 @@ export default function AdminDashboard({role}) {
                         setData(data.data);
                 })
                 .catch(err => console.error(err));
-            url = "http://localhost:5000/api/activity";
+           
+            }else if(role=="REGULAR"){
+                var url = "http://localhost:5000/api/my-appointments";
+                axios.get(url, { withCredentials: true })
+                    .then((data) => {
+                        console.log(data);
+                        if(data.status==200)
+                            setData(data.data);
+                    })
+                    .catch(err => console.error(err));
+            }
+           var url = "http://localhost:5000/api/activity";
             axios.get(url, { withCredentials: true })
                 .then((data) => {
                     console.log(data);
@@ -42,21 +55,13 @@ export default function AdminDashboard({role}) {
                     });
                 })
                 .catch(err => console.error(err));
-            }else if(role=="REGULAR"){
-                var url = "http://localhost:5000/api/my-appointments";
-                axios.get(url, { withCredentials: true })
-                    .then((data) => {
-                        console.log(data);
-                        if(data.status==200)
-                            setData(data.data);
-                    })
-                    .catch(err => console.error(err));
-            }
         }, [role]);
 
     return (
         <Switch>
+            
             <Route exact path={path}>
+            {pop?<ServiceSelection setPop={setPop} pop={pop}/>:null}
                 <div className="request">
                     <div className="adminDashboard">
                         <div className="adminDashboard_con">
@@ -78,12 +83,12 @@ export default function AdminDashboard({role}) {
                             </div>
                         </div>
                     </div>
-
+                    <h6 className="request_sub_title" style={{margin:30}}>All completed request</h6>
                     <div className="request_sub">
-                        <h6 className="request_sub_title">All completed request</h6>
+                        
 
                         <Input2 className="request_sub_input" placeholder="Search for requests" onChange={(e) => setSearchTerm(e.target.value)} />
-
+                        <button className="appointments_header_button" onClick={()=>{setPop(true)}}>+ New Appointment</button>
                     </div>
 
                     <Table headers={header} data={data} type='request' setRequest={setRequest} searchTerm={searchTerm} />
