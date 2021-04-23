@@ -368,9 +368,9 @@ module.exports = {
 					appointmentsOfAllTypes[mainIdx][idx] = transmuteSnakeToCamel(appointmentsOfAllTypes[mainIdx][idx]);
 					appointmentsOfAllTypes[mainIdx][idx].otherResponses = await executeQuery("SELECT name, email, encourages, response FROM response INNER JOIN user on user._id=response.user_id WHERE alt_id=" + appointmentsOfAllTypes[mainIdx][idx].id + " AND user_id!=" + constraint.user_id + ";");
 					appointmentsOfAllTypes[mainIdx][idx].type = types[mainIdx].type;
-					dataArray.push(appointmentsOfAllTypes[mainIdx][idx])
+					dataArray.push(appointmentsOfAllTypes[mainIdx][idx]);
 				}
-			}
+			}		
 			return done(null, dataArray);	
 		}catch(err){
 			return done(err);
@@ -397,6 +397,7 @@ module.exports = {
 			for (let mainIdx in appointmentsOfAllTypes){
 				for (let idx in appointmentsOfAllTypes[mainIdx]){
 					AppointmentClass = getClass(types[mainIdx].type);
+					let config = await getConfig(types[mainIdx].type, appointmentsOfAllTypes[mainIdx][idx].service_name);
 					appointmentsOfAllTypes[mainIdx][idx] = AppointmentClass.convertSqlTimesToDate(appointmentsOfAllTypes[mainIdx][idx]);
 					appointmentsOfAllTypes[mainIdx][idx] = transmuteSnakeToCamel(appointmentsOfAllTypes[mainIdx][idx]);
 					appointmentsOfAllTypes[mainIdx][idx].otherResponses = await executeQuery("SELECT name, email, encourages, response FROM response INNER JOIN user on user._id=response.user_id WHERE alt_id=" + appointmentsOfAllTypes[mainIdx][idx].id + ";");
