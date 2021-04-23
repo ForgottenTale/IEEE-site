@@ -17,7 +17,7 @@ function minDay() {
   return min;
 }
 
-function DateTime({ type, setData, data }) {
+function DateTime({ path, type, setData, data }) {
   const [date, setDate] = useState("");
   const [timeFrom, setTimeFrom] = useState("");
   const [timeTo, setTimeTo] = useState("");
@@ -45,9 +45,9 @@ function DateTime({ type, setData, data }) {
     });
 
     if (type === "online_meeting" || type === "publicity") {
-      history.push("/event-info");
+      history.push(path + "/event-info");
     } else if (type === "intern_support" || type === "e_notice") {
-      history.push("/support-info");
+      history.push(path + "/support-info");
     }
     // }
   };
@@ -110,14 +110,17 @@ function DateTime({ type, setData, data }) {
                   onChange={(e) => setTimeFrom(e.target.value)}
                 />
               </div>
+
             </div>
+
           )}
           <button
             type="button"
             className="mt-5 back-btn"
-            onClick={() => history.push("/services/")}
+            onClick={() => history.push(path + "/services")}
           >
             Prev
+
             </button>
           <button className="btn btn-primary mt-5 next-btn">Next</button>
         </form>
