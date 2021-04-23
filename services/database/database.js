@@ -499,6 +499,8 @@ module.exports = {
 					}
 				}else{
 					let involved = await findMailsOfInvolved({id: input.appointmentId});
+					query += "INSERT INTO response(user_id, alt_id, encourages, final, response) VALUES ("
+							+ [input.user._id, input.appointmentId, input.encourages, 1, ("'" + input.response + "'")].join(",") + ");"
 					mail.changed({
 						id: input.appointmentId,
 						type: type,
