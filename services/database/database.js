@@ -356,6 +356,7 @@ module.exports = {
 				query += "SELECT *, alt._id as _id FROM alt"
 					+ " INNER JOIN " + type.type + " ON " + type.type + "_id=" + type.type + "._id"
 					+ " INNER JOIN response as r ON r.alt_id=alt._id"
+					+ " INNER JOIN user ON creator_id=user._id"
 					+ " WHERE r.user_id=" + constraint.user_id + ";";
 			})
 			let appointmentsOfAllTypes = await executeQuery(query);
