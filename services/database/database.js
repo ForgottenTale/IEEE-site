@@ -505,6 +505,7 @@ module.exports = {
 							encourages: input.encourages,
 							emailIds: [...nextMails, creator[0].email]
 						})
+						await executeQuery("UPDATE alt SET status='DECLINED' WHERE _id=" + input.appointmentId);
 					}
 				}else{
 					let involved = await findMailsOfInvolved({id: input.appointmentId});
@@ -521,8 +522,6 @@ module.exports = {
 				}
 				query+="DELETE FROM next_to_approve WHERE user_id=" + input.user._id
 				+ " AND alt_id=" + input.appointmentId + ";";
-				if(!input.encourages)
-					await executeQuery("UPDATE alt SET status='DECLINED' WHERE _id=" + input.appointmentId);
 			}
 			await executeQuery(query);
 			return done(null, "Updated Successfully");
