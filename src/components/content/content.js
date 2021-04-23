@@ -28,7 +28,8 @@ function All(props) {
                         {console.log("props", props)}
                         <h5 className="content_container_user">Welcome {props.name} !</h5>
                         {/* <Appointments /> */}
-                        <AdminDashboard />
+                        {console.log("admingProps", props)}
+                        <AdminDashboard role={props.role}/>
                     </Route>
                     <Route path="/calendar" >
                         <Calender />
