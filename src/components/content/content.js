@@ -10,6 +10,7 @@ import Request from '../request/request';
 import Users from '../users/users';
 import Login from '../login/login';
 import AdminDashboard from '../adminDashboard/adminDashboard';
+import PageNotFound from '../404/pageNotFound';
 
 
 function All(props) {
@@ -65,6 +66,9 @@ export default function Content(props) {
                 </Route>
                 <Route path="/*">
                     <All {...props}/>
+                </Route>
+                <Route>
+                    <PageNotFound/>
                 </Route>
 
             </Switch>

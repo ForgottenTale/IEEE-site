@@ -16,7 +16,7 @@ export default function Table({ headers, data, type, setUser, setRequest, search
                     {headers.map((header) => <th>{header}</th>)}
                 </tr>
                 {
-                    console.log(data),
+
                     (data !== null && data.length>0) ?
                         data.filter((val) => {
                             if (searchTerm === "") {
@@ -69,7 +69,7 @@ export default function Table({ headers, data, type, setUser, setRequest, search
                             </tr>
                         )
 
-                        : (type==="user"||type==="admin"?[1, 2, 3, 5, 6, 7, 8].map((key) => <SkeletonRowUser key={key}/>):[1, 2, 3, 5, 6, 7, 8].map((key) => <SkeletonRowRequest key={key} />))
+                        : (type==="user"||type==="admin"?[1, 2, 3, 5, 6, 7, 8].map((key) => <SkeletonRowUser key={key}/>):data!==[]&&[1, 2, 3, 5, 6, 7, 8].map((key) => <SkeletonRowRequest key={key} />))
                 }
 
 
