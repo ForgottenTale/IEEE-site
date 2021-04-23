@@ -1,7 +1,7 @@
 import './menu.scss';
 import logo from '../../images/logo.png';
 import { useState, useRef } from 'react';
-import { NavLink, useRouteMatch } from 'react-router-dom';
+import { NavLink} from 'react-router-dom';
 
 
 export default function Menu({ toggle, state, setActiveComponent, role }) {
@@ -9,9 +9,6 @@ export default function Menu({ toggle, state, setActiveComponent, role }) {
     const ref = useRef();
 
     const [open, setOpen] = useState(true);
-
-
-    const { path } = useRouteMatch();
     return (
         <div className={open ? "menu open" : "menu"} ref={ref}>
             <div className="menu_item">
@@ -56,7 +53,7 @@ export default function Menu({ toggle, state, setActiveComponent, role }) {
                 </svg>
                 <p className={open ? "menu_item_name open" : "menu_item_name"}>Calender</p>
             </NavLink>
-            {role !== "REGULAR" ? [<NavLink to="/requests" className="menu_item" activeClassName="active" onClick={() => setActiveComponent("Requests")}>
+            {role !== "REGULAR" ? [<NavLink key="1" to="/requests" className="menu_item" activeClassName="active" onClick={() => setActiveComponent("Requests")}>
                 <div className="menu_item_deo"></div>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -75,7 +72,7 @@ export default function Menu({ toggle, state, setActiveComponent, role }) {
                 </svg>
                 <p className={open ? "menu_item_name open" : "menu_item_name"}>Requests</p>
             </NavLink>,
-            <NavLink to="/users" className="menu_item" activeClassName="active" onClick={() => setActiveComponent("Users")}>
+            <NavLink key="2" to="/users" className="menu_item" activeClassName="active" onClick={() => setActiveComponent("Users")}>
                 <div className="menu_item_deo"></div>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

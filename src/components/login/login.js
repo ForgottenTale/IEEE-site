@@ -4,7 +4,7 @@ import { useState } from 'react';
 import axios from 'axios';
 
 export default function Login(props) {
-    const [user, setUser] = useState(props);
+    // const [user, setUser] = useState(props);
     const [details, setDetails] = useState({
         username: null,
         password: null
@@ -21,15 +21,15 @@ export default function Login(props) {
                 'Content-Type': 'application/x-www-form-urlencoded',
               }
           
-            const url = "/api/login/"
+            const url = "http://localhost:5000/api/login/"
             const res = await axios.post(url,formData,{headers:headers});
-            if(res.status==200){
-                setUser({
-                    id: res.data.id,
-                    name: res.data.name,
-                    role: res.data.role,
-                    email: res.data.email
-                  })
+            if(res.status===200){
+                // setUser({
+                //     id: res.data.id,
+                //     name: res.data.name,
+                //     role: res.data.role,
+                //     email: res.data.email
+                //   })
                   window.location.replace("/dashboard");
             }
 

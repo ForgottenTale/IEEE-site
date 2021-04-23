@@ -14,8 +14,11 @@ export default function SkeletonRowRequest() {
                 </div>
 
             </td>
-            {[1, 2, 3].map((key) => <td key={key}><SkeletonElement type="text" /> </td>)}
-            <Shimmer/>
+           
+                {[1, 2, 3].map((key) => <td key={key}><SkeletonElement type="text" /> </td>)}
+                <td>  <Shimmer />
+            </td>
+
         </tr >
     )
 }

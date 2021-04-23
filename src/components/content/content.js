@@ -1,9 +1,8 @@
 import './content.scss';
 import Menu from '../menu/menu';
 import TopNav from '../topNav/topNav';
-import Appointments from '../appointments/appointments';
 import { useState } from 'react';
-import { Route, Switch, useRouteMatch, BrowserRouter as Router } from 'react-router-dom';
+import { Route, Switch, BrowserRouter as Router } from 'react-router-dom';
 import Calender from '../calender/calender';
 import Setting from '../settings/settings';
 import Request from '../request/request';
@@ -16,8 +15,7 @@ import AdminDashboard from '../adminDashboard/adminDashboard';
 function All(props) {
     const [open, setOpen] = useState(true);
     const [activeComponent, setActiveComponent] = useState("Dashboard");
-    const { path } = useRouteMatch();
-    console.log(path)
+
     return (
         <div className="content">
             <Menu toggle={setOpen} state={open} setActiveComponent={setActiveComponent} role={props.role}/>
@@ -26,10 +24,8 @@ function All(props) {
 
                 <Switch>
                     <Route path="/dashboard" >
-                        {console.log("props", props)}
+
                         <h5 className="content_container_user">Welcome {props.name} !</h5>
-                         {/* <Appointments />  */}
-                        {console.log("admingProps", props)}
                         <AdminDashboard role={props.role}/>
                     </Route>
                     <Route path="/calendar" >

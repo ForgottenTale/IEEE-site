@@ -17,10 +17,11 @@ export default function Request({ role }) {
     const [request, setRequest] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [refresh, setRefresh] = useState(true);
-    const [pop,setPop] =useState(false);
+
+
     useEffect(() => {
 
-        const url = "/api/my-approvals";
+        const url = "http://localhost:5000/api/my-approvals";
         axios.get(url, { withCredentials: true })
             .then((data) => {
                 console.log(data);
@@ -38,7 +39,7 @@ export default function Request({ role }) {
                 <div className="request">
                     <div className="request_header">
 
-                        {role !== "user" ? <h6 className="request_header_title">All requests</h6> : <button className="appointments_header_button" onClick={() => { setPop(true) }}>+ New Appointment</button>}
+                       <h6 className="request_header_title">All requests</h6> 
                     </div>
                     <div className="request_sub">
                         <h6 className="request_sub_title">You have {data !== null && data !== undefined ? data.length : 0} request</h6>

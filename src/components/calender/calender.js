@@ -22,7 +22,7 @@ function Calender() {
     const [data,setData] = useState([]);
 
     useEffect(() => {
-        const url = "/api/calendar?month=" + (value.clone().format('M') - 1) + "&year=" + value.clone().format('Y');
+        const url = "http://localhost:5000/api/calendar?month=" + (value.clone().format('M') - 1) + "&year=" + value.clone().format('Y');
         axios.get(url, { withCredentials: true })
             .then((d) => {
                 console.log(d)
@@ -44,7 +44,7 @@ function Calender() {
         const a = [];
         const weekDays = [];
         var temp = [];
-        for (i = 1; i <= value.clone().daysInMonth(); i++) {
+        for (let i = 1; i <= value.clone().daysInMonth(); i++) {
             temp.push(i);
         }
         setDayList(temp)

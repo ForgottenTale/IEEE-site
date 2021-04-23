@@ -15,12 +15,11 @@ export default function Setting() {
 
     useEffect(() => {
 
-        const url = "/api/credentials/"
+        const url = "http://localhost:5000/api/credentials/"
         axios.get(url, { withCredentials: true }).then((data) => {
-            if (data.status == 200)
+            if (data.status === 200)
                 return data.data
-            else
-                throw "error"
+           
         })
             .then(userInfo => {
                 setUserDetails({
@@ -55,7 +54,6 @@ export default function Setting() {
     }
     const handlePasswordSave = () => {
         const formData = new URLSearchParams();
-
         formData.append('password', password);
         const headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -108,11 +106,11 @@ export default function Setting() {
                 </div>
                 <div className="settings_con_item">
                     <p>Re-enter Password</p>
-                    <input />
+                    <input onChange={(e)=>setPassword(e.target.value)}/>
                 </div>
 
             </div>
-            <button>Save</button>
+            <button onClick={() => handlePasswordSave()} >Save</button>
         </div>
     );
 }

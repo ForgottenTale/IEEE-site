@@ -21,7 +21,6 @@ function EventInfo({ path, type, data, setData }) {
       speakerName: content.speaker,
       speakerEmail: content.speakerEmail,
       img: content.img,
-      title:content.title
     });
     history.push(path + "/other-info");
   }

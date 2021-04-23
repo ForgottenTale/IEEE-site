@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import axios from 'axios';
 import './App.scss';
 import {useState} from 'react';
-import { Redirect } from 'react-router';
+
 
 
 
@@ -14,13 +14,11 @@ function App() {
     const headers = {
       'Content-Type': 'application/x-www-form-urlencoded',
     }
-    const url = "/api/credentials/"
+    const url = "http://localhost:5000/api/credentials/"
     axios.get(url, { headers: headers, withCredentials: true }).then((data) => {
       console.log(data)
-      if(data.status == 200)
+      if(data.status === 200)
         return data.data
-      else
-        throw "error"
     })
     .then(userInfo=>{
       setUser({

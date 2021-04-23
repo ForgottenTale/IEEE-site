@@ -22,28 +22,29 @@ export default function AdminDashboard({role}) {
         total: 0
     })
     useEffect(() => {
+        var url = ""
         console.log("role in dashboard", role);
-        if(role=="ALPHA_ADMIN" || role=="BETA_ADMIN"){
-            var url = "/api/my-approvals/history";
+        if(role==="ALPHA_ADMIN" || role==="BETA_ADMIN"){
+            url = "http://localhost:5000/api/my-approvals/history";
             axios.get(url, { withCredentials: true })
                 .then((data) => {
                     console.log(data);
-                    if(data.status==200)
+                    if(data.status===200)
                         setData(data.data);
                 })
                 .catch(err => console.error(err));
            
-            }else if(role=="REGULAR"){
-                var url = "/api/my-appointments";
+            }else if(role==="REGULAR"){
+                url = "http://localhost:5000/api/my-appointments";
                 axios.get(url, { withCredentials: true })
                     .then((data) => {
                         console.log(data);
-                        if(data.status==200)
+                        if(data.status===200)
                             setData(data.data);
                     })
                     .catch(err => console.error(err));
             }
-           var url = "/api/activity";
+            url = "http://localhost:5000/api/activity";
             axios.get(url, { withCredentials: true })
                 .then((data) => {
                     console.log(data);

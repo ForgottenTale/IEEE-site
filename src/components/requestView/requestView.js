@@ -16,7 +16,7 @@ export default function RequestView({ req, setRefresh, refresh, showButton }) {
             setData(req);
         }
         else {
-            const url = "/api/my-approvals";
+            const url = "http://localhost:5000/api/my-approvals";
             axios.get(url, { withCredentials: true })
                 .then((d) => {
                     console.log(d.data[0]);
@@ -42,7 +42,7 @@ export default function RequestView({ req, setRefresh, refresh, showButton }) {
                 'Content-Type': 'application/x-www-form-urlencoded',
             }
 
-            const url = "/api/my-approvals/"
+            const url = "http://localhost:5000/api/my-approvals/"
             const res = await axios.post(url, formData, { headers: headers, withCredentials: true });
             setRefresh(!refresh);
             console.log(res);

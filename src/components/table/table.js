@@ -5,81 +5,93 @@ import SkeletonRowRequest from '../skeleton/skeletonRowRequest';
 import SkeletonRowUser from '../skeleton/skeletonRowUser';
 
 
-export default function Table({ headers, data, type, setUser, setRequest, searchTerm}) {
+export default function Table({ headers, data, type, setUser, setRequest, searchTerm }) {
 
 
-    const { path } = useRouteMatch();
+
     return (
         <div className="tableTag">
             <table>
-                <tr>
-                    {headers.map((header) => <th>{header}</th>)}
-                </tr>
-                {
-
-                    (data !== null && data.length>0) ?
-                        data.filter((val) => {
-                            if (searchTerm === "") {
-                                return val;
-                            }
-                            else if (
-                                val.name.toLowerCase().includes(searchTerm.toLowerCase())
-                                || val.type.toLowerCase().includes(searchTerm.toLowerCase())
-                                || new Date(val.startTime).toDateString().toLowerCase().includes(searchTerm.toLowerCase())
-                                || val.serviceName.toLowerCase().includes(searchTerm.toLowerCase())
-                            ) {
-                                return val;
-                            }
-                        }).map((row, key) =>
-                            <tr key={key}>
-                                <td data-label="id">{row.id}</td>
-                                <td data-label="Name">
-                                    <div className="tableTag_user">
-                                        <img src={pic} alt='profile-pic' className="tableTag_user_pic" />
-                              <p>
-                              {row.name}
-                              </p>
-                              
-                                    </div>
-
-                                </td>
-                                {type === 'admin' || type === 'user' ? [
-                                    <td data-label="Email">{row.email}</td>,
-                                    <td data-label="Role">{row.role.replace('_'," ").toLowerCase()}</td>,
-
-                                ] : null}
-                            
-                                {type === 'request' ? [
-                                    <td data-label="Service">{row.type.replace('_', ' ')}</td>,
-                                    <td data-label="Type">{row.serviceName}</td>,
-                                    <td data-label="Time">{new Date(row.startTime).toDateString()}</td>,
-                                    <td data-label="Status">
-                                        <p >
-                                            {row.status.toLowerCase()}
-                                        </p>
-                                    </td>,
-                                ] : null}
-                                <td>
-                                    {type === 'request' ?
-                                        <NavLink to={path + "/" + row.id} onClick={() => setRequest(row)}>View</NavLink>
-                                        : <NavLink to={path + '/user/' + row.id} onClick={() => setUser(row)}>View</NavLink>}
-
-                                </td>
-
-                            </tr>
-                        )
-
-                        : (type==="user"||type==="admin"?[1, 2, 3, 5, 6, 7, 8].map((key) => <SkeletonRowUser key={key}/>):data!==[]&&[1, 2, 3, 5, 6, 7, 8].map((key) => <SkeletonRowRequest key={key} />))
-                }
+                <tbody>
+                    <tr>
+                        {headers.map((header, key) => <th key={key}>{header}</th>)}
+                    </tr>
 
 
-                {
+                    {
+                        (data !== null && data.length > 0 && data !== []) ?
+                            data.filter((val) => {
+                                if (searchTerm === "") {
+                                    return val;
+                                }
+                                else if (
+                                    val.name.toLowerCase().includes(searchTerm.toLowerCase())
+                                    || val.type.toLowerCase().includes(searchTerm.toLowerCase())
+                                    || new Date(val.startTime).toDateString().toLowerCase().includes(searchTerm.toLowerCase())
+                                    || val.serviceName.toLowerCase().includes(searchTerm.toLowerCase())
+                                ) {
+                                    return val;
+                                }
+                                else {
+                                    return null
+                                }
+                            }).map((data, key) => <Row key={key} data={data} type={type} setUser={setUser} setRequest={setRequest} />
+                            )
 
-                }
-
-
+                            : (type === "user" || type === "admin" ? [1, 2, 3, 5, 6, 7, 8].map((key) => <SkeletonRowUser key={key} />) : data !== [] && [1, 2, 3, 5, 6, 7, 8].map((key) => <SkeletonRowRequest key={key} />))
+                    }
+                </tbody>
             </table>
 
         </div>
     )
 }
+
+
+function Row({ data, type, setRequest, setUser }) {
+    const { path } = useRouteMatch();
+    return (
+
+
+
+        <tr>
+
+            <td data-label="id">{data.id}</td>
+            <td data-label="Name">
+                <div className="tableTag_user">
+                    <img src={pic} alt='profile-pic' className="tableTag_user_pic" />
+                    <p>
+                        {data.name}
+                    </p>
+
+                </div>
+
+            </td>
+            {type === 'admin' || type === 'user' ? [
+                <td data-label="Email" key="1">{data.email}</td>,
+                <td data-label="Role" key="2">{data.role.replace('_', " ").toLowerCase()}</td>,] : null}
+
+            {type === 'request' ? [
+                <td data-label="Service" key="1">{data.type.replace('_', ' ')}</td>,
+                <td data-label="Type" key="2">{data.serviceName}</td>,
+                <td data-label="Time" key="3">{new Date(data.startTime).toDateString()}</td>,
+                <td data-label="Status" key="4">
+                    <p >
+                        {data.status.toLowerCase()}
+                    </p>
+                </td>,
+            ] : null}
+
+            <td>
+                {type === 'request' ?
+                    <NavLink to={path + "/" + data.id} onClick={() => setRequest(data)}>View</NavLink>
+                    : <NavLink to={path + '/user/' + data.id} onClick={() => setUser(data)}>View</NavLink>}
+
+            </td>
+        </tr>
+
+
+    );
+}
+// 
+

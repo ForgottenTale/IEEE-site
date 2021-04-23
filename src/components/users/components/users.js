@@ -11,7 +11,7 @@ export default function Admin({ setUser }) {
     const [data,setData] = useState(null);
 
     useEffect(() => {
-        const url = "/api/users?role=regular";
+        const url = "http://localhost:5000/api/users?role=regular";
         axios.get(url, { withCredentials: true })
             .then((d) => {
                 console.log(d)
