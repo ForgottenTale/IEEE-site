@@ -166,7 +166,7 @@ function Calender() {
             <div className="calender_menu">
                 <h2 className="calender_menu_today">
        
-                    <select value={value.clone().format('D')} >
+                    <select defaultValue={value.clone().format('D')} onChange={(e)=>handleSelectChange(e)}>
                         {dayList.map((val, key) =>
                             <option value={val} key={key}>{val}</option>
                         )}
@@ -176,7 +176,7 @@ function Calender() {
                             <option value={val} key={key} >{val}</option>
                         )}
                     </select>
-                    <select value={value.clone().format('YYYY')}>
+                    <select defaultValue={value.clone().format('YYYY')} onChange={(e)=>handleSelectChange(e)}>
                         {yearList.map((val, key) =>
                             <option value={val} key={key}>{val}</option>
                         )}
