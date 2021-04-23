@@ -20,7 +20,7 @@ export default function Request({ role }) {
     const [pop,setPop] =useState(false);
     useEffect(() => {
 
-        const url = "http://localhost:5000/api/my-approvals";
+        const url = "/api/my-approvals";
         axios.get(url, { withCredentials: true })
             .then((data) => {
                 console.log(data);

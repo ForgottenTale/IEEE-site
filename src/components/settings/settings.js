@@ -15,7 +15,7 @@ export default function Setting() {
 
     useEffect(() => {
 
-        const url = "http://localhost:5000/api/credentials/"
+        const url = "/api/credentials/"
         axios.get(url, { withCredentials: true }).then((data) => {
             if (data.status == 200)
                 return data.data

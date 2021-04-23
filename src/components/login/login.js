@@ -21,7 +21,7 @@ export default function Login(props) {
                 'Content-Type': 'application/x-www-form-urlencoded',
               }
           
-            const url = "http://localhost:5000/api/login/"
+            const url = "/api/login/"
             const res = await axios.post(url,formData,{headers:headers});
             if(res.status==200){
                 setUser({
