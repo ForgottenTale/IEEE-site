@@ -10,6 +10,7 @@ import Request from '../request/request';
 import Users from '../users/users';
 import Login from '../login/login';
 import AdminDashboard from '../adminDashboard/adminDashboard';
+import PageNotFound from '../404/pageNotFound';
 
 
 function All(props) {
@@ -27,8 +28,9 @@ function All(props) {
                     <Route path="/dashboard" >
                         {console.log("props", props)}
                         <h5 className="content_container_user">Welcome {props.name} !</h5>
-                        {/* <Appointments /> */}
-                        <AdminDashboard />
+                         <Appointments /> 
+                        {console.log("admingProps", props)}
+                        {/* <AdminDashboard role={props.role}/> */}
                     </Route>
                     <Route path="/calendar" >
                         <Calender />
@@ -65,6 +67,9 @@ export default function Content(props) {
                 <Route path="/*">
                     <All {...props}/>
                 </Route>
+                {/* <Route path="/*">
+                    <PageNotFound/>
+                </Route> */}
 
             </Switch>
         </Router>

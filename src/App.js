@@ -16,6 +16,7 @@ function App() {
     }
     const url = "http://localhost:5000/api/credentials/"
     axios.get(url, { headers: headers, withCredentials: true }).then((data) => {
+      console.log(data)
       if(data.status == 200)
         return data.data
       else

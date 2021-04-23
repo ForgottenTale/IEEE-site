@@ -70,6 +70,15 @@ module.exports = function(app){
         });
     })
 
+    app.route('/api/user')
+    .patch(auth.ensureAuthenticated, (req, res)=>{
+        req.body.id = req.user._id;
+        database.updateUser(req.body, (err, result)=>{
+            if(err) return respondError(err, res);
+            res.status(200).json({message: result});
+        });
+    })
+
     app.route('/api/credentials')
     .get(auth.ensureAuthenticated, (req, res)=>{
         let user = new User(req.user);

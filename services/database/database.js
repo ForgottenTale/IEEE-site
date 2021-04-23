@@ -356,6 +356,7 @@ module.exports = {
 				query += "SELECT *, alt._id as _id FROM alt"
 					+ " INNER JOIN " + type.type + " ON " + type.type + "_id=" + type.type + "._id"
 					+ " INNER JOIN response as r ON r.alt_id=alt._id"
+					+ " INNER JOIN user ON creator_id=user._id"
 					+ " WHERE r.user_id=" + constraint.user_id + ";";
 			})
 			let appointmentsOfAllTypes = await executeQuery(query);
@@ -499,6 +500,8 @@ module.exports = {
 					}
 				}else{
 					let involved = await findMailsOfInvolved({id: input.appointmentId});
+					query += "INSERT INTO response(user_id, alt_id, encourages, final, response) VALUES ("
+							+ [input.user._id, input.appointmentId, input.encourages, 1, ("'" + input.response + "'")].join(",") + ");"
 					mail.changed({
 						id: input.appointmentId,
 						type: type,
@@ -510,9 +513,8 @@ module.exports = {
 				}
 				query+="DELETE FROM next_to_approve WHERE user_id=" + input.user._id
 				+ " AND alt_id=" + input.appointmentId + ";";
-				await executeQuery("UPDATE alt SET status='"
-					+ (input.encourages?"APPROVED":"DECLINED")
-					+ "' WHERE _id=" + input.appointmentId);
+				if(!input.encourages)
+					await executeQuery("UPDATE alt SET status='DECLINED' WHERE _id=" + input.appointmentId);
 			}
 			await executeQuery(query);
 			return done(null, "Updated Successfully");
@@ -552,6 +554,14 @@ module.exports = {
 				return result;
 			})
 			return done(null, results);
+		})
+		.catch(err=>done(err));
+	},
+
+	updateUser: function(input, done){
+		executeQuery("UPDATE user SET " + User.getValues(input).join(",") + " WHERE _id=" + input.id + ";")
+		.then(data=>{
+			return done(null, "Updated Successfully");
 		})
 		.catch(err=>done(err));
 	}

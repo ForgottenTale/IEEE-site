@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import axios from "axios";
 import confirmIcon from "../../../images/info.png";
 
-function Verify({ type, data }) {
+function Verify({ path, type, data }) {
   const history = useHistory();
 
   const handleSubmit = () => {
@@ -19,7 +19,7 @@ function Verify({ type, data }) {
     handleUpload(formData);
 
     console.log(Array.from(formData));
-    history.push("/confirmation");
+    history.push(path + "/confirmation");
   };
 
   const handleUpload = async (data) => {
@@ -27,10 +27,9 @@ function Verify({ type, data }) {
       const url = "http://localhost:5000/api/book/";
       const res = await axios.post(url, data, {
         headers: {
-
-          'Content-Type': 'multipart/form-data'
-        }
-
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true 
       });
       console.log(res);
     } catch (err) {
@@ -89,12 +88,15 @@ function Verify({ type, data }) {
               <p>0123456789</p>
             </div>
           </div>
+
         </div>
+
+
         {type === "online_meeting" || type === "publicity" ? (
           <button
             type="button"
             className="back-btn"
-            onClick={() => history.push("/other-info")}
+            onClick={() => history.push(path + "/other-info")}
           >
             Prev
           </button>
@@ -103,11 +105,12 @@ function Verify({ type, data }) {
           <button
             type="button"
             className="back-btn"
-            onClick={() => history.push("/support-info")}
+            onClick={() => history.push(path + "/support-info")}
           >
             Prev
           </button>
         ) : null}
+
         <button
           type="button"
           className="btn btn-primary submit-btn"

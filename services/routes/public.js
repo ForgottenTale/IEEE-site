@@ -52,7 +52,7 @@ module.exports = function(app){
 
     app.route('/unauthorized')
     .get((req, res)=>{
-        res.status(400).sendFile(process.cwd() + '/coverage/unauthorized.html')
+        res.status(400).json({error: "Unauthorized"});
     })
 
     app.route('/api/logout')

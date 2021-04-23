@@ -6,7 +6,7 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import RequestView from '../requestView/requestView';
 import axios from 'axios';
 
-export default function AdminDashboard() {
+export default function AdminDashboard({role}) {
     const [data, setData] = useState(null);
     const header = ['Id', "Name", "Service", "Type", "Time", "Status", "Action"];
     const { path } = useRouteMatch();
@@ -20,29 +20,39 @@ export default function AdminDashboard() {
         total: 0
     })
     useEffect(() => {
-
-        var url = "http://localhost:5000/api/my-approvals/history";
-        axios.get(url, { withCredentials: true })
-            .then((data) => {
-                console.log(data);
-                if(data.status==200)
-                    setData(data.data);
-            })
-            .catch(err => console.error(err));
-        url = "http://localhost:5000/api/activity";
-        axios.get(url, { withCredentials: true })
-            .then((data) => {
-                console.log(data);
-                setValues({
-                    approved: data.data.approved,
-                    denied: data.data.declined,
-                    pending: data.data.pending,
-                    total: data.data.approved + data.data.pending + data.data.pending
-                });
-            })
-            .catch(err => console.error(err));
-
-    }, [refresh]);
+        console.log("role in dashboard", role);
+        if(role=="ALPHA_ADMIN" || role=="BETA_ADMIN"){
+            var url = "http://localhost:5000/api/my-approvals/history";
+            axios.get(url, { withCredentials: true })
+                .then((data) => {
+                    console.log(data);
+                    if(data.status==200)
+                        setData(data.data);
+                })
+                .catch(err => console.error(err));
+            url = "http://localhost:5000/api/activity";
+            axios.get(url, { withCredentials: true })
+                .then((data) => {
+                    console.log(data);
+                    setValues({
+                        approved: data.data.approved,
+                        denied: data.data.declined,
+                        pending: data.data.pending,
+                        total: data.data.approved + data.data.pending + data.data.pending
+                    });
+                })
+                .catch(err => console.error(err));
+            }else if(role=="REGULAR"){
+                var url = "http://localhost:5000/api/my-appointments";
+                axios.get(url, { withCredentials: true })
+                    .then((data) => {
+                        console.log(data);
+                        if(data.status==200)
+                            setData(data.data);
+                    })
+                    .catch(err => console.error(err));
+            }
+        }, [role]);
 
     return (
         <Switch>

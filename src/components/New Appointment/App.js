@@ -16,37 +16,46 @@ function App(props) {
   const [type, setType] = useState(null);
   const { path } = useRouteMatch();
   // const [poster, setPoster] = useState("{}");
-  return (
 
+
+  return (
     <div className="ub">
       <div className="overlay" onClick={() => { props.setPop(!props.pop) }}></div>
       <Router>
         <Switch>
-          <Route path={path}>
-            <ServiceList setType={setType} setData={setData} data={data} />
+          <Route path={path} exact>
+            <ServiceList
+              path={path}
+              setType={setType}
+              data={data}
+              setData={setData}
+            />
           </Route>
           <Route path={path + "/services"}>
-            <Services type={type} setData={setData} data={data} />
+            <Services path={path} type={type} data={data} setData={setData} />
           </Route>
           <Route path={path + "/date-time"}>
-            <DateTime type={type} setData={setData} data={data} />
+            <DateTime path={path} type={type} data={data} setData={setData} />
           </Route>
           <Route path={path + "/event-info"}>
-            <EventInfo type={type} data={data} setData={setData} />
+            <EventInfo path={path} type={type} data={data} setData={setData} />
           </Route>
           <Route path={path + "/other-info"}>
-            <OtherInfo type={type} data={data} setData={setData} />
+            <OtherInfo path={path} type={type} data={data} setData={setData} />
           </Route>
           <Route path={path + "/support-info"}>
-            <SupportInfo type={type} setData={setData} data={data} />
+            <SupportInfo path={path} type={type} data={data} setData={setData} />
           </Route>
-          <Route path={path + "/verify"} component={Verify}>
-            <Verify type={type} data={data} />
+          <Route path={path + "/verify"}>
+            <Verify path={path} type={type} data={data} />
           </Route>
-          <Route path="/confirmation" component={Confirmation} />
+          <Route path={path + "/confirmation"}>
+            <Confirmation path={path} type={type} data={data} />
+          </Route>
         </Switch>
       </Router>
     </div >
+
   );
 }
 

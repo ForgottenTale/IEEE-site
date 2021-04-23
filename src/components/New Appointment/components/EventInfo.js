@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import infoIcon from "../../../images/info.png";
 
-function EventInfo({ type, data, setData }) {
+function EventInfo({ path, type, data, setData }) {
   const history = useHistory();
 
   const [content, setContent] = useState({
@@ -12,17 +12,17 @@ function EventInfo({ type, data, setData }) {
     img: "",
   });
 
-
   function next(event) {
     event.preventDefault();
     setData({
       ...data,
       description: content.description,
-      speaker: content.speaker,
+      speakerName: content.speaker,
       speakerEmail: content.speakerEmail,
       img: content.img,
+      title:content.title
     });
-    history.push("/other-info");
+    history.push(path + "/other-info");
   }
 
   return (
@@ -138,14 +138,18 @@ function EventInfo({ type, data, setData }) {
                   }}
                 />
               </div>
+
             </div>
+
+
           )}
           <button
             type="button"
             className="back-btn"
-            onClick={() => history.push("/date-time")}
+            onClick={() => history.push(path + "/date-time")}
           >
             Prev
+
             </button>
           <button className="btn btn-primary next-btn">Next</button>
         </form>
