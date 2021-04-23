@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import confirmIcon from "../../../images/info.png";
 
-function Confirmation({ path }) {
+function Confirmation({ path , id}) {
   return (
       <div className="service-container row">
         <div className="select-service col-5">
@@ -19,7 +19,7 @@ function Confirmation({ path }) {
           <h2>Appointment Confirmation</h2>
           <div className="mb-5 confirmation-box">
             <p>Confirmation #</p>
-            <h4>19</h4>
+            <h4>{id}</h4>
             <button className="btn btn-outline-danger">Add to Calender</button>
             <button className="btn btn-outline-info">Print</button>
           </div>

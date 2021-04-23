@@ -36,7 +36,7 @@ function OtherInfo({ path, type, data, setData }) {
     event.preventDefault();
 
     setData({
-      cohosts: JSON.stringify(cohost),
+      coHosts: JSON.stringify(cohost),
       ...data,
     });
 

@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import axios from "axios";
 import confirmIcon from "../../../images/info.png";
 
-function Verify({ path, type, data }) {
+function Verify({ path, type, data, setId }) {
   const history = useHistory();
 
   const handleSubmit = () => {
@@ -29,8 +29,9 @@ function Verify({ path, type, data }) {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        withCredentials: true
       });
-      console.log(res);
+      setId(res.data.id);
     } catch (err) {
       console.log(err);
     }
@@ -55,7 +56,7 @@ function Verify({ path, type, data }) {
           <div className="col">
             <div className="mb-2">
               <p className="label">Date:</p>
-              <p>{data.timeFrom.toISOString().slice(0, 10)}</p>
+              <p>{data.startTime.slice(0, 10)}</p>
             </div>
             <div className="mb-4">
               <p className="label">Service:</p>

@@ -26,7 +26,7 @@ class User {
     checkRequired(input){
         this.required.forEach(param=>{
             if(!input[param])
-                throw new Error(param + " is requried");
+                throw new Error(param + " is required");
             else if((input[param] + "").trim() < 1)
                 throw new Error(param + " cannot be empty");
         })

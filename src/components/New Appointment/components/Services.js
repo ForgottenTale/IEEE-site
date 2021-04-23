@@ -7,7 +7,7 @@ function Services({ path, type, data, setData }) {
 
   const next = (item) => {
     // if (timeFrom !== "") {
-    setData({ ...data, service: item });
+    setData({ ...data, serviceName: item });
     // }
     history.push(path + "/date-time");
   };
