@@ -67,9 +67,9 @@ export default function Content(props) {
                 <Route path="/*">
                     <All {...props}/>
                 </Route>
-                <Route>
+                {/* <Route path="/*">
                     <PageNotFound/>
-                </Route>
+                </Route> */}
 
             </Switch>
         </Router>
