@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { select } from 'd3';
 import { useEffect, useRef } from 'react';
-import { useState } from 'react/cjs/react.development';
+import { useState } from 'react';
 import './events.scss';
 
 export default function Events({ day }) {
