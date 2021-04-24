@@ -12,7 +12,25 @@ import "./ub.css";
 import "./style.css";
 
 function App(props) {
-  const [data, setData] = useState({});
+  const [data, setData] = useState({
+    startTime: "",
+    endTime: "",
+    title: "",
+    speakerName: "Elon Musk",
+    speakerEmail: "",
+    coHosts:"",
+    type:"",
+    serviceName:"",
+    description: "",
+    deliveryType: "",
+    remainder: "",
+    comments: "",
+    purpose: "",
+    dimensions: "",
+    wordsCount: "",
+    url: "",
+    img: "",
+  });
   const [type, setType] = useState(null);
   const [id, setId] = useState("Loading...");
   const { path } = useRouteMatch();
@@ -47,10 +65,10 @@ function App(props) {
             <SupportInfo path={path} type={type} data={data} setData={setData} />
           </Route>
           <Route path={path + "/verify"}>
-            <Verify path={path} type={type} data={data} setId={setId}/>
+            <Verify path={path} type={type} data={data} setId={setId} />
           </Route>
           <Route path={path + "/confirmation"}>
-            <Confirmation path={path} type={type} data={data} id={id}/>
+            <Confirmation path={path} type={type} data={data} id={id} />
           </Route>
         </Switch>
       </Router>

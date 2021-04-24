@@ -6,10 +6,10 @@ import enoticeIcon from "../../../images/enotice.png";
 import serviceIcon from "../../../images/select.png";
 import publicity from "../../../images/publicity.png";
 
-function ServiceList({ path, setType, setData }) {
+function ServiceList({ path, setType, setData,data }) {
   const clickHander = (type) => {
     setType(type);
-    setData({ type: type });
+    setData({...data, type: type });
   };
 
   return (

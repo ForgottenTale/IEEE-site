@@ -10,6 +10,7 @@ function EventInfo({ path, type, data, setData }) {
     speakerName: "",
     speakerEmail: "",
     img: "",
+    title:""
   });
 
   function next(event) {
@@ -71,10 +72,11 @@ function EventInfo({ path, type, data, setData }) {
                   type="text"
                   className="form-control"
                   name="speakerName"
+                  defaultValue={data.speakerName}
                   onChange={(e) =>
                     setContent({ ...content, speaker: e.target.value })
-                  }
-                />
+                  }/
+                >
               </div>
               <div className="col">
                 <label className="form-label">Speaker email</label>
